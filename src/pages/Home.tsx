@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import hero from "../assets/img/hero-carne-de-sol-recheio.jpg";
 import logo from "../assets/img/logo-full.png";
+import { Tag } from "../components/ui";
 import { ProductRow } from "../components/ProductItem";
 import { condominios, contato, destaquesHome, produtos } from "../data/menu";
 
@@ -17,17 +18,17 @@ export default function Home() {
     <>
       <section className="container hero">
         <div className="hero__texto">
-          <span className="badge t-eyebrow">Entrega nos condomínios da Serraria</span>
+          <span className="badge badge--marca">Entrega nos condomínios da Serraria</span>
           <h1 className="t-display hero__titulo">Cuscuz é sempre uma boa ideia!</h1>
           <p className="t-corpo hero__lead">
             Cuscuz recheado, quentinho e preparado com cuidado. Peça pelo cardápio digital e receba no seu condomínio.
           </p>
-          <p className="t-auxiliar">
+          <p className="t-legenda">
             Pedidos até as {contato.horarioPedidos} · entrega das {contato.horarioEntrega}
           </p>
           <div className="hero__acoes">
-            <Link to="/cardapio" className="btn btn--primary">Peça agora!</Link>
-            <a href="#como-funciona" className="btn btn--secondary">Como funciona</a>
+            <Link to="/cardapio" className="btn btn--primary btn--lg">Peça agora!</Link>
+            <a href="#como-funciona" className="btn btn--soft btn--sm">Como funciona</a>
           </div>
         </div>
         <div className="hero__imagem">
@@ -46,7 +47,7 @@ export default function Home() {
           ))}
         </ul>
         <div className="section__acao">
-          <Link to="/cardapio" className="btn btn--primary btn--block" style={{ maxWidth: 480 }}>
+          <Link to="/cardapio" className="btn btn--primary btn--lg btn--block" style={{ maxWidth: 480 }}>
             Ver cardápio completo e pedir
           </Link>
         </div>
@@ -76,7 +77,7 @@ export default function Home() {
         </p>
         <ul className="chips">
           {condominios.map((c) => (
-            <li key={c} className="t-eyebrow">{c}</li>
+            <li key={c}><Tag variante="erro">{c}</Tag></li>
           ))}
         </ul>
         <p className="t-corpo">

@@ -65,7 +65,8 @@
   --milho-700: #a87408;
   --milho-900: #3b2a06;
 
-  /* ---------- Semânticos (tema claro) ---------- */
+  /* ---------- Semânticos · modo Claro ----------
+     Espelham a coleção "Semântico" do Figma (colunas Claro / Escuro). */
   --fundo-pagina: var(--neutro-0);
   --fundo-superficie: var(--neutro-50);
   --fundo-rebaixado: var(--neutro-100);
@@ -95,19 +96,19 @@
   --destaque-fundo-suave: var(--milho-100);
   --texto-sobre-destaque: var(--neutro-900);
 
-  --texto-sucesso: var(--sucesso-600);
+  --texto-sucesso: var(--sucesso-700);
   --fundo-sucesso: var(--sucesso-100);
-  --texto-aviso: var(--aviso-600);
+  --texto-aviso: var(--aviso-700);
   --fundo-aviso: var(--aviso-100);
-  --texto-erro: var(--erro-600);
+  --texto-erro: var(--erro-700);
   --fundo-erro: var(--erro-100);
-  --texto-info: var(--info-600);
+  --texto-info: var(--info-700);
   --fundo-info: var(--info-100);
 
-  /* Sombras (cor #070B10) */
-  --sombra-sm: 0 2px 4px rgb(7 11 16 / 0.1);
-  --sombra-md: 0 6px 14px rgb(7 11 16 / 0.18);
-  --sombra-lg: 0 12px 28px rgb(7 11 16 / 0.25);
+  /* Sombras: y / desfoque / cor+opacidade (Claro: #432719) */
+  --sombra-sm: 0 2px 4px rgb(67 39 25 / 0.1);
+  --sombra-md: 0 6px 14px rgb(67 39 25 / 0.18);
+  --sombra-lg: 0 12px 28px rgb(67 39 25 / 0.25);
 
   /* ---------- Escalas ---------- */
   --esp-4: 4px;
@@ -120,55 +121,88 @@
   --esp-64: 64px;
   --esp-96: 96px;
 
+  /* Raios · modo Suave (padrão). Para o modo Reto use <html data-raio="reto"> */
   --raio-0: 0px;
   --raio-4: 4px;
   --raio-8: 8px;
   --raio-12: 12px;
-  --raio-full: 9999px;
+  --raio-total: 9999px;
+
+  /* Ícones */
+  --icone-16: 16px;
+  --icone-20: 20px;
+  --icone-24: 24px;
 
   /* Tipografia */
   --fonte-titulo: "Baloo 2", system-ui, sans-serif;
   --fonte-texto: "Nunito Sans Variable", "Nunito Sans", system-ui, sans-serif;
 
-  /* Grid */
+  /* Grid · modo Mobile (padrão) */
+  --grid-colunas: 4;
   --grid-gutter: 16px;
   --grid-margem: 16px;
   --grid-max: 1440px;
 }
 
+/* Grid · modo Desktop */
 @media (min-width: 900px) {
   :root {
+    --grid-colunas: 12;
     --grid-gutter: 24px;
     --grid-margem: 64px;
   }
 }
 
-/* ---------- Tema escuro ----------
-   PROVISÓRIO: o Figma ainda não define a versão escura. Estes valores usam
-   a paleta existente e devem ser substituídos pelos tokens oficiais. */
+/* Raios · modo Reto (tudo 0, exceto "total") */
+:root[data-raio="reto"] {
+  --raio-4: 0px;
+  --raio-8: 0px;
+  --raio-12: 0px;
+}
+
+/* ---------- Semânticos · modo Escuro (Figma) ---------- */
 :root[data-theme="dark"] {
+  color-scheme: dark;
+
   --fundo-pagina: var(--neutro-950);
   --fundo-superficie: var(--cafe-900);
   --fundo-rebaixado: var(--cafe-800);
   --fundo-suave: var(--laranja-900);
-  --fundo-inverso: #120b06;
+  --fundo-inverso: var(--neutro-0);
 
   --texto-primario: var(--neutro-0);
-  --texto-secundario: var(--neutro-100);
-  --texto-discreto: var(--neutro-300);
+  --texto-secundario: var(--neutro-300);
+  --texto-discreto: var(--neutro-400);
+  --texto-sobre-acento: var(--neutro-950);
 
   --borda-sutil: var(--cafe-800);
   --borda-forte: var(--cafe-500);
   --borda-campo: var(--cafe-500);
   --borda-campo-hover: var(--neutro-300);
 
-  --anel-foco: var(--laranja-400);
-  --secundaria: var(--laranja-400);
+  --acao-primaria: var(--laranja-500);
+  --acao-primaria-hover: var(--laranja-400);
+  --acao-primaria-pressionado: var(--laranja-600);
+  --acao-secundaria: var(--neutro-200);
+
+  --anel-foco: var(--laranja-500);
+  --secundaria: var(--laranja-500);
   --secundaria-fundo-suave: var(--laranja-900);
+
   --destaque-fundo-suave: var(--milho-900);
+  --texto-sobre-destaque: var(--neutro-950);
 
   --texto-sucesso: var(--sucesso-300);
+  --fundo-sucesso: var(--sucesso-900);
   --texto-aviso: var(--aviso-300);
+  --fundo-aviso: var(--aviso-900);
   --texto-erro: var(--erro-300);
+  --fundo-erro: var(--erro-900);
   --texto-info: var(--info-300);
+  --fundo-info: var(--info-900);
+
+  /* Escuro: #E96824 */
+  --sombra-sm: 0 2px 4px rgb(233 104 36 / 0.1);
+  --sombra-md: 0 6px 14px rgb(233 104 36 / 0.14);
+  --sombra-lg: 0 12px 28px rgb(233 104 36 / 0.18);
 }

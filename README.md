@@ -10,6 +10,9 @@ npm run build    # gera /dist
 ```
 
 ## Estrutura
+- `src/styles/ui.css` – componentes da Biblioteca UI (botão, campos, controles, avisos, badge, tag, avatar, indicador, abas)
+- `src/components/ui.tsx` – versões React desses componentes
+- Rota `/design-system` – página de referência para conferir cada componente com o Figma
 - `src/styles/tokens.css` – tokens do Design System (primitivos + semânticos, sombras, raios, espaçamento, grid)
 - `src/styles/base.css` – reset, escala tipográfica e layout
 - `src/styles/components.css` – estilos dos componentes
@@ -28,5 +31,6 @@ npm run build    # gera /dist
 ## Pendências conhecidas
 - Fotos de Carne Moída, Salsicha, Romeu & Julieta e bebidas são recortes dos prints (baixa resolução). Substitua por originais em `src/assets/img/` mantendo os nomes.
 - Preços da Home no Figma diferem do cardápio; o site usa os preços do cardápio.
-- Tema escuro: provisório, o Figma ainda não define.
+- Logotipo: só existe a versão escura; no tema escuro ele aparece sobre um fundo creme. Falta exportar uma versão clara.
+- Raios dos componentes e algumas folgas internas foram estimados dos prints; confira no Figma (Dev Mode).
 - Páginas de Privacidade e Termos: placeholders.

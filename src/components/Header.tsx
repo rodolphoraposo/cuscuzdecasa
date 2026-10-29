@@ -23,7 +23,7 @@ export function Header() {
         </nav>
 
         <div className="header__actions">
-          <Link to="/cardapio" className="btn btn--primary btn--sm header__cta">Peça agora!</Link>
+          <Link to="/cardapio" className="btn btn--primary btn--md header__cta">Peça agora!</Link>
           <button type="button" className="icon-btn" aria-pressed={tema === "light"} aria-label="Tema claro" onClick={() => definir("light")}>
             <Sun size={24} />
           </button>

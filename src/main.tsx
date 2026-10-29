@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import { CartProvider } from "./context/CartContext";
 import "./styles/base.css";
+import "./styles/ui.css";
 import "./styles/components.css";
 
 createRoot(document.getElementById("root")!).render(

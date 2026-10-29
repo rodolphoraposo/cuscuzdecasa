@@ -24,7 +24,7 @@ export function Footer() {
             <a href={`https://wa.me/${contato.whatsapp}`}>{contato.telefoneExibicao}</a>
           </p>
         </div>
-        <p className="footer__copy t-auxiliar">© {new Date().getFullYear()} Cuscuz de Casa · Maceió, AL</p>
+        <p className="footer__copy t-legenda">© {new Date().getFullYear()} Cuscuz de Casa · Maceió, AL</p>
       </div>
     </footer>
   );
