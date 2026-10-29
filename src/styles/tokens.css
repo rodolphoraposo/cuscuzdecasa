@@ -1,0 +1,174 @@
+/* ==========================================================================
+   TOKENS DO DESIGN SYSTEM — extraídos do Figma
+   Camada 1: primitivos  ·  Camada 2: semânticos (é o que os componentes usam)
+   ========================================================================== */
+
+:root {
+  /* ---------- Primitivos ---------- */
+  --neutro-0: #fff3dc;
+  --neutro-50: #ffffff;
+  --neutro-100: #f1e0bf;
+  --neutro-200: #bab6b1;
+  --neutro-300: #9e9b9b;
+  --neutro-400: #888684;
+  --neutro-500: #737271;
+  --neutro-600: #5d5d5e;
+  --neutro-700: #48494a;
+  --neutro-800: #323437;
+  --neutro-900: #432719;
+  --neutro-950: #1c110a;
+
+  --tomate-100: #f5d5cf;
+  --tomate-400: #c66462;
+  --tomate-600: #a71919;
+  --tomate-700: #861414;
+  --tomate-900: #641010;
+
+  --laranja-100: #fbddc6;
+  --laranja-400: #ee8447;
+  --laranja-500: #e96824;
+  --laranja-600: #c9531a;
+  --laranja-900: #4a2411;
+
+  --sucesso-100: #cddbcc;
+  --sucesso-300: #6edba0;
+  --sucesso-600: #19724d;
+  --sucesso-700: #14593b;
+  --sucesso-900: #0c2419;
+
+  --aviso-100: #e8d7be;
+  --aviso-300: #e8b65a;
+  --aviso-600: #83580f;
+  --aviso-700: #6b4510;
+  --aviso-900: #2a1f0a;
+
+  --erro-100: #edcec7;
+  --erro-300: #f08a8b;
+  --erro-600: #b93c3d;
+  --erro-700: #922e2f;
+  --erro-900: #2e1213;
+
+  --info-100: #d5d6d9;
+  --info-300: #7fa8e6;
+  --info-600: #446393;
+  --info-700: #35507a;
+  --info-900: #101f33;
+
+  --cafe-500: #8c7262;
+  --cafe-800: #3b281c;
+  --cafe-900: #2a1a10;
+
+  --milho-100: #fef1c9;
+  --milho-300: #fbd066;
+  --milho-500: #f9b916;
+  --milho-600: #d99a0b;
+  --milho-700: #a87408;
+  --milho-900: #3b2a06;
+
+  /* ---------- Semânticos (tema claro) ---------- */
+  --fundo-pagina: var(--neutro-0);
+  --fundo-superficie: var(--neutro-50);
+  --fundo-rebaixado: var(--neutro-100);
+  --fundo-suave: var(--laranja-100);
+  --fundo-inverso: var(--neutro-950);
+
+  --texto-primario: var(--neutro-900);
+  --texto-secundario: var(--neutro-700);
+  --texto-discreto: var(--neutro-500);
+  --texto-sobre-acento: var(--neutro-0);
+
+  --borda-sutil: var(--neutro-200);
+  --borda-forte: var(--neutro-300);
+  --borda-campo: var(--neutro-500);
+  --borda-campo-hover: var(--neutro-700);
+
+  --acao-primaria: var(--tomate-600);
+  --acao-primaria-hover: var(--tomate-700);
+  --acao-primaria-pressionado: var(--tomate-900);
+  --acao-secundaria: var(--neutro-700);
+
+  --anel-foco: var(--laranja-600);
+  --secundaria: var(--laranja-600);
+  --secundaria-fundo-suave: var(--laranja-100);
+
+  --destaque: var(--milho-500);
+  --destaque-fundo-suave: var(--milho-100);
+  --texto-sobre-destaque: var(--neutro-900);
+
+  --texto-sucesso: var(--sucesso-600);
+  --fundo-sucesso: var(--sucesso-100);
+  --texto-aviso: var(--aviso-600);
+  --fundo-aviso: var(--aviso-100);
+  --texto-erro: var(--erro-600);
+  --fundo-erro: var(--erro-100);
+  --texto-info: var(--info-600);
+  --fundo-info: var(--info-100);
+
+  /* Sombras (cor #070B10) */
+  --sombra-sm: 0 2px 4px rgb(7 11 16 / 0.1);
+  --sombra-md: 0 6px 14px rgb(7 11 16 / 0.18);
+  --sombra-lg: 0 12px 28px rgb(7 11 16 / 0.25);
+
+  /* ---------- Escalas ---------- */
+  --esp-4: 4px;
+  --esp-8: 8px;
+  --esp-12: 12px;
+  --esp-16: 16px;
+  --esp-24: 24px;
+  --esp-32: 32px;
+  --esp-48: 48px;
+  --esp-64: 64px;
+  --esp-96: 96px;
+
+  --raio-0: 0px;
+  --raio-4: 4px;
+  --raio-8: 8px;
+  --raio-12: 12px;
+  --raio-full: 9999px;
+
+  /* Tipografia */
+  --fonte-titulo: "Baloo 2", system-ui, sans-serif;
+  --fonte-texto: "Nunito Sans Variable", "Nunito Sans", system-ui, sans-serif;
+
+  /* Grid */
+  --grid-gutter: 16px;
+  --grid-margem: 16px;
+  --grid-max: 1440px;
+}
+
+@media (min-width: 900px) {
+  :root {
+    --grid-gutter: 24px;
+    --grid-margem: 64px;
+  }
+}
+
+/* ---------- Tema escuro ----------
+   PROVISÓRIO: o Figma ainda não define a versão escura. Estes valores usam
+   a paleta existente e devem ser substituídos pelos tokens oficiais. */
+:root[data-theme="dark"] {
+  --fundo-pagina: var(--neutro-950);
+  --fundo-superficie: var(--cafe-900);
+  --fundo-rebaixado: var(--cafe-800);
+  --fundo-suave: var(--laranja-900);
+  --fundo-inverso: #120b06;
+
+  --texto-primario: var(--neutro-0);
+  --texto-secundario: var(--neutro-100);
+  --texto-discreto: var(--neutro-300);
+
+  --borda-sutil: var(--cafe-800);
+  --borda-forte: var(--cafe-500);
+  --borda-campo: var(--cafe-500);
+  --borda-campo-hover: var(--neutro-300);
+
+  --anel-foco: var(--laranja-400);
+  --secundaria: var(--laranja-400);
+  --secundaria-fundo-suave: var(--laranja-900);
+  --destaque-fundo-suave: var(--milho-900);
+
+  --texto-sucesso: var(--sucesso-300);
+  --texto-aviso: var(--aviso-300);
+  --texto-erro: var(--erro-300);
+  --texto-info: var(--info-300);
+}
