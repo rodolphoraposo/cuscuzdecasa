@@ -5,7 +5,7 @@
 .header__brand img:first-child { width: 40px; height: 40px; }
 .header__brand img:last-child { height: 36px; width: auto; }
 .header__nav { display: none; gap: var(--esp-24); }
-.header__nav a { padding: var(--esp-8) 0; text-decoration: none; border-bottom: 2px solid transparent; }
+.header__nav a { border-radius: var(--raio-4); padding: var(--esp-8) 0; text-decoration: none; border-bottom: 2px solid transparent; }
 .header__nav a:hover { border-bottom-color: var(--borda-forte); }
 .header__nav a[aria-current="page"] { border-bottom-color: var(--acao-primaria); }
 .header__actions { display: flex; align-items: center; gap: var(--esp-4); }
@@ -58,10 +58,9 @@
 
 /* ---------- Card (grade): tamanho FIXO; a foto preenche o quadro de 180px ---------- */
 .cards { display: flex; gap: var(--esp-16); overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: var(--esp-8); margin-inline: calc(var(--grid-margem) * -1); padding-inline: var(--grid-margem); scroll-padding-inline: var(--grid-margem); }
-.cards > * { flex: 0 0 340px; scroll-snap-align: start; }
-@media (max-width: 380px) { .cards > * { flex-basis: calc(100% - 32px); } }
+.cards > * { flex: 0 0 320px; scroll-snap-align: start; }
 @media (min-width: 900px) {
-  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); overflow: visible; margin-inline: 0; padding-inline: 0; gap: var(--esp-24); }
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, 320px); justify-content: start; overflow: visible; margin-inline: 0; padding-inline: 0; gap: var(--esp-24); }
   .cards > * { flex: initial; }
 }
 .card { display: flex; flex-direction: column; height: 326px; background: var(--fundo-superficie); border: 1px solid var(--borda-sutil); border-radius: var(--raio-12); overflow: hidden; transition: box-shadow 0.15s, border-color 0.15s; }

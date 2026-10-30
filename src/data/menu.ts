@@ -1,14 +1,14 @@
-import carneMoida from "../assets/img/carne-moida.png";
-import salsicha from "../assets/img/salsicha-ao-molho.png";
-import calabresa from "../assets/img/calabresa.jpg";
-import frango from "../assets/img/frango-desfiado.jpg";
-import carneDeSol from "../assets/img/carne-de-sol.jpg";
-import romeu from "../assets/img/romeu-e-julieta.png";
-import cartola from "../assets/img/cartola.jpg";
-import coca from "../assets/img/coca-cola.png";
-import guarana from "../assets/img/guarana-antartica.png";
-import fanta from "../assets/img/fanta-laranja.png";
-import agua from "../assets/img/agua-mineral.png";
+import carneMoida from "../assets/img/carne-moida.webp";
+import salsicha from "../assets/img/salsicha-ao-molho.webp";
+import calabresa from "../assets/img/calabresa.webp";
+import frango from "../assets/img/frango-desfiado.webp";
+import carneDeSol from "../assets/img/carne-de-sol.webp";
+import romeu from "../assets/img/romeu-e-julieta.webp";
+import cartola from "../assets/img/cartola.webp";
+import coca from "../assets/img/coca-cola.webp";
+import guarana from "../assets/img/guarana-antartica.webp";
+import fanta from "../assets/img/fanta-laranja.webp";
+import agua from "../assets/img/agua-mineral.webp";
 
 export type CategoriaId = "salgados" | "doces" | "bebidas";
 
@@ -46,10 +46,10 @@ export const produtos: Produto[] = [
   { id: "romeu-e-julieta", categoria: "doces", nome: "Romeu & Julieta", descricao: `Goiabada com queijo coalho, ${acomp}`, preco: 12.99, imagem: romeu },
   { id: "cartola", categoria: "doces", nome: "Cartola", descricao: `Banana com queijo coalho, ${acomp}`, preco: 12.99, imagem: cartola },
 
-  { id: "coca-cola", categoria: "bebidas", nome: "Coca-Cola", descricao: "Refrigerante em lata - 350ml", preco: 5.99, imagem: coca, ajuste: "contain" },
-  { id: "guarana-antartica", categoria: "bebidas", nome: "Guaraná Antártica", descricao: "Refrigerante em lata - 350ml", preco: 5.99, imagem: guarana, ajuste: "contain" },
-  { id: "fanta-laranja", categoria: "bebidas", nome: "Fanta laranja", descricao: "Refrigerante em lata - 350ml", preco: 5.99, imagem: fanta, ajuste: "contain" },
-  { id: "agua-mineral", categoria: "bebidas", nome: "Água mineral sem gás", descricao: "Garrafa pet - 500ml", preco: 2.99, imagem: agua, ajuste: "contain" },
+  { id: "coca-cola", categoria: "bebidas", nome: "Coca-Cola", descricao: "Refrigerante em lata - 350ml", preco: 5.99, imagem: coca },
+  { id: "guarana-antartica", categoria: "bebidas", nome: "Guaraná Antártica", descricao: "Refrigerante em lata - 350ml", preco: 5.99, imagem: guarana },
+  { id: "fanta-laranja", categoria: "bebidas", nome: "Fanta laranja", descricao: "Refrigerante em lata - 350ml", preco: 5.99, imagem: fanta },
+  { id: "agua-mineral", categoria: "bebidas", nome: "Água mineral sem gás", descricao: "Garrafa pet - 500ml", preco: 2.99, imagem: agua },
 ];
 
 /** Produtos que aparecem na prévia da Home */

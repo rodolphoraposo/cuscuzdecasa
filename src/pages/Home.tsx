@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import hero from "../assets/img/hero-carne-de-sol-recheio.jpg";
-import logo from "../assets/img/logo-full.png";
+import hero from "../assets/img/hero-carne-de-sol-recheio.webp";
+import logo from "../assets/img/logo-full.webp";
 import { Tag } from "../components/ui";
 import { ProductRow } from "../components/ProductItem";
 import { condominios, contato, destaquesHome, produtos } from "../data/menu";

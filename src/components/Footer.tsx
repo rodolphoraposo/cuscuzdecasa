@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import logo from "../assets/img/logo-full.png";
+import logo from "../assets/img/logo-full.webp";
 import { contato } from "../data/menu";
 
 export function Footer() {
