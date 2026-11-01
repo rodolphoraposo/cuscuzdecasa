@@ -77,7 +77,7 @@ export default function Home() {
         </p>
         <ul className="chips">
           {condominios.map((c) => (
-            <li key={c}><Tag variante="erro">{c}</Tag></li>
+            <li key={c}><Tag variante="outline">{c}</Tag></li>
           ))}
         </ul>
         <p className="t-corpo">
