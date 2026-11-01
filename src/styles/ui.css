@@ -157,7 +157,7 @@
 /* ---------- Badge, etiqueta, avatar ---------- */
 .badge {
   display: inline-flex; align-items: center; gap: var(--esp-4); height: 24px; padding: 0 var(--esp-8);
-  border-radius: var(--raio-4); font: 400 12px / 1 var(--fonte-texto); text-transform: uppercase; letter-spacing: 0.1em;
+  border-radius: var(--raio-4); font: 600 12px / 1 var(--fonte-texto); text-transform: uppercase; letter-spacing: 0.1em;
   background: var(--fundo-rebaixado); color: var(--texto-primario);
 }
 .badge--ponto::before { content: ""; width: 6px; height: 6px; border-radius: var(--raio-total); background: currentColor; }
@@ -169,7 +169,7 @@
 
 .tag {
   display: inline-flex; align-items: center; gap: var(--esp-4); height: 24px; padding: 0 var(--esp-8);
-  border-radius: var(--raio-4); font: 400 12px / 1 var(--fonte-texto); text-transform: uppercase; letter-spacing: 0.1em;
+  border-radius: var(--raio-4); font: 600 12px / 1 var(--fonte-texto); text-transform: uppercase; letter-spacing: 0.1em;
   background: var(--fundo-rebaixado); color: var(--texto-primario); border: 1px solid transparent;
 }
 .tag--erro { background: var(--secundaria-fundo-suave); color: var(--acao-primaria); }
