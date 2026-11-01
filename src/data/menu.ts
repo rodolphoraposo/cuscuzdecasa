@@ -39,12 +39,12 @@ const acomp = "com acompanhamento à sua escolha";
 export const produtos: Produto[] = [
   { id: "carne-moida", categoria: "salgados", nome: "Carne Moída", descricao: `Carne Moída de 1°, ${acomp}`, preco: 11.99, imagem: carneMoida },
   { id: "salsicha-ao-molho", categoria: "salgados", nome: "Salsicha ao molho", descricao: `Salsicha ao molho de tomate, ${acomp}`, preco: 11.99, imagem: salsicha },
-  { id: "calabresa", categoria: "salgados", nome: "Calabresa", descricao: `Calabresa defumada acebolada, ${acomp}`, preco: 13.99, imagem: calabresa },
+  { id: "calabresa", categoria: "salgados", nome: "Calabresa", descricao: `Calabresa refogada, ${acomp}`, preco: 13.99, imagem: calabresa },
   { id: "frango-desfiado", categoria: "salgados", nome: "Frango desfiado", descricao: `Frango desfiado refogado, ${acomp}`, preco: 14.99, imagem: frango },
   { id: "carne-de-sol", categoria: "salgados", nome: "Carne de Sol", descricao: `Carne de sol refogada, ${acomp}`, preco: 14.99, imagem: carneDeSol },
 
   { id: "romeu-e-julieta", categoria: "doces", nome: "Romeu & Julieta", descricao: `Goiabada com queijo coalho, ${acomp}`, preco: 12.99, imagem: romeu },
-  { id: "cartola", categoria: "doces", nome: "Cartola", descricao: `Banana com queijo coalho, ${acomp}`, preco: 12.99, imagem: cartola },
+  { id: "cartola", categoria: "doces", nome: "Cartola", descricao: `Banana frita com queijo coalho, ${acomp}`, preco: 12.99, imagem: cartola },
 
   { id: "coca-cola", categoria: "bebidas", nome: "Coca-Cola", descricao: "Refrigerante em lata - 350ml", preco: 5.99, imagem: coca },
   { id: "guarana-antartica", categoria: "bebidas", nome: "Guaraná Antártica", descricao: "Refrigerante em lata - 350ml", preco: 5.99, imagem: guarana },
