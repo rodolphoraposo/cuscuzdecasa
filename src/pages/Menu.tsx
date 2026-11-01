@@ -1,4 +1,4 @@
-import { ArrowUUpLeft, ListDashes, SquaresFour } from "@phosphor-icons/react";
+import { CaretLeft, ListDashes, SquaresFour } from "@phosphor-icons/react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { CartBar } from "../components/CartBar";
 import { ProductCard, ProductRow } from "../components/ProductItem";
@@ -25,7 +25,7 @@ export default function Menu() {
       <div className="container">
         <div className="page-header">
           <button type="button" className="icon-btn icon-btn--destaque" aria-label="Voltar" onClick={() => navigate(-1)}>
-            <ArrowUUpLeft size={20} />
+            <CaretLeft size={20} />
           </button>
           <h1 className="t-subtitulo">Cardápio</h1>
         </div>

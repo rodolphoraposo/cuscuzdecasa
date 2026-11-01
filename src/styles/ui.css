@@ -53,7 +53,7 @@
 
 /* ---------- Campos (input / select / textarea): sm 32 · md 40 · lg 48 ---------- */
 .field { display: grid; gap: var(--esp-8); width: 100%; max-width: 320px; }
-.field__label { font: 500 14px / 1.4 var(--fonte-texto); color: var(--texto-primario); }
+.field__label { font: 600 14px / 1.4 var(--fonte-texto); color: var(--texto-primario); }
 .field__legenda { font: 400 12px / 1.5 var(--fonte-texto); color: var(--texto-discreto); }
 .field--erro .field__legenda { color: var(--texto-erro); }
 
@@ -188,7 +188,7 @@
 
 /* ---------- Indicador (stat) ---------- */
 .stat { display: grid; gap: var(--esp-8); width: 100%; max-width: 320px; padding: var(--esp-24); background: var(--fundo-superficie); border: 1px solid var(--borda-sutil); border-radius: var(--raio-12); }
-.stat__valor { font: 500 44px / 1.2 var(--fonte-titulo); }
+.stat__valor { font: 700 44px / 1.2 var(--fonte-titulo); }
 .stat--marca { background: var(--acao-primaria); border-color: var(--acao-primaria); color: var(--texto-sobre-acento); }
 
 /* ---------- Navegação ---------- */
