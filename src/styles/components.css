@@ -3,13 +3,19 @@
 .header__inner { display: flex; align-items: center; justify-content: space-between; gap: var(--esp-16); min-height: 64px; }
 .header__brand { display: flex; align-items: center; gap: var(--esp-8); text-decoration: none; }
 .header__brand img:first-child { width: 40px; height: 40px; }
+.header__brand img:last-child { display: none; }
+@media (min-width: 900px) {
+  .header__brand img:last-child { display: block; }
+}
+@media (max-width: 899px) {
+  .header__cta { height: 32px; padding: 0 var(--esp-12); margin-right: var(--esp-8); }
+}
 .header__brand img:last-child { height: 36px; width: auto; }
 .header__nav { display: none; gap: var(--esp-24); }
 .header__nav a { border-radius: var(--raio-4); padding: var(--esp-8) 0; text-decoration: none; border-bottom: 2px solid transparent; }
 .header__nav a:hover { border-bottom-color: var(--borda-forte); }
 .header__nav a[aria-current="page"] { border-bottom-color: var(--acao-primaria); }
 .header__actions { display: flex; align-items: center; gap: var(--esp-4); }
-.header__cta { display: none; }
 @media (min-width: 900px) {
   .header__inner { min-height: 72px; }
   .header__nav { display: flex; }
