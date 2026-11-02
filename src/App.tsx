@@ -5,7 +5,9 @@ import { ScrollManager } from "./components/ScrollManager";
 import DesignSystem from "./pages/DesignSystem";
 import Home from "./pages/Home";
 import Legal from "./pages/Legal";
+import Finalizar from "./pages/Finalizar";
 import Menu from "./pages/Menu";
+import Pedido from "./pages/Pedido";
 import ProductDetail from "./pages/ProductDetail";
 
 export default function App() {
@@ -22,6 +24,8 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/cardapio" element={<Menu />} />
           <Route path="/cardapio/:id" element={<ProductDetail />} />
+          <Route path="/pedido" element={<Pedido />} />
+          <Route path="/pedido/finalizar" element={<Finalizar />} />
           <Route path="/design-system" element={<DesignSystem />} />
           <Route path="/privacidade" element={<Legal titulo="Política de Privacidade" />} />
           <Route path="/termos" element={<Legal titulo="Termos de Uso" />} />

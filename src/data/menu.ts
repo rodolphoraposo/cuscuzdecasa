@@ -46,7 +46,7 @@ export const produtos: Produto[] = [
   { id: "romeu-e-julieta", categoria: "doces", nome: "Romeu & Julieta", descricao: `Goiabada com queijo coalho, ${acomp}`, preco: 12.99, imagem: romeu },
   { id: "cartola", categoria: "doces", nome: "Cartola", descricao: `Banana frita com queijo coalho, ${acomp}`, preco: 12.99, imagem: cartola },
 
-  { id: "coca-cola", categoria: "bebidas", nome: "Coca-Cola", descricao: "Refrigerante em lata - 350ml", preco: 5.99, imagem: coca },
+  { id: "coca-cola", categoria: "bebidas", nome: "Coca-Cola 350ml", descricao: "Refrigerante em lata - 350ml", preco: 5.99, imagem: coca },
   { id: "guarana-antartica", categoria: "bebidas", nome: "Guaraná Antártica", descricao: "Refrigerante em lata - 350ml", preco: 5.99, imagem: guarana },
   { id: "fanta-laranja", categoria: "bebidas", nome: "Fanta laranja", descricao: "Refrigerante em lata - 350ml", preco: 5.99, imagem: fanta },
   { id: "agua-mineral", categoria: "bebidas", nome: "Água mineral sem gás", descricao: "Garrafa pet - 500ml", preco: 2.99, imagem: agua },
@@ -75,6 +75,9 @@ export const contato = {
   horarioPedidos: "16h",
   horarioEntrega: "17h às 22h",
 };
+
+/** Entrega sem taxa (Figma: R$ 0,00). */
+export const taxaEntrega = 0;
 
 export const formatarPreco = (valor: number) =>
   valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });

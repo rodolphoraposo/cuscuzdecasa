@@ -1,0 +1,103 @@
+import { describe, expect, it } from "vitest";
+import { codigoPedido, formatarTelefone, limpar, linkWhatsApp, montarComanda, type DadosPedido, type ItemComanda } from "./comanda";
+
+// 03/11/2026 18:45 em Maceió (UTC-3)
+const agora = new Date("2026-11-03T21:45:00Z");
+
+const pedido: DadosPedido = {
+  nome: "Rodolpho",
+  telefone: "82994336126",
+  cep: "57046000",
+  rua: "Rua Exemplo",
+  numero: "123",
+  complemento: "Bloco A, apto 101",
+  bairro: "Serraria",
+  cidade: "Maceió",
+  uf: "AL",
+  referencia: "Portaria 2",
+  pagamento: "dinheiro",
+  trocoPara: 50,
+  observacoes: "Sem cebola",
+};
+
+const itens: ItemComanda[] = [
+  { nome: "Carne de Sol", quantidade: 1, extras: ["Queijo coalho"], subtotal: 16.99 },
+  { nome: "Coca-Cola", quantidade: 1, extras: [], subtotal: 5.99 },
+];
+const totais = { subtotal: 22.98, entrega: 0, total: 22.98 };
+
+describe("montarComanda", () => {
+  it("segue o modelo da comanda (dinheiro com troco)", () => {
+    expect(montarComanda(pedido, itens, totais, agora).texto).toBe(
+      [
+        "*COMANDA · CUSCUZ DE CASA*",
+        "Pedido CC-0311-1845 · 03/11/2026 18:45",
+        "",
+        "*CLIENTE*",
+        "Rodolpho",
+        "Tel: (82) 99433-6126",
+        "",
+        "*ENTREGA*",
+        "Rua Exemplo, 123 - Serraria",
+        "Maceió/AL · CEP 57046-000",
+        "Compl.: Bloco A, apto 101",
+        "Ref.: Portaria 2",
+        "",
+        "*ITENS*",
+        "1x Carne de Sol .. R$ 16,99",
+        "   + Queijo coalho",
+        "1x Coca-Cola ..... R$ 5,99",
+        "",
+        "*Subtotal:* R$ 22,98",
+        "*Entrega:* R$ 0,00",
+        "*TOTAL:* R$ 22,98",
+        "",
+        "*PAGAMENTO:* Dinheiro",
+        "Troco para: R$ 50,00 (levar R$ 27,02)",
+        "",
+        "*OBS:* Sem cebola",
+      ].join("\n"),
+    );
+  });
+
+  it("Pix: sem linha de troco; referência e observações vazias são omitidas", () => {
+    const { texto } = montarComanda({ ...pedido, pagamento: "pix", referencia: " ", observacoes: "" }, itens, totais, agora);
+    expect(texto).toContain("*PAGAMENTO:* Pix");
+    expect(texto).not.toContain("Troco");
+    expect(texto).not.toContain("Ref.:");
+    expect(texto).not.toContain("*OBS:*");
+  });
+
+  it("dinheiro sem troco", () => {
+    expect(montarComanda({ ...pedido, trocoPara: null }, itens, totais, agora).texto).toContain("Troco: não precisa");
+  });
+
+  it("recusa troco menor que o total e pedido vazio", () => {
+    expect(() => montarComanda({ ...pedido, trocoPara: 20 }, itens, totais, agora)).toThrow(RangeError);
+    expect(() => montarComanda(pedido, [], totais, agora)).toThrow(RangeError);
+  });
+
+  it("neutraliza formatação e caracteres de controle digitados pelo cliente", () => {
+    const { texto } = montarComanda({ ...pedido, nome: "*Ana*\n_Maria_\u202e", observacoes: "~sem~ `cebola`" }, itens, totais, agora);
+    expect(texto).toContain("*CLIENTE*\nAna Maria\n");
+    expect(texto).toContain("*OBS:* sem cebola");
+  });
+});
+
+describe("auxiliares", () => {
+  it("código do pedido usa o horário de Maceió", () => {
+    expect(codigoPedido(new Date("2026-11-03T21:45:00Z"))).toBe("CC-0311-1845");
+    expect(codigoPedido(new Date("2026-11-04T02:05:00Z"))).toBe("CC-0311-2305");
+    expect(codigoPedido(new Date("2026-11-04T03:00:00Z"))).toBe("CC-0411-0000");
+  });
+  it("telefone com 10 e 11 dígitos", () => {
+    expect(formatarTelefone("(82) 3433-6126")).toBe("(82) 3433-6126");
+    expect(formatarTelefone("82 9 9433 6126")).toBe("(82) 99433-6126");
+  });
+  it("limpar corta no limite", () => {
+    expect(limpar("a".repeat(500), 300)).toHaveLength(300);
+  });
+  it("link do WhatsApp codifica o texto", () => {
+    expect(linkWhatsApp("+55 82 99433-6126", "a b\n*c*")).toBe("https://wa.me/5582994336126?text=a%20b%0A*c*");
+  });
+});

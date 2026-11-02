@@ -1,4 +1,4 @@
-import { CaretLeft, Minus, Plus, ShoppingBag } from "@phosphor-icons/react";
+import { CaretLeft, Minus, Plus, Handbag } from "@phosphor-icons/react";
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Button, ButtonLink, Checkbox, EmptyState } from "../components/ui";
@@ -91,7 +91,7 @@ function Detalhe({ produto }: { produto: Produto }) {
             </button>
           </div>
           <Button tamanho="lg" className="detail-bar__btn" onClick={confirmar}>
-            <ShoppingBag className="icon" aria-hidden="true" />
+            <Handbag className="icon" aria-hidden="true" />
             Adicionar · {formatarPreco(total)}
           </Button>
         </div>

@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { aceitaAdicionais, adicionais, contato, formatarPreco, produtos, type Produto } from "../data/menu";
+import { aceitaAdicionais, adicionais, produtos, type Produto } from "../data/menu";
 
 export const MAX_QTD = 99;
 const STORAGE_KEY = "cuscuz-pedido-v2";
@@ -23,7 +23,6 @@ interface CartValue {
   adicionar: (id: string, extras?: string[], qtd?: number) => void;
   alterar: (chave: string, delta: number) => void;
   limpar: () => void;
-  linkWhatsApp: () => string;
 }
 
 export const chaveDe = (id: string, extras: string[]) => `${id}|${extras.join(",")}`;
@@ -104,14 +103,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
           }),
         ),
       limpar: () => setSalvos([]),
-      linkWhatsApp: () => {
-        const texto = linhas.map((l) => {
-          const nomes = l.extras.map((e) => adicionais.find((a) => a.id === e)?.nome).join(", ");
-          return `${l.quantidade}x ${l.produto.nome}${nomes ? ` (+ ${nomes})` : ""} - ${formatarPreco(l.subtotal)}`;
-        });
-        const msg = `Olá! Quero fazer um pedido:\n${texto.join("\n")}\n\nTotal: ${formatarPreco(totalPreco)}`;
-        return `https://wa.me/${contato.whatsapp}?text=${encodeURIComponent(msg)}`;
-      },
     };
   }, [salvos]);
 
