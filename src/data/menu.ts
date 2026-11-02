@@ -37,11 +37,11 @@ export const categorias: Categoria[] = [
 const acomp = "com acompanhamento à sua escolha";
 
 export const produtos: Produto[] = [
-  { id: "carne-moida", categoria: "salgados", nome: "Carne Moída", descricao: `Carne Moída de 1°, ${acomp}`, preco: 11.99, imagem: carneMoida },
+  { id: "carne-moida", categoria: "salgados", nome: "Carne moída", descricao: `Carne Moída de 1°, ${acomp}`, preco: 11.99, imagem: carneMoida },
   { id: "salsicha-ao-molho", categoria: "salgados", nome: "Salsicha ao molho", descricao: `Salsicha ao molho de tomate, ${acomp}`, preco: 11.99, imagem: salsicha },
   { id: "calabresa", categoria: "salgados", nome: "Calabresa", descricao: `Calabresa refogada, ${acomp}`, preco: 13.99, imagem: calabresa },
   { id: "frango-desfiado", categoria: "salgados", nome: "Frango desfiado", descricao: `Frango desfiado refogado, ${acomp}`, preco: 14.99, imagem: frango },
-  { id: "carne-de-sol", categoria: "salgados", nome: "Carne de Sol", descricao: `Carne de sol refogada, ${acomp}`, preco: 14.99, imagem: carneDeSol },
+  { id: "carne-de-sol", categoria: "salgados", nome: "Carne de sol", descricao: `Carne de sol refogada, ${acomp}`, preco: 14.99, imagem: carneDeSol },
 
   { id: "romeu-e-julieta", categoria: "doces", nome: "Romeu & Julieta", descricao: `Goiabada com queijo coalho, ${acomp}`, preco: 12.99, imagem: romeu },
   { id: "cartola", categoria: "doces", nome: "Cartola", descricao: `Banana frita com queijo coalho, ${acomp}`, preco: 12.99, imagem: cartola },
@@ -85,13 +85,13 @@ export interface Adicional {
   preco: number;
 }
 
-/**
- * Adicionais do Detalhe do item (+ R$ 2,00 cada, conforme o Figma).
- * CONFIRMAR: só "Queijo coalho" foi confirmado pelo carrinho de exemplo (R$ 14,99 + R$ 2,00 = R$ 16,99).
- * O Figma tem 5 opções: inclua as outras 4 aqui, uma linha cada.
- */
+/** Adicionais do Detalhe do item: + R$ 2,00 cada (conforme o Figma). */
 export const adicionais: Adicional[] = [
   { id: "queijo-coalho", nome: "Queijo coalho", preco: 2 },
+  { id: "mussarela", nome: "Mussarela", preco: 2 },
+  { id: "ovo-mexido", nome: "Ovo mexido", preco: 2 },
+  { id: "requeijao", nome: "Requeijão", preco: 2 },
+  { id: "ovo-cozido", nome: "Ovo cozido", preco: 2 },
 ];
 
 /** Categorias que aceitam adicionais (suposição: só os salgados). */

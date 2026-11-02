@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import { Footer } from "./components/Footer";
 import { Header } from "./components/Header";
 import { ScrollManager } from "./components/ScrollManager";
@@ -9,10 +9,14 @@ import Menu from "./pages/Menu";
 import ProductDetail from "./pages/ProductDetail";
 
 export default function App() {
+  const { pathname } = useLocation();
+  /** Detalhe, carrinho e finalização são telas focadas, sem o menu do site. */
+  const fluxoDePedido = pathname.startsWith("/cardapio/") || pathname.startsWith("/pedido");
+
   return (
     <>
       <ScrollManager />
-      <Header />
+      {!fluxoDePedido && <Header />}
       <main>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -24,7 +28,7 @@ export default function App() {
           <Route path="*" element={<Legal titulo="Página não encontrada" />} />
         </Routes>
       </main>
-      <Footer />
+      {!fluxoDePedido && <Footer />}
     </>
   );
 }

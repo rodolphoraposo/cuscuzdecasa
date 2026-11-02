@@ -1,4 +1,4 @@
-import { CaretLeft, Minus, Plus } from "@phosphor-icons/react";
+import { CaretLeft, Minus, Plus, ShoppingBag } from "@phosphor-icons/react";
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Button, ButtonLink, Checkbox, EmptyState } from "../components/ui";
@@ -47,58 +47,52 @@ function Detalhe({ produto }: { produto: Produto }) {
 
   return (
     <>
+      <div className={`detail-hero${produto.ajuste === "contain" ? " detail-hero--contain" : ""}`}>
+        <Link className="icon-btn icon-btn--destaque detail-hero__voltar" to={voltar} aria-label="Voltar ao cardápio">
+          <CaretLeft size={20} />
+        </Link>
+        <img src={produto.imagem} alt={produto.nome} />
+      </div>
+
       <div className="container">
-        <div className="page-header">
-          <Link className="icon-btn icon-btn--destaque" to={voltar} aria-label="Voltar ao cardápio">
-            <CaretLeft size={20} />
-          </Link>
-        </div>
-
         <div className="detail">
-          <div className={`detail__foto${produto.ajuste === "contain" ? " detail__foto--contain" : ""}`}>
-            <img src={produto.imagem} alt={produto.nome} />
-          </div>
-
           <div className="detail__topo">
-            <h1 className="t-pagina">{produto.nome}</h1>
+            <h1 className="t-secao">{produto.nome}</h1>
             <p className="preco">{formatarPreco(produto.preco)}</p>
-            <p className="t-corpo detail__desc">{produto.descricao}</p>
+            <p className="detail__desc">{produto.descricao}</p>
           </div>
 
           {opcoes.length > 0 && (
             <fieldset className="detail__adicionais">
               <legend className="t-subtitulo">Adicionais</legend>
-              {opcoes.map((a) => (
-                <Checkbox
-                  key={a.id}
-                  rotulo={`${a.nome} · + ${formatarPreco(a.preco)}`}
-                  checked={extras.includes(a.id)}
-                  onChange={() => alternar(a.id)}
-                />
-              ))}
+              {opcoes.map((a) => {
+                const campo = `extra-${a.id}`;
+                return (
+                  <div className="adicional" key={a.id}>
+                    <Checkbox id={campo} rotulo={a.nome} checked={extras.includes(a.id)} onChange={() => alternar(a.id)} />
+                    <label htmlFor={campo}>+ {formatarPreco(a.preco)}</label>
+                  </div>
+                );
+              })}
             </fieldset>
           )}
-
-          <div className="detail__qtd">
-            <span className="t-rotulo" id="rotulo-qtd">Quantidade</span>
-            <div className="stepper" role="group" aria-labelledby="rotulo-qtd">
-              <button type="button" disabled={qtd <= 1} onClick={() => setQtd((q) => q - 1)} aria-label="Diminuir quantidade">
-                <Minus size={16} />
-              </button>
-              <output aria-live="polite">{qtd}</output>
-              <button type="button" disabled={qtd >= MAX_QTD} onClick={() => setQtd((q) => q + 1)} aria-label="Aumentar quantidade">
-                <Plus size={16} />
-              </button>
-            </div>
-          </div>
         </div>
       </div>
 
-      <div className="cartbar">
-        <div className="container">
-          <Button tamanho="lg" bloco onClick={confirmar}>
-            <Plus className="icon" aria-hidden="true" />
-            Adicionar ao pedido · {formatarPreco(total)}
+      <div className="detail-bar">
+        <div className="container detail-bar__inner">
+          <div className="stepper" role="group" aria-label="Quantidade">
+            <button type="button" disabled={qtd <= 1} onClick={() => setQtd((q) => q - 1)} aria-label="Diminuir quantidade">
+              <Minus size={16} />
+            </button>
+            <output aria-live="polite">{qtd}</output>
+            <button type="button" disabled={qtd >= MAX_QTD} onClick={() => setQtd((q) => q + 1)} aria-label="Aumentar quantidade">
+              <Plus size={16} />
+            </button>
+          </div>
+          <Button tamanho="lg" className="detail-bar__btn" onClick={confirmar}>
+            <ShoppingBag className="icon" aria-hidden="true" />
+            Adicionar · {formatarPreco(total)}
           </Button>
         </div>
       </div>
