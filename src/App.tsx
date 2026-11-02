@@ -4,10 +4,12 @@ import { Header } from "./components/Header";
 import { ScrollManager } from "./components/ScrollManager";
 import DesignSystem from "./pages/DesignSystem";
 import Home from "./pages/Home";
-import Legal from "./pages/Legal";
 import Finalizar from "./pages/Finalizar";
 import Menu from "./pages/Menu";
+import NotFound from "./pages/NotFound";
 import Pedido from "./pages/Pedido";
+import Privacidade from "./pages/Privacidade";
+import Termos from "./pages/Termos";
 import ProductDetail from "./pages/ProductDetail";
 
 export default function App() {
@@ -17,9 +19,10 @@ export default function App() {
 
   return (
     <>
+      <a className="skip-link" href="#conteudo">Pular para o conteúdo</a>
       <ScrollManager />
       {!fluxoDePedido && <Header />}
-      <main>
+      <main id="conteudo" tabIndex={-1}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/cardapio" element={<Menu />} />
@@ -27,9 +30,9 @@ export default function App() {
           <Route path="/pedido" element={<Pedido />} />
           <Route path="/pedido/finalizar" element={<Finalizar />} />
           <Route path="/design-system" element={<DesignSystem />} />
-          <Route path="/privacidade" element={<Legal titulo="Política de Privacidade" />} />
-          <Route path="/termos" element={<Legal titulo="Termos de Uso" />} />
-          <Route path="*" element={<Legal titulo="Página não encontrada" />} />
+          <Route path="/privacidade" element={<Privacidade />} />
+          <Route path="/termos" element={<Termos />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
       {!fluxoDePedido && <Footer />}

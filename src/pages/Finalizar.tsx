@@ -1,6 +1,6 @@
 import { Check } from "@phosphor-icons/react";
 import { useMemo, useRef, useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { Banner, Button, ButtonLink } from "../components/ui";
 import { useCart } from "../context/CartContext";
 import { adicionais, contato, formatarPreco, taxaEntrega } from "../data/menu";
@@ -88,6 +88,12 @@ export default function Finalizar() {
             Abrimos o WhatsApp com a sua comanda. Confirme o envio por lá. Se não abriu, toque em enviar de novo.
           </Banner>
         )}
+
+        <p className="final__aviso">
+          Ao enviar, você concorda com os{" "}
+          <Link to="/termos" target="_blank" rel="noopener noreferrer">Termos de Uso</Link> e a{" "}
+          <Link to="/privacidade" target="_blank" rel="noopener noreferrer">Política de Privacidade</Link>.
+        </p>
 
         <div className="final__acoes">
           <a

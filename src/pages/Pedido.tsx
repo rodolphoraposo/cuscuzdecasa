@@ -163,6 +163,10 @@ export default function Pedido() {
 
             <fieldset className="pedido__secao">
               <legend className="t-subtitulo">Seus dados</legend>
+              <p className="aviso-privacidade">
+                Usamos seus dados só para entregar o pedido.{" "}
+                <Link to="/privacidade" target="_blank" rel="noopener noreferrer">Política de Privacidade</Link>
+              </p>
               <Input rotulo="Nome*" placeholder="Digite aqui" autoComplete="name" required maxLength={80} {...campo("nome")} />
               <Input rotulo="Telefone / WhatsApp*" placeholder="(82) 99999-9999" type="tel" inputMode="tel" autoComplete="tel-national" required {...campo("telefone", mascararTelefone)} />
             </fieldset>

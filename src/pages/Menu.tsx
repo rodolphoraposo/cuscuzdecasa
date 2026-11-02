@@ -17,14 +17,14 @@ export default function Menu() {
   const atualizar = (chave: string, valor: string) => {
     const next = new URLSearchParams(params);
     next.set(chave, valor);
-    setParams(next, { replace: true });
+    setParams(next);
   };
 
   return (
     <>
       <div className="container">
         <div className="page-header">
-          <button type="button" className="icon-btn icon-btn--destaque" aria-label="Voltar" onClick={() => navigate(-1)}>
+          <button type="button" className="icon-btn icon-btn--destaque" aria-label="Voltar" onClick={() => navigate("/")}>
             <CaretLeft size={20} />
           </button>
           <h1 className="t-subtitulo">Cardápio</h1>

@@ -1,10 +1,17 @@
-export default function Legal({ titulo }: { titulo: string }) {
+import type { ReactNode } from "react";
+import { empresa } from "../data/empresa";
+import { usePageTitle } from "../hooks/usePageTitle";
+
+/** Estrutura comum das páginas legais (Termos e Privacidade). */
+export function Legal({ titulo, children }: { titulo: string; children: ReactNode }) {
+  usePageTitle(titulo);
   return (
-    <section className="section container" style={{ minHeight: "50vh" }}>
-      <h1 className="t-pagina">{titulo}</h1>
-      <p className="t-corpo" style={{ marginTop: "var(--esp-16)", color: "var(--texto-secundario)" }}>
-        Conteúdo em preparação.
-      </p>
+    <section className="section container">
+      <article className="legal">
+        <h1 className="t-pagina">{titulo}</h1>
+        <p className="legal__data">Última atualização: {empresa.atualizadoEm}</p>
+        {children}
+      </article>
     </section>
   );
 }
