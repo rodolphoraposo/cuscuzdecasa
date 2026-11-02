@@ -8,7 +8,7 @@ export function CartBar() {
   return (
     <div className="cartbar">
       <div className="container">
-        <a className="btn btn--primary btn--lg btn--block" href={linkWhatsApp()} target="_blank" rel="noreferrer">
+        <a className="btn btn--primary btn--lg btn--block" href={linkWhatsApp()} target="_blank" rel="noopener noreferrer">
           Ver pedido · {totalItens} {totalItens === 1 ? "item" : "itens"} · {formatarPreco(totalPreco)}
         </a>
       </div>

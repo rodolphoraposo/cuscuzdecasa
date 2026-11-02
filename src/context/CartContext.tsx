@@ -1,62 +1,119 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { contato, formatarPreco, produtos } from "../data/menu";
+import { aceitaAdicionais, adicionais, contato, formatarPreco, produtos, type Produto } from "../data/menu";
 
-type Quantidades = Record<string, number>;
+export const MAX_QTD = 99;
+const STORAGE_KEY = "cuscuz-pedido-v2";
+
+interface Salvo { id: string; qtd: number; extras: string[] }
+
+export interface LinhaPedido {
+  chave: string;
+  produto: Produto;
+  quantidade: number;
+  extras: string[];
+  precoUnitario: number;
+  subtotal: number;
+}
 
 interface CartValue {
-  quantidades: Quantidades;
+  linhas: LinhaPedido[];
   totalItens: number;
   totalPreco: number;
-  adicionar: (id: string) => void;
-  remover: (id: string) => void;
+  quantidadeSimples: (id: string) => number;
+  adicionar: (id: string, extras?: string[], qtd?: number) => void;
+  alterar: (chave: string, delta: number) => void;
+  limpar: () => void;
   linkWhatsApp: () => string;
 }
 
-const CartContext = createContext<CartValue | null>(null);
-const STORAGE_KEY = "cuscuz-pedido";
+export const chaveDe = (id: string, extras: string[]) => `${id}|${extras.join(",")}`;
 
-function carregar(): Quantidades {
+/** Mantém só adicionais que existem no catálogo e que o produto aceita, sem repetição e em ordem fixa. */
+function normalizar(produto: Produto, extras: unknown[]): string[] {
+  if (!aceitaAdicionais(produto)) return [];
+  return adicionais.filter((a) => extras.includes(a.id)).map((a) => a.id);
+}
+
+/** O localStorage é entrada não confiável: valida formato, ids e quantidades. */
+function carregar(): Salvo[] {
   try {
-    const bruto = localStorage.getItem(STORAGE_KEY);
-    return bruto ? (JSON.parse(bruto) as Quantidades) : {};
+    const bruto: unknown = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "[]");
+    if (!Array.isArray(bruto)) return [];
+    const vistos = new Set<string>();
+    return bruto.flatMap((item): Salvo[] => {
+      if (typeof item !== "object" || item === null) return [];
+      const { id, qtd, extras } = item as Record<string, unknown>;
+      const produto = produtos.find((p) => p.id === id);
+      if (!produto || typeof qtd !== "number" || !Number.isInteger(qtd) || qtd < 1) return [];
+      const lista = normalizar(produto, Array.isArray(extras) ? extras : []);
+      const chave = chaveDe(produto.id, lista);
+      if (vistos.has(chave)) return [];
+      vistos.add(chave);
+      return [{ id: produto.id, qtd: Math.min(qtd, MAX_QTD), extras: lista }];
+    });
   } catch {
-    return {};
+    return [];
   }
 }
 
+const CartContext = createContext<CartValue | null>(null);
+
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [quantidades, setQuantidades] = useState<Quantidades>(carregar);
+  const [salvos, setSalvos] = useState<Salvo[]>(carregar);
 
   useEffect(() => {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(quantidades));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(salvos));
     } catch {
       /* armazenamento indisponível: segue só em memória */
     }
-  }, [quantidades]);
+  }, [salvos]);
 
   const value = useMemo<CartValue>(() => {
-    const itens = produtos.filter((p) => (quantidades[p.id] ?? 0) > 0);
-    const totalItens = itens.reduce((s, p) => s + quantidades[p.id], 0);
-    const totalPreco = itens.reduce((s, p) => s + quantidades[p.id] * p.preco, 0);
+    const linhas = salvos.flatMap((s): LinhaPedido[] => {
+      const produto = produtos.find((p) => p.id === s.id);
+      if (!produto) return [];
+      const centavos = Math.round(produto.preco * 100) + s.extras.reduce((t, e) => t + Math.round((adicionais.find((a) => a.id === e)?.preco ?? 0) * 100), 0);
+      return [{ chave: chaveDe(s.id, s.extras), produto, quantidade: s.qtd, extras: s.extras, precoUnitario: centavos / 100, subtotal: (centavos * s.qtd) / 100 }];
+    });
+    const totalItens = linhas.reduce((t, l) => t + l.quantidade, 0);
+    const totalPreco = linhas.reduce((t, l) => t + Math.round(l.subtotal * 100), 0) / 100;
 
     return {
-      quantidades,
+      linhas,
       totalItens,
       totalPreco,
-      adicionar: (id) => setQuantidades((q) => ({ ...q, [id]: (q[id] ?? 0) + 1 })),
-      remover: (id) =>
-        setQuantidades((q) => {
-          const { [id]: atual = 0, ...resto } = q;
-          return atual > 1 ? { ...resto, [id]: atual - 1 } : resto;
-        }),
+      quantidadeSimples: (id) => salvos.find((s) => s.id === id && s.extras.length === 0)?.qtd ?? 0,
+      adicionar: (id, extras = [], qtd = 1) => {
+        const produto = produtos.find((p) => p.id === id);
+        if (!produto) return;
+        const lista = normalizar(produto, extras);
+        const chave = chaveDe(id, lista);
+        setSalvos((atual) =>
+          atual.some((s) => chaveDe(s.id, s.extras) === chave)
+            ? atual.map((s) => (chaveDe(s.id, s.extras) === chave ? { ...s, qtd: Math.min(s.qtd + qtd, MAX_QTD) } : s))
+            : [...atual, { id, qtd: Math.min(Math.max(qtd, 1), MAX_QTD), extras: lista }],
+        );
+      },
+      alterar: (chave, delta) =>
+        setSalvos((atual) =>
+          atual.flatMap((s) => {
+            if (chaveDe(s.id, s.extras) !== chave) return [s];
+            const qtd = Math.min(s.qtd + delta, MAX_QTD);
+            return qtd < 1 ? [] : [{ ...s, qtd }];
+          }),
+        ),
+      limpar: () => setSalvos([]),
       linkWhatsApp: () => {
-        const linhas = itens.map((p) => `${quantidades[p.id]}x ${p.nome} - ${formatarPreco(p.preco * quantidades[p.id])}`);
-        const texto = `Olá! Quero fazer um pedido:\n${linhas.join("\n")}\n\nTotal: ${formatarPreco(totalPreco)}`;
-        return `https://wa.me/${contato.whatsapp}?text=${encodeURIComponent(texto)}`;
+        const texto = linhas.map((l) => {
+          const nomes = l.extras.map((e) => adicionais.find((a) => a.id === e)?.nome).join(", ");
+          return `${l.quantidade}x ${l.produto.nome}${nomes ? ` (+ ${nomes})` : ""} - ${formatarPreco(l.subtotal)}`;
+        });
+        const msg = `Olá! Quero fazer um pedido:\n${texto.join("\n")}\n\nTotal: ${formatarPreco(totalPreco)}`;
+        return `https://wa.me/${contato.whatsapp}?text=${encodeURIComponent(msg)}`;
       },
     };
-  }, [quantidades]);
+  }, [salvos]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }

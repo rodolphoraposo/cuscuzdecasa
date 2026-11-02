@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
-import logo from "../assets/img/logo-full.webp";
 import { contato } from "../data/menu";
+import logoCreme from "../assets/logo/logo-creme.webp";
+import logoMarrom from "../assets/logo/logo-marrom.webp";
 
 export function Footer() {
   return (
@@ -8,7 +9,8 @@ export function Footer() {
       <div className="container">
         <div className="footer__grid">
           <div style={{ display: "grid", gap: "var(--esp-16)", justifyItems: "start" }}>
-            <img className="footer__logo" src={logo} alt="Cuscuz de Casa" />
+            <img className="footer__logo footer__logo--creme" src={logoCreme} alt="Cuscuz de Casa" />
+            <img className="footer__logo footer__logo--marrom" src={logoMarrom} alt="Cuscuz de Casa" />
             <p className="footer__slogan">Cuscuz é sempre uma boa ideia!</p>
           </div>
 

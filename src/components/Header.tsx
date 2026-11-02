@@ -1,7 +1,7 @@
 import { Moon, Sun } from "@phosphor-icons/react";
 import { Link, NavLink } from "react-router-dom";
-import icone from "../assets/img/logo-icon.webp";
-import wordmark from "../assets/img/wordmark.webp";
+import icone from "../assets/logo/logo-icon.webp";
+import wordmark from "../assets/logo/wordmark.webp";
 import { useTheme } from "../context/useTheme";
 
 export function Header() {

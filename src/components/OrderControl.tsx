@@ -1,10 +1,10 @@
 import { Minus, Plus } from "@phosphor-icons/react";
-import { useCart } from "../context/CartContext";
+import { chaveDe, useCart } from "../context/CartContext";
 
 /** Botão "Pedir" que vira um seletor de quantidade depois do primeiro clique. */
 export function OrderControl({ id, nome }: { id: string; nome: string }) {
-  const { quantidades, adicionar, remover } = useCart();
-  const qtd = quantidades[id] ?? 0;
+  const { quantidadeSimples, adicionar, alterar } = useCart();
+  const qtd = quantidadeSimples(id);
 
   if (qtd === 0) {
     return (
@@ -16,7 +16,7 @@ export function OrderControl({ id, nome }: { id: string; nome: string }) {
 
   return (
     <div className="stepper" role="group" aria-label={`Quantidade de ${nome}`}>
-      <button type="button" onClick={() => remover(id)} aria-label={`Remover um ${nome}`}>
+      <button type="button" onClick={() => alterar(chaveDe(id, []), -1)} aria-label={`Remover um ${nome}`}>
         <Minus size={16} />
       </button>
       <output aria-live="polite">{qtd}</output>

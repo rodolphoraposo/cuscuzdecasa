@@ -1,0 +1,42 @@
+CUSCUZ DE CASA · PACOTE DE LOGOS (vetorizado) · v1 · 30/10/2026 · Gerado a partir da logo aprovada (cuscuzdecasa_logo.png)
+
+
+MODELOS (cada um em 3 versões: colorida, monocromática marrom-café #432719, monocromática creme #FFF3DC)
+
+	logo-completa ... símbolo + nome + slogan
+	logo-sem-slogan . símbolo + nome
+	logo-horizontal . símbolo à esquerda; nome e slogan à direita
+	icone ........... só o símbolo (casa + cuscuz + 3 vapores)
+	nome ............ só o nome (lettering com os traços de acento)
+
+PASTAS
+
+	colorida/  monocromatica-marrom/  monocromatica-creme/   -> SVG
+	png/<mesma estrutura>/                                   -> PNG com fundo transparente
+	extras/selo-circular_colorida.svg/.png                   -> variação FORA do manual
+	preview_todas_as_versoes.png                              -> folha de conferência
+
+
+CORRESPONDÊNCIA COM O INVENTÁRIO DO MANUAL (pág. 18)
+
+	01_logo_principal ......... logo-completa_colorida
+	02_simbolo_isolado ........ icone_colorida
+	03_logo_horizontal ........ logo-horizontal_colorida
+	04_logo_compacta .......... logo-sem-slogan_colorida
+	05_logo_monocromatica ..... logo-completa_mono-marrom
+	06_logo_principal_transparente.png ... png/colorida/logo-completa_colorida.png
+
+
+CORES: ARTE APROVADA x MANUAL (medidas na arte)
+	marrom   #4C1B06 x #432719
+	vermelho #D7070A x #A71919   <- maior diferença
+	laranja  #FD621D x #E96824
+	amarelo  #FDC219 x #F9B916
+As versões coloridas mantêm as cores da arte aprovada (13 cores no total).
+
+
+NOTAS
+	- Só curvas: sem texto e sem fontes externas.
+	- Cada arquivo inclui a área de proteção do manual (1/2 da altura do vapor central).
+	- Vetorização por traçado automático, não redesenho à mão. Validar bordas, tamanhos mínimos (120 px / 35 mm; ícone 24 px / 12 mm) e as monocromáticas em impressão real.
+	- Nas monocromáticas, o telhado fica só em contorno e os detalhes do cuscuz são simplificados.

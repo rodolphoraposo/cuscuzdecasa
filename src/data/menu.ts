@@ -1,14 +1,14 @@
-import carneMoida from "../assets/img/carne-moida.webp";
-import salsicha from "../assets/img/salsicha-ao-molho.webp";
-import calabresa from "../assets/img/calabresa.webp";
-import frango from "../assets/img/frango-desfiado.webp";
-import carneDeSol from "../assets/img/carne-de-sol.webp";
-import romeu from "../assets/img/romeu-e-julieta.webp";
-import cartola from "../assets/img/cartola.webp";
-import coca from "../assets/img/coca-cola.webp";
-import guarana from "../assets/img/guarana-antartica.webp";
-import fanta from "../assets/img/fanta-laranja.webp";
-import agua from "../assets/img/agua-mineral.webp";
+import carneMoida from "../assets/produtos/carne-moida.webp";
+import salsicha from "../assets/produtos/salsicha-ao-molho.webp";
+import calabresa from "../assets/produtos/calabresa.webp";
+import frango from "../assets/produtos/frango-desfiado.webp";
+import carneDeSol from "../assets/produtos/carne-de-sol.webp";
+import romeu from "../assets/produtos/romeu-e-julieta.webp";
+import cartola from "../assets/produtos/cartola.webp";
+import coca from "../assets/produtos/coca-cola.webp";
+import guarana from "../assets/produtos/guarana-antartica.webp";
+import fanta from "../assets/produtos/fanta-laranja.webp";
+import agua from "../assets/produtos/agua-mineral.webp";
 
 export type CategoriaId = "salgados" | "doces" | "bebidas";
 
@@ -78,3 +78,22 @@ export const contato = {
 
 export const formatarPreco = (valor: number) =>
   valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+
+export interface Adicional {
+  id: string;
+  nome: string;
+  preco: number;
+}
+
+/**
+ * Adicionais do Detalhe do item (+ R$ 2,00 cada, conforme o Figma).
+ * CONFIRMAR: só "Queijo coalho" foi confirmado pelo carrinho de exemplo (R$ 14,99 + R$ 2,00 = R$ 16,99).
+ * O Figma tem 5 opções: inclua as outras 4 aqui, uma linha cada.
+ */
+export const adicionais: Adicional[] = [
+  { id: "queijo-coalho", nome: "Queijo coalho", preco: 2 },
+];
+
+/** Categorias que aceitam adicionais (suposição: só os salgados). */
+const categoriasComAdicionais: CategoriaId[] = ["salgados"];
+export const aceitaAdicionais = (p: Produto) => categoriasComAdicionais.includes(p.categoria);
