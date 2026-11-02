@@ -1,10 +1,11 @@
 import { CaretLeft, Minus, Plus, Handbag } from "@phosphor-icons/react";
 import { useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { Button, ButtonLink, Checkbox, EmptyState } from "../components/ui";
 import { MAX_QTD, useCart } from "../context/CartContext";
 import { aceitaAdicionais, adicionais, formatarPreco, produtos, type Produto } from "../data/menu";
 import { usePageTitle } from "../hooks/usePageTitle";
+import { origemSegura } from "../lib/navegacao";
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -29,20 +30,23 @@ export default function ProductDetail() {
 function Detalhe({ produto }: { produto: Produto }) {
   const { adicionar } = useCart();
   const navigate = useNavigate();
+  const origem = origemSegura(useLocation().state);
   const [qtd, setQtd] = useState(1);
   const [extras, setExtras] = useState<string[]>([]);
 
   const opcoes = aceitaAdicionais(produto) ? adicionais : [];
   const unitario = produto.preco + extras.reduce((t, e) => t + (adicionais.find((a) => a.id === e)?.preco ?? 0), 0);
   const total = Math.round(unitario * 100) * qtd / 100;
-  const voltar = `/cardapio?categoria=${produto.categoria}`;
+  const padrao = `/cardapio?categoria=${produto.categoria}`;
+  const voltar = origem ?? padrao; // volta para onde o cliente estava (Início, lista ou grade)
+  const aposAdicionar = origem?.startsWith("/cardapio") ? origem : padrao; // depois de adicionar, mostra o cardápio com a barra do pedido
 
   const alternar = (extraId: string) =>
     setExtras((atual) => (atual.includes(extraId) ? atual.filter((e) => e !== extraId) : [...atual, extraId]));
 
   const confirmar = () => {
     adicionar(produto.id, extras, qtd);
-    navigate(voltar);
+    navigate(aposAdicionar);
   };
 
   return (

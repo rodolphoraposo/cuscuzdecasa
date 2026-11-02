@@ -1,5 +1,5 @@
 import { CaretLeft, ListDashes, SquaresFour } from "@phosphor-icons/react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { CartBar } from "../components/CartBar";
 import { ProductCard, ProductRow } from "../components/ProductItem";
 import { categorias, produtos, type CategoriaId } from "../data/menu";
@@ -8,7 +8,6 @@ type Vista = "lista" | "grade";
 
 export default function Menu() {
   const [params, setParams] = useSearchParams();
-  const navigate = useNavigate();
 
   const categoria = (categorias.find((c) => c.id === params.get("categoria"))?.id ?? "salgados") as CategoriaId;
   const vista: Vista = params.get("vista") === "grade" ? "grade" : "lista";
@@ -17,16 +16,16 @@ export default function Menu() {
   const atualizar = (chave: string, valor: string) => {
     const next = new URLSearchParams(params);
     next.set(chave, valor);
-    setParams(next);
+    setParams(next, { replace: true });
   };
 
   return (
     <>
       <div className="container">
         <div className="page-header">
-          <button type="button" className="icon-btn icon-btn--destaque" aria-label="Voltar" onClick={() => navigate("/")}>
+          <Link className="icon-btn icon-btn--destaque" to="/" aria-label="Voltar ao início">
             <CaretLeft size={20} />
-          </button>
+          </Link>
           <h1 className="t-subtitulo">Cardápio</h1>
         </div>
 

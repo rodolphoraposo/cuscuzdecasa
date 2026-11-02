@@ -172,8 +172,8 @@
   --fundo-inverso: var(--neutro-0);
 
   --texto-primario: var(--neutro-0);
-  --texto-secundario: var(--neutro-300);
-  --texto-discreto: var(--neutro-400);
+  --texto-secundario: var(--neutro-200);
+  --texto-discreto: var(--neutro-300);
   --texto-sobre-acento: var(--neutro-950);
 
   --borda-sutil: var(--cafe-800);

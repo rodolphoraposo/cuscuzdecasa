@@ -1,12 +1,13 @@
 // @vitest-environment jsdom
 import { cleanup, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import App from "../App";
 import { CartProvider } from "../context/CartContext";
 
 const abrir = (rota: string) =>
   render(<MemoryRouter initialEntries={[rota]}><CartProvider><App /></CartProvider></MemoryRouter>);
+beforeAll(() => { window.scrollTo = vi.fn() as unknown as typeof window.scrollTo; }); // jsdom não implementa
 afterEach(cleanup);
 
 describe("páginas legais e 404", () => {
@@ -27,6 +28,8 @@ describe("páginas legais e 404", () => {
   it("endereço inexistente mostra 404 com saída, e o link de pular conteúdo existe", () => {
     abrir("/nao-existe");
     expect(screen.getByRole("heading", { name: "Página não encontrada" })).toBeTruthy();
+    expect(screen.getByRole("link", { name: "Ver cardápio" }).getAttribute("href")).toBe("/cardapio");
+    expect(screen.getByRole("link", { name: "Ir para o início" }).getAttribute("href")).toBe("/");
     expect(screen.getByRole("link", { name: "Pular para o conteúdo" }).getAttribute("href")).toBe("#conteudo");
   });
 });
