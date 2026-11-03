@@ -101,3 +101,10 @@ describe("auxiliares", () => {
     expect(linkWhatsApp("+55 82 99433-6126", "a b\n*c*")).toBe("https://wa.me/5582994336126?text=a%20b%0A*c*");
   });
 });
+
+describe("acompanhamento na comanda", () => {
+  it("aparece abaixo do item, antes dos adicionais", () => {
+    const { texto } = montarComanda(pedido, [{ nome: "Cuscuz do Sertão", quantidade: 1, acompanhamento: "Refogado especial da casa", extras: ["Mussarela"], subtotal: 16.99 }, itens[1]], totais, agora);
+    expect(texto).toContain("1x Cuscuz do Sertão .. R$ 16,99\n   Acomp.: Refogado especial da casa\n   + Mussarela\n1x Coca-Cola");
+  });
+});

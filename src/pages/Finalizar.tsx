@@ -28,6 +28,7 @@ export default function Finalizar() {
         linhas.map((l) => ({
           nome: l.produto.nome,
           quantidade: l.quantidade,
+          acompanhamento: l.acompanhamentoNome,
           extras: l.extras.map((e) => adicionais.find((a) => a.id === e)?.nome ?? ""),
           subtotal: l.subtotal,
         })),

@@ -14,6 +14,8 @@ const ROTULO_PAGAMENTO: Record<FormaPagamento, string> = {
 export interface ItemComanda {
   nome: string;
   quantidade: number;
+  /** Acompanhamento escolhido (salgados) */
+  acompanhamento?: string | null;
   /** Nomes dos adicionais escolhidos */
   extras: string[];
   /** Total da linha (preço unitário com adicionais × quantidade) */
@@ -109,7 +111,11 @@ export function montarComanda(
   const largura = Math.max(...rotulos.map((r) => r.length));
   const linhasItens = itens.flatMap((item, n) => {
     const pontos = ".".repeat(largura - rotulos[n].length + 2);
-    return [`${rotulos[n]} ${pontos} ${brl(item.subtotal)}`, ...item.extras.map((e) => `   + ${limpar(e, 40)}`)];
+    return [
+      `${rotulos[n]} ${pontos} ${brl(item.subtotal)}`,
+      ...(item.acompanhamento ? [`   Acomp.: ${limpar(item.acompanhamento, 40)}`] : []),
+      ...item.extras.map((e) => `   + ${limpar(e, 40)}`),
+    ];
   });
 
   const referencia = limpar(pedido.referencia, 80);

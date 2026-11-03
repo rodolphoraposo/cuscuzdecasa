@@ -24,6 +24,10 @@ export interface Produto {
   descricao: string;
   preco: number;
   imagem: string;
+  /** Texto longo do Detalhe do item (a lista usa só "descricao") */
+  descricaoLonga?: string;
+  /** "Dica da casa", mostrada no Detalhe */
+  dica?: string;
   /** "contain" para embalagens com fundo branco (bebidas) */
   ajuste?: "cover" | "contain";
 }
@@ -34,17 +38,40 @@ export const categorias: Categoria[] = [
   { id: "bebidas", nome: "Bebidas" },
 ];
 
-const acomp = "com acompanhamento à sua escolha";
-
 export const produtos: Produto[] = [
-  { id: "carne-moida", categoria: "salgados", nome: "Carne moída", descricao: `Carne Moída de 1°, ${acomp}`, preco: 11.99, imagem: carneMoida },
-  { id: "salsicha-ao-molho", categoria: "salgados", nome: "Salsicha ao molho", descricao: `Salsicha ao molho de tomate, ${acomp}`, preco: 11.99, imagem: salsicha },
-  { id: "calabresa", categoria: "salgados", nome: "Calabresa", descricao: `Calabresa refogada, ${acomp}`, preco: 13.99, imagem: calabresa },
-  { id: "frango-desfiado", categoria: "salgados", nome: "Frango desfiado", descricao: `Frango desfiado refogado, ${acomp}`, preco: 14.99, imagem: frango },
-  { id: "carne-de-sol", categoria: "salgados", nome: "Carne de sol", descricao: `Carne de sol refogada, ${acomp}`, preco: 14.99, imagem: carneDeSol },
+  {
+    id: "frango-desfiado", categoria: "salgados", nome: "Cuscuz Asa Branca", descricao: "Frango desfiado bem temperadinho", preco: 14.99, imagem: frango,
+    descricaoLonga: "Cuscuz de milho quentinho e fofinho, recheado com peito de frango desfiado, refogado em temperos naturais e muito suculento.",
+    dica: "Fica perfeito com adicional de requeijão tipo Catupiry ou Queijo Coalho!",
+  },
+  {
+    id: "carne-de-sol", categoria: "salgados", nome: "Cuscuz do Sertão", descricao: "Carne de sol desfiada acebolada", preco: 14.99, imagem: carneDeSol,
+    descricaoLonga: "O legítimo sabor nordestino! Cuscuz fofinho recheado com carne de sol artesanal, desfiada e acebolada na medida certa.",
+    dica: "Adicione Queijo Coalho tostado e mude o seu dia!",
+  },
+  {
+    id: "calabresa", categoria: "salgados", nome: "Cuscuz Arretado", descricao: "Calabresa fina defumada", preco: 13.99, imagem: calabresa,
+    descricaoLonga: "Para quem ama sabor marcante. Cuscuz de milho recheado com finas rodelas de calabresa defumada, salteadas até ficarem bem douradinhas.",
+    dica: "Combina muito com um Ovo Mexido por cima.",
+  },
+  {
+    id: "carne-moida", categoria: "salgados", nome: "Cuscuz Tropeiro", descricao: "Carne moída bem suculenta", preco: 11.99, imagem: carneMoida,
+    descricaoLonga: "Comida com gostinho de casa! Cuscuz recheado com carne moída bem soltinha, cozida com temperos frescos e muito molhadinha.",
+    dica: "Experimente adicionar Mussarela derretida.",
+  },
+  {
+    id: "salsicha-ao-molho", categoria: "salgados", nome: "Cuscuz de Feira", descricao: "Salsicha ao molho caseiro", preco: 11.99, imagem: salsicha,
+    descricaoLonga: "Aquele clássico irresistível. Salsichas picadas em um molho de tomate caseiro encorpado, temperado com carinho e servido com nosso cuscuz quentinho.",
+  },
 
-  { id: "romeu-e-julieta", categoria: "doces", nome: "Romeu & Julieta", descricao: `Goiabada com queijo coalho, ${acomp}`, preco: 12.99, imagem: romeu },
-  { id: "cartola", categoria: "doces", nome: "Cartola", descricao: `Banana frita com queijo coalho, ${acomp}`, preco: 12.99, imagem: cartola },
+  {
+    id: "cartola", categoria: "doces", nome: "Cuscuz Cartola", descricao: "Banana frita com queijo coalho, açúcar e canela", preco: 12.99, imagem: cartola,
+    descricaoLonga: "A sobremesa mais amada do Nordeste em forma de cuscuz! Camadas de banana frita na chapa, queijo coalho derretido, finalizadas com uma chuvinha de açúcar e canela. Conforto em cada garfada.",
+  },
+  {
+    id: "romeu-e-julieta", categoria: "doces", nome: "Cuscuz Romeu & Julieta", descricao: "Queijo coalho derretido com goiabada cascão", preco: 12.99, imagem: romeu,
+    descricaoLonga: "A combinação perfeita do salgado com o doce. Cuscuz quentinho recheado com o sabor marcante do queijo coalho derretido e a suavidade da goiabada cascão cremosa.",
+  },
 
   { id: "coca-cola", categoria: "bebidas", nome: "Coca-Cola 350ml", descricao: "Refrigerante em lata - 350ml", preco: 5.99, imagem: coca },
   { id: "guarana-antartica", categoria: "bebidas", nome: "Guaraná Antártica", descricao: "Refrigerante em lata - 350ml", preco: 5.99, imagem: guarana },
@@ -100,3 +127,21 @@ export const adicionais: Adicional[] = [
 /** Categorias que aceitam adicionais (suposição: só os salgados). */
 const categoriasComAdicionais: CategoriaId[] = ["salgados"];
 export const aceitaAdicionais = (p: Produto) => categoriasComAdicionais.includes(p.categoria);
+
+export interface Acompanhamento {
+  id: string;
+  nome: string;
+  descricao?: string;
+}
+
+/** Acompanhamento obrigatório dos salgados (o cliente escolhe um). */
+export const acompanhamentos: Acompanhamento[] = [
+  { id: "vinagrete", nome: "Vinagrete da casa" },
+  {
+    id: "refogado",
+    nome: "Refogado especial da casa",
+    descricao: "Cenoura, pimentão e repolho em tiras finas, levemente refogados na margarina com shoyu e, às vezes, chimichurri.",
+  },
+];
+/** Suposição: só os salgados têm acompanhamento (os doces não). */
+export const exigeAcompanhamento = (p: Produto) => p.categoria === "salgados";

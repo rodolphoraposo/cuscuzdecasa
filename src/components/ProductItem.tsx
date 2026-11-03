@@ -13,7 +13,7 @@ export function ProductRow({ produto }: { produto: Produto }) {
         <p className="item__desc">{produto.descricao}</p>
         <div className="item__rodape">
           <span className="preco">{formatarPreco(produto.preco)}</span>
-          <OrderControl id={produto.id} nome={produto.nome} />
+          <OrderControl produto={produto} />
         </div>
       </div>
     </li>
@@ -31,7 +31,7 @@ export function ProductCard({ produto }: { produto: Produto }) {
         <p className="card__desc">{produto.descricao}</p>
         <div className="card__rodape">
           <span className="preco">{formatarPreco(produto.preco)}</span>
-          <OrderControl id={produto.id} nome={produto.nome} />
+          <OrderControl produto={produto} />
         </div>
       </div>
     </li>

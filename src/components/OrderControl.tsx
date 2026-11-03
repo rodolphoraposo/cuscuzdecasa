@@ -1,10 +1,30 @@
 import { Minus, Plus } from "@phosphor-icons/react";
+import { Link, useLocation } from "react-router-dom";
 import { chaveDe, useCart } from "../context/CartContext";
+import { exigeAcompanhamento, type Produto } from "../data/menu";
 
-/** Botão "Pedir" que vira um seletor de quantidade depois do primeiro clique. */
-export function OrderControl({ id, nome }: { id: string; nome: string }) {
+/**
+ * Salgados exigem escolher acompanhamento: "Pedir" abre o Detalhe do item.
+ * Doces e bebidas: "Pedir" adiciona direto e vira um seletor de quantidade.
+ */
+export function OrderControl({ produto }: { produto: Produto }) {
   const { quantidadeSimples, adicionar, alterar } = useCart();
+  const local = useLocation();
+  const { id, nome } = produto;
   const qtd = quantidadeSimples(id);
+
+  if (exigeAcompanhamento(produto)) {
+    return (
+      <Link
+        className="btn btn--primary btn--sm"
+        to={`/cardapio/${id}`}
+        state={{ voltar: local.pathname + local.search }}
+        aria-label={`Pedir ${nome}`}
+      >
+        Pedir
+      </Link>
+    );
+  }
 
   if (qtd === 0) {
     return (

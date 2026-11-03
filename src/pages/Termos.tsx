@@ -49,8 +49,8 @@ export default function Termos() {
       <p>
         Se você tem alergia ou restrição, escreva no campo de observações e confirme com a gente pelo WhatsApp antes de
         finalizar. Há itens com leite, como {adicionais.filter((a) => /queijo|mussarela|requeij/i.test(a.nome)).map((a) => a.nome.toLowerCase()).join(", ")}, e
-        com ovo, como {adicionais.filter((a) => /ovo/i.test(a.nome)).map((a) => a.nome.toLowerCase()).join(" e ")}. Na cozinha pode haver contato cruzado entre
-        ingredientes.
+        com ovo, como {adicionais.filter((a) => /ovo/i.test(a.nome)).map((a) => a.nome.toLowerCase()).join(" e ")}. O refogado especial da casa leva shoyu e
+        margarina. Na cozinha pode haver contato cruzado entre ingredientes.
       </p>
 
       <h2>7. Imagens e informações</h2>

@@ -1,6 +1,7 @@
 import { CaretLeft, ListDashes, SquaresFour } from "@phosphor-icons/react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useLocation, useSearchParams } from "react-router-dom";
 import { CartBar } from "../components/CartBar";
+import { Banner, ButtonLink } from "../components/ui";
 import { ProductCard, ProductRow } from "../components/ProductItem";
 import { categorias, produtos, type CategoriaId } from "../data/menu";
 
@@ -11,6 +12,8 @@ export default function Menu() {
 
   const categoria = (categorias.find((c) => c.id === params.get("categoria"))?.id ?? "salgados") as CategoriaId;
   const vista: Vista = params.get("vista") === "grade" ? "grade" : "lista";
+  // Depois de adicionar um prato, o Detalhe leva às bebidas com este aviso (some ao trocar de aba).
+  const sugerirBebida = (useLocation().state as { sugerirBebida?: boolean } | null)?.sugerirBebida === true && categoria === "bebidas";
   const itens = produtos.filter((p) => p.categoria === categoria);
 
   const atualizar = (chave: string, valor: string) => {
@@ -44,6 +47,13 @@ export default function Menu() {
             </button>
           ))}
         </div>
+
+        {sugerirBebida && (
+          <div className="sugestao">
+            <Banner tipo="sucesso">Prato adicionado! Quer uma bebida para acompanhar?</Banner>
+            <ButtonLink to="/pedido" variante="outline" bloco>Não quero bebida · Ver pedido</ButtonLink>
+          </div>
+        )}
 
         <div className="toolbar">
           <h2>{itens.length} {itens.length === 1 ? "Sabor" : "Sabores"}</h2>

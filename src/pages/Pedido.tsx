@@ -132,6 +132,7 @@ export default function Pedido() {
                   <img className={l.produto.ajuste === "contain" ? "contain" : ""} src={l.produto.imagem} alt="" />
                   <div className="pedido-item__corpo">
                     <h3 className="pedido-item__nome">{l.produto.nome}</h3>
+                    {l.acompanhamentoNome && <p className="pedido-item__extra">Acompanhamento: {l.acompanhamentoNome}</p>}
                     {l.extras.map((e) => (
                       <p className="pedido-item__extra" key={e}>+ {adicionais.find((a) => a.id === e)?.nome}</p>
                     ))}

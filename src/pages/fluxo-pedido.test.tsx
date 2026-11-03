@@ -13,9 +13,9 @@ const viaCep = vi.fn(async () => ({
 }));
 
 function abrir() {
-  localStorage.setItem("cuscuz-pedido-v2", JSON.stringify([
-    { id: "carne-de-sol", qtd: 1, extras: ["queijo-coalho"] },
-    { id: "coca-cola", qtd: 1, extras: [] },
+  localStorage.setItem("cuscuz-pedido-v3", JSON.stringify([
+    { id: "carne-de-sol", qtd: 1, extras: ["queijo-coalho"], acomp: "vinagrete" },
+    { id: "coca-cola", qtd: 1, extras: [], acomp: null },
   ]));
   render(
     <MemoryRouter initialEntries={["/pedido"]}>
@@ -60,8 +60,8 @@ describe("fluxo Seu pedido → Falta só um passo", () => {
     expect(link.rel).toContain("noopener");
     const texto = decodeURIComponent(link.href.split("text=")[1]);
     expect(texto).toContain("Rua Exemplo, 120 - Serraria");
-    expect(texto).toContain("1x Carne de sol");
-    expect(texto).toContain("   + Queijo coalho");
+    expect(texto).toContain("1x Cuscuz do Sertão");
+    expect(texto).toContain("   Acomp.: Vinagrete da casa\n   + Queijo coalho");
     expect(texto).toContain("*TOTAL:* R$ 22,98");
     expect(texto).toContain("Troco para: R$ 50,00 (levar R$ 27,02)");
   });
@@ -88,7 +88,7 @@ describe("fluxo Seu pedido → Falta só um passo", () => {
   });
 
   it("abrir /pedido/finalizar sem dados volta ao carrinho", async () => {
-    localStorage.setItem("cuscuz-pedido-v2", JSON.stringify([{ id: "coca-cola", qtd: 1, extras: [] }]));
+    localStorage.setItem("cuscuz-pedido-v3", JSON.stringify([{ id: "coca-cola", qtd: 1, extras: [], acomp: null }]));
     render(
       <MemoryRouter initialEntries={["/pedido/finalizar"]}>
         <CartProvider>

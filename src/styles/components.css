@@ -222,3 +222,10 @@
 .skip-link:focus { top: var(--esp-16); }
 main:focus { outline: none; }
 .notfound__acoes { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--esp-12); }
+
+/* ---------- Acompanhamento, dica e sugestão de bebida ---------- */
+.detail__dica { padding: var(--esp-12) var(--esp-16); background: var(--destaque-fundo-suave); border-radius: var(--raio-8); font-size: 14px; line-height: 1.4; }
+.detail__obrig { font-family: var(--fonte-texto); font-size: 14px; font-weight: 400; color: var(--texto-secundario); }
+.acomp { display: grid; gap: var(--esp-4); }
+.acomp__desc { margin-left: 32px; font-size: 14px; line-height: 1.4; color: var(--texto-secundario); }
+.sugestao { display: grid; gap: var(--esp-12); margin-top: var(--esp-16); }

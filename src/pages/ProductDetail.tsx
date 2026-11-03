@@ -1,9 +1,9 @@
 import { CaretLeft, Minus, Plus, Handbag } from "@phosphor-icons/react";
 import { useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-import { Button, ButtonLink, Checkbox, EmptyState } from "../components/ui";
+import { Button, ButtonLink, Checkbox, EmptyState, Radio } from "../components/ui";
 import { MAX_QTD, useCart } from "../context/CartContext";
-import { aceitaAdicionais, adicionais, formatarPreco, produtos, type Produto } from "../data/menu";
+import { aceitaAdicionais, acompanhamentos, adicionais, exigeAcompanhamento, formatarPreco, produtos, type Produto } from "../data/menu";
 import { usePageTitle } from "../hooks/usePageTitle";
 import { origemSegura } from "../lib/navegacao";
 
@@ -33,6 +33,9 @@ function Detalhe({ produto }: { produto: Produto }) {
   const origem = origemSegura(useLocation().state);
   const [qtd, setQtd] = useState(1);
   const [extras, setExtras] = useState<string[]>([]);
+  const [acomp, setAcomp] = useState<string | null>(null);
+  const [erroAcomp, setErroAcomp] = useState(false);
+  const exige = exigeAcompanhamento(produto);
 
   const opcoes = aceitaAdicionais(produto) ? adicionais : [];
   const unitario = produto.preco + extras.reduce((t, e) => t + (adicionais.find((a) => a.id === e)?.preco ?? 0), 0);
@@ -45,8 +48,15 @@ function Detalhe({ produto }: { produto: Produto }) {
     setExtras((atual) => (atual.includes(extraId) ? atual.filter((e) => e !== extraId) : [...atual, extraId]));
 
   const confirmar = () => {
-    adicionar(produto.id, extras, qtd);
-    navigate(aposAdicionar);
+    if (exige && !acomp) {
+      setErroAcomp(true);
+      document.querySelector<HTMLElement>('input[name="acompanhamento"]')?.focus();
+      return;
+    }
+    adicionar(produto.id, extras, qtd, acomp);
+    // Sequência do pedido: prato → capriche → bebida → dados. Depois de um prato, sugere a bebida.
+    if (produto.categoria !== "bebidas") navigate("/cardapio?categoria=bebidas", { state: { sugerirBebida: true } });
+    else navigate(aposAdicionar);
   };
 
   return (
@@ -63,12 +73,30 @@ function Detalhe({ produto }: { produto: Produto }) {
           <div className="detail__topo">
             <h1 className="t-secao">{produto.nome}</h1>
             <p className="preco">{formatarPreco(produto.preco)}</p>
-            <p className="detail__desc">{produto.descricao}</p>
+            <p className="detail__desc">{produto.descricaoLonga ?? produto.descricao}</p>
+            {produto.dica && <p className="detail__dica"><strong>Dica da casa:</strong> {produto.dica}</p>}
           </div>
+
+          {exige && (
+            <fieldset className="detail__adicionais" aria-describedby={erroAcomp ? "erro-acomp" : undefined}>
+              <legend className="t-subtitulo">Acompanhamento <span className="detail__obrig">(escolha 1)</span></legend>
+              {acompanhamentos.map((a) => (
+                <div className="acomp" key={a.id}>
+                  <Radio
+                    name="acompanhamento" rotulo={a.nome} checked={acomp === a.id} erro={erroAcomp}
+                    aria-describedby={a.descricao ? `desc-${a.id}` : undefined}
+                    onChange={() => { setAcomp(a.id); setErroAcomp(false); }}
+                  />
+                  {a.descricao && <p className="acomp__desc" id={`desc-${a.id}`}>{a.descricao}</p>}
+                </div>
+              ))}
+              {erroAcomp && <p className="erro-msg" id="erro-acomp" role="alert">Escolha o acompanhamento para continuar.</p>}
+            </fieldset>
+          )}
 
           {opcoes.length > 0 && (
             <fieldset className="detail__adicionais">
-              <legend className="t-subtitulo">Adicionais</legend>
+              <legend className="t-subtitulo">Capriche seu prato <span className="detail__obrig">(opcional)</span></legend>
               {opcoes.map((a) => {
                 const campo = `extra-${a.id}`;
                 return (
