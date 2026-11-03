@@ -229,3 +229,8 @@ main:focus { outline: none; }
 .acomp { display: grid; gap: var(--esp-4); }
 .acomp__desc { margin-left: 32px; font-size: 14px; line-height: 1.4; color: var(--texto-secundario); }
 .sugestao { display: grid; gap: var(--esp-12); margin-top: var(--esp-16); }
+
+/* ---------- Prévia da comanda ---------- */
+.previa__ajuda { margin-top: var(--esp-8); font-size: 14px; color: var(--texto-secundario); }
+.previa { margin-top: var(--esp-16); padding: var(--esp-16); background: var(--fundo-superficie); border: 1px solid var(--borda-sutil); border-radius: var(--raio-12); font-size: 14px; line-height: 1.5; overflow-wrap: anywhere; }
+.previa__linha { white-space: pre-wrap; }

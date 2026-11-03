@@ -1,11 +1,13 @@
 import { Check } from "@phosphor-icons/react";
-import { useMemo, useRef, useState } from "react";
+import { useMemo } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
-import { Banner, Button, ButtonLink } from "../components/ui";
+import { PreviaComanda } from "../components/PreviaComanda";
+import { ButtonLink } from "../components/ui";
 import { useCart } from "../context/CartContext";
 import { adicionais, contato, formatarPreco, taxaEntrega } from "../data/menu";
 import { brl, linkWhatsApp, montarComanda } from "../lib/comanda";
-import { carregarRascunho, limparRascunho, paraDadosPedido, validarPedido } from "../lib/formulario";
+import { carregarRascunho, paraDadosPedido, validarPedido } from "../lib/formulario";
+import { salvarUltimoPedido } from "../lib/ultimoPedido";
 import { usePageTitle } from "../hooks/usePageTitle";
 
 const ROTULO = { pix: "Pix", dinheiro: "Dinheiro", cartao: "Cartão na entrega" } as const;
@@ -13,10 +15,8 @@ const ROTULO = { pix: "Pix", dinheiro: "Dinheiro", cartao: "Cartão na entrega" 
 export default function Finalizar() {
   usePageTitle("Finalizar pedido");
   const navigate = useNavigate();
-  const { linhas, totalItens, totalPreco, limpar } = useCart();
+  const { linhas, totalItens, totalPreco } = useCart();
   const total = Math.round((totalPreco + taxaEntrega) * 100) / 100;
-  const [enviado, setEnviado] = useState(false);
-  const concluido = useRef(false);
   const rascunho = useMemo(carregarRascunho, []);
 
   // O código do pedido (data e hora) é gerado uma vez, ao abrir esta tela.
@@ -41,7 +41,7 @@ export default function Finalizar() {
   }, []);
 
   // Sem itens ou com dados incompletos (ex.: abriu o endereço direto): volta ao carrinho.
-  if (!comanda) return concluido.current ? null : <Navigate to="/pedido" replace />;
+  if (!comanda) return <Navigate to="/pedido" replace />;
 
   const r = rascunho;
   const pagamento =
@@ -49,11 +49,13 @@ export default function Finalizar() {
       ? r.semTroco ? "Dinheiro · sem troco" : `Dinheiro · troco para ${brl(Number(paraDadosPedido(r).trocoPara))}`
       : ROTULO[r.pagamento as keyof typeof ROTULO];
 
-  const novoPedido = () => {
-    concluido.current = true;
-    limpar();
-    limparRascunho();
-    navigate("/");
+  /**
+   * O link abre o WhatsApp em outra aba. Aqui guardamos a comanda e levamos esta aba para o agradecimento
+   * (replace: o "voltar" não retorna a esta tela). O pequeno atraso deixa o link abrir antes de trocar de tela.
+   */
+  const aoEnviar = () => {
+    salvarUltimoPedido({ codigo: comanda.codigo, texto: comanda.texto });
+    window.setTimeout(() => navigate("/pedido/enviado", { replace: true }), 300);
   };
 
   return (
@@ -84,11 +86,11 @@ export default function Finalizar() {
           </dl>
         </section>
 
-        {enviado && (
-          <Banner tipo="sucesso">
-            Abrimos o WhatsApp com a sua comanda. Confirme o envio por lá. Se não abriu, toque em enviar de novo.
-          </Banner>
-        )}
+        <section aria-labelledby="titulo-previa">
+          <h2 className="t-subtitulo" id="titulo-previa">Prévia da comanda</h2>
+          <p className="previa__ajuda">É assim que a comanda vai aparecer no seu WhatsApp.</p>
+          <PreviaComanda texto={comanda.texto} rotuloId="titulo-previa" />
+        </section>
 
         <p className="final__aviso">
           Ao enviar, você concorda com os{" "}
@@ -102,16 +104,12 @@ export default function Finalizar() {
             href={linkWhatsApp(contato.whatsapp, comanda.texto)}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => setEnviado(true)}
+            onClick={aoEnviar}
           >
             <Check className="icon" aria-hidden="true" />
             Enviar comanda para o WhatsApp
           </a>
-          {enviado ? (
-            <Button variante="outline" bloco onClick={novoPedido}>Já enviei · Começar novo pedido</Button>
-          ) : (
-            <ButtonLink to="/pedido" variante="ghost" bloco>Voltar e editar</ButtonLink>
-          )}
+          <ButtonLink to="/pedido" variante="ghost" bloco>Voltar e editar</ButtonLink>
         </div>
       </div>
     </div>

@@ -6,6 +6,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { CartProvider } from "../context/CartContext";
 import Finalizar from "./Finalizar";
 import Pedido from "./Pedido";
+import PedidoEnviado from "./PedidoEnviado";
 
 const viaCep = vi.fn(async () => ({
   ok: true,
@@ -23,6 +24,8 @@ function abrir() {
         <Routes>
           <Route path="/pedido" element={<Pedido />} />
           <Route path="/pedido/finalizar" element={<Finalizar />} />
+          <Route path="/pedido/enviado" element={<PedidoEnviado />} />
+          <Route path="/" element={<h1>início</h1>} />
         </Routes>
       </CartProvider>
     </MemoryRouter>,
@@ -64,6 +67,20 @@ describe("fluxo Seu pedido → Falta só um passo", () => {
     expect(texto).toContain("   Acomp.: Vinagrete da casa\n   + Queijo coalho");
     expect(texto).toContain("*TOTAL:* R$ 22,98");
     expect(texto).toContain("Troco para: R$ 50,00 (levar R$ 27,02)");
+    expect(texto).toMatch(/Pedido #\d{4} · /);
+
+    // prévia: a mesma comanda, com os títulos em negrito
+    const previa = screen.getByRole("group", { name: "Prévia da comanda" });
+    expect(previa.textContent).toContain("Troco para: R$ 50,00 (levar R$ 27,02)");
+    expect(previa.querySelector("strong")?.textContent).toBe("COMANDA · CUSCUZ DE CASA");
+
+    // enviar: abre o WhatsApp (outra aba) e esta aba vai para o agradecimento, sem voltar ao carrinho
+    await u.click(link);
+    expect(await screen.findByRole("heading", { name: "Obrigado pelo seu pedido!" }, { timeout: 2000 })).toBeTruthy();
+    expect(screen.getByRole("link", { name: "Voltar para o início" }).getAttribute("href")).toBe("/");
+    expect(screen.getByRole("link", { name: "Enviar a comanda de novo" })).toBeTruthy();
+    expect(JSON.parse(localStorage.getItem("cuscuz-pedido-v3") ?? "[]")).toEqual([]); // carrinho esvaziado
+    expect(sessionStorage.getItem("cuscuz-rascunho-v1")).toBeNull();
   });
 
   it("não avança com campos em branco e mostra os erros", async () => {

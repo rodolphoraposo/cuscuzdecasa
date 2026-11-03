@@ -69,15 +69,20 @@ export function limpar(texto: string | undefined, max: number): string {
 function partes(data: Date) {
   const f = new Intl.DateTimeFormat("pt-BR", {
     timeZone: FUSO, year: "numeric", month: "2-digit", day: "2-digit",
-    hour: "2-digit", minute: "2-digit", hourCycle: "h23",
+    hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23",
   });
   return Object.fromEntries(f.formatToParts(data).map((p) => [p.type, p.value])) as Record<string, string>;
 }
 
-/** CC-DDMM-HHMM, sempre no horário de Maceió (não depende do relógio do aparelho). */
-export function codigoPedido(data: Date): string {
+/**
+ * Número do pedido no padrão #0000.
+ * PROVISÓRIO: o site não tem um contador central, então o número vem dos segundos do dia (horário de Maceió)
+ * e NÃO é sequencial. Quando o Operatta (ou um contador no Supabase) numerar os pedidos, troque só esta função.
+ */
+export function numeroPedido(data: Date): string {
   const p = partes(data);
-  return `CC-${p.day}${p.month}-${p.hour}${p.minute}`;
+  const n = (Number(p.hour) * 3600 + Number(p.minute) * 60 + Number(p.second)) % 10000;
+  return `#${String(n || 1).padStart(4, "0")}`;
 }
 
 export function dataHora(data: Date): string {
@@ -105,7 +110,7 @@ export function montarComanda(
 ): { codigo: string; texto: string } {
   if (itens.length === 0) throw new RangeError("Pedido sem itens");
 
-  const codigo = codigoPedido(agora);
+  const codigo = numeroPedido(agora);
 
   const rotulos = itens.map((i) => `${i.quantidade}x ${limpar(i.nome, 40)}`);
   const largura = Math.max(...rotulos.map((r) => r.length));

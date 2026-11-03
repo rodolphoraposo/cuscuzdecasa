@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { codigoPedido, formatarTelefone, limpar, linkWhatsApp, montarComanda, type DadosPedido, type ItemComanda } from "./comanda";
+import { numeroPedido, formatarTelefone, limpar, linkWhatsApp, montarComanda, type DadosPedido, type ItemComanda } from "./comanda";
 
 // 03/11/2026 18:45 em Maceió (UTC-3)
 const agora = new Date("2026-11-03T21:45:00Z");
@@ -31,7 +31,7 @@ describe("montarComanda", () => {
     expect(montarComanda(pedido, itens, totais, agora).texto).toBe(
       [
         "*COMANDA · CUSCUZ DE CASA*",
-        "Pedido CC-0311-1845 · 03/11/2026 18:45",
+        "Pedido #7500 · 03/11/2026 18:45",
         "",
         "*CLIENTE*",
         "Rodolpho",
@@ -85,10 +85,12 @@ describe("montarComanda", () => {
 });
 
 describe("auxiliares", () => {
-  it("código do pedido usa o horário de Maceió", () => {
-    expect(codigoPedido(new Date("2026-11-03T21:45:00Z"))).toBe("CC-0311-1845");
-    expect(codigoPedido(new Date("2026-11-04T02:05:00Z"))).toBe("CC-0311-2305");
-    expect(codigoPedido(new Date("2026-11-04T03:00:00Z"))).toBe("CC-0411-0000");
+  it("número do pedido: padrão #0000, no horário de Maceió", () => {
+    expect(numeroPedido(new Date("2026-11-03T21:45:00Z"))).toBe("#7500"); // 18:45:00
+    expect(numeroPedido(new Date("2026-11-03T21:45:42Z"))).toBe("#7542");
+    expect(numeroPedido(new Date("2026-11-04T02:05:00Z"))).toBe("#3100"); // 23:05:00 de 03/11
+    expect(numeroPedido(new Date("2026-11-04T03:00:00Z"))).toBe("#0001"); // meia-noite nunca vira #0000
+    expect(numeroPedido(new Date())).toMatch(/^#\d{4}$/);
   });
   it("telefone com 10 e 11 dígitos", () => {
     expect(formatarTelefone("(82) 3433-6126")).toBe("(82) 3433-6126");
