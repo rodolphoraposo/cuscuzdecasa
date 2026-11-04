@@ -11,7 +11,11 @@ const abrir = (rota: string) =>
   render(<MemoryRouter initialEntries={[rota]}><CartProvider><App /><Local /></CartProvider></MemoryRouter>);
 const local = () => screen.getByTestId("local").textContent;
 
-beforeAll(() => { window.scrollTo = vi.fn() as unknown as typeof window.scrollTo; });
+beforeAll(() => {
+  window.scrollTo = vi.fn() as unknown as typeof window.scrollTo;
+  vi.useFakeTimers({ toFake: ["Date"] });
+  vi.setSystemTime(new Date("2026-11-03T18:00:00Z"));
+});
 afterEach(() => { cleanup(); localStorage.clear(); });
 
 describe("navegação do cardápio", () => {
@@ -47,6 +51,6 @@ describe("navegação do cardápio", () => {
       </MemoryRouter>,
     );
     await u.click(screen.getByRole("link", { name: "Voltar ao cardápio" }));
-    expect(local()).toBe("/cardapio?categoria=salgados");
+    expect(local()).toBe("/cardapio?prato=cuscuz&categoria=salgados");
   });
 });

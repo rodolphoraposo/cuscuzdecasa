@@ -37,6 +37,8 @@ export interface DadosPedido {
   /** Só para dinheiro: valor da nota. null/undefined = não precisa de troco. */
   trocoPara?: number | null;
   observacoes?: string;
+  /** Ex.: "hoje, 18h às 19h" */
+  entrega?: string;
 }
 
 export interface TotaisPedido {
@@ -66,7 +68,7 @@ export function limpar(texto: string | undefined, max: number): string {
     .slice(0, max);
 }
 
-function partes(data: Date) {
+export function partes(data: Date) {
   const f = new Intl.DateTimeFormat("pt-BR", {
     timeZone: FUSO, year: "numeric", month: "2-digit", day: "2-digit",
     hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23",
@@ -142,6 +144,7 @@ export function montarComanda(
     `*CLIENTE*\n${limpar(pedido.nome, 80)}\nTel: ${formatarTelefone(pedido.telefone)}`,
     [
       "*ENTREGA*",
+      ...(pedido.entrega ? [`Horário: ${limpar(pedido.entrega, 40)}`] : []),
       `${limpar(pedido.rua, 80)}, ${limpar(pedido.numero, 10)} - ${limpar(pedido.bairro, 60)}`,
       `${limpar(pedido.cidade, 60)}/${limpar(pedido.uf, 2).toUpperCase()} · CEP ${formatarCep(pedido.cep)}`,
       `Compl.: ${limpar(pedido.complemento, 60)}`,

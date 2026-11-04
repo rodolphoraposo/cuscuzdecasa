@@ -30,6 +30,10 @@ export default function Termos() {
         condomínios da Serraria: {condominios.join(", ")}. Se o seu não está na lista, chame no WhatsApp {zap}.{" "}
         {taxaEntrega === 0 ? "No momento, a entrega não tem taxa." : null}
       </p>
+      <p>
+        Ao finalizar, você escolhe a faixa de horário da entrega (de 1 hora). Fazemos o possível para cumprir, mas o
+        horário pode variar um pouco.
+      </p>
 
       <h2>4. Preços e pagamento</h2>
       <ul>

@@ -1,3 +1,4 @@
+import { janelasEntrega } from "./entrega";
 import { brl, limpar, type DadosPedido, type FormaPagamento } from "./comanda";
 
 export interface Rascunho {
@@ -10,6 +11,7 @@ export interface Rascunho {
   bairro: string;
   cidade: string;
   uf: string;
+  horario: string;
   referencia: string;
   pagamento: FormaPagamento | "";
   trocoTexto: string;
@@ -19,12 +21,12 @@ export interface Rascunho {
 
 export const rascunhoVazio: Rascunho = {
   nome: "", telefone: "", cep: "", rua: "", numero: "", complemento: "", bairro: "", cidade: "", uf: "",
-  referencia: "", pagamento: "", trocoTexto: "", semTroco: false, observacoes: "",
+  horario: "", referencia: "", pagamento: "", trocoTexto: "", semTroco: false, observacoes: "",
 };
 
 export type Campo =
   | "nome" | "telefone" | "cep" | "rua" | "numero" | "complemento" | "bairro" | "cidade" | "uf"
-  | "pagamento" | "trocoTexto";
+  | "horario" | "pagamento" | "trocoTexto";
 export type Erros = Partial<Record<Campo, string>>;
 
 const UFS = new Set(
@@ -72,6 +74,7 @@ export function validarPedido(r: Rascunho, total: number): Erros {
   if (limpar(r.bairro, 60).length < 2) e.bairro = "Informe o bairro.";
   if (limpar(r.cidade, 60).length < 2) e.cidade = "Informe a cidade.";
   if (!UFS.has(r.uf.trim().toUpperCase())) e.uf = "Use a sigla, como AL.";
+  if (!janelasEntrega.some((j) => j.id === r.horario)) e.horario = "Escolha o horário de entrega.";
   if (!r.pagamento) e.pagamento = "Escolha a forma de pagamento.";
 
   if (r.pagamento === "dinheiro" && !r.semTroco) {
@@ -98,6 +101,7 @@ export function sanearRascunho(bruto: unknown): Rascunho {
     complemento: texto("complemento"), bairro: texto("bairro"), cidade: texto("cidade"), uf: texto("uf"),
     referencia: texto("referencia"), trocoTexto: texto("trocoTexto"), observacoes: texto("observacoes"),
     semTroco: o.semTroco === true,
+    horario: janelasEntrega.some((j) => j.id === o.horario) ? (o.horario as string) : "",
     pagamento: FORMAS.includes(o.pagamento as string) ? (o.pagamento as FormaPagamento) : "",
   };
 }

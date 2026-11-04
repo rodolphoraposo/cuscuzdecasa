@@ -4,35 +4,38 @@ import { Link, Navigate, useNavigate } from "react-router-dom";
 import { PreviaComanda } from "../components/PreviaComanda";
 import { ButtonLink } from "../components/ui";
 import { useCart } from "../context/CartContext";
-import { adicionais, contato, formatarPreco, taxaEntrega } from "../data/menu";
-import { brl, linkWhatsApp, montarComanda } from "../lib/comanda";
+import { adicionais, contato, nomeCompleto, taxaEntrega } from "../data/menu";
+import { linkWhatsApp, montarComanda } from "../lib/comanda";
+import { descricaoEntrega, diaDaEntrega } from "../lib/entrega";
 import { carregarRascunho, paraDadosPedido, validarPedido } from "../lib/formulario";
 import { salvarUltimoPedido } from "../lib/ultimoPedido";
 import { usePageTitle } from "../hooks/usePageTitle";
 
-const ROTULO = { pix: "Pix", dinheiro: "Dinheiro", cartao: "Cartão na entrega" } as const;
-
 export default function Finalizar() {
   usePageTitle("Finalizar pedido");
   const navigate = useNavigate();
-  const { linhas, totalItens, totalPreco } = useCart();
+  const { linhas, totalPreco } = useCart();
   const total = Math.round((totalPreco + taxaEntrega) * 100) / 100;
   const rascunho = useMemo(carregarRascunho, []);
+  const agora = useMemo(() => new Date(), []);
+  const dia = diaDaEntrega(agora);
+  const entregaDesc = dia ? descricaoEntrega(rascunho.horario, dia) : "";
 
   // O código do pedido (data e hora) é gerado uma vez, ao abrir esta tela.
   const comanda = useMemo(() => {
-    if (linhas.length === 0 || Object.keys(validarPedido(rascunho, total)).length > 0) return null;
+    if (linhas.length === 0 || !entregaDesc || Object.keys(validarPedido(rascunho, total)).length > 0) return null;
     try {
       return montarComanda(
-        paraDadosPedido(rascunho),
+        { ...paraDadosPedido(rascunho), entrega: entregaDesc },
         linhas.map((l) => ({
-          nome: l.produto.nome,
+          nome: nomeCompleto(l.produto),
           quantidade: l.quantidade,
           acompanhamento: l.acompanhamentoNome,
           extras: l.extras.map((e) => adicionais.find((a) => a.id === e)?.nome ?? ""),
           subtotal: l.subtotal,
         })),
         { subtotal: totalPreco, entrega: taxaEntrega, total },
+        agora,
       );
     } catch {
       return null;
@@ -42,12 +45,6 @@ export default function Finalizar() {
 
   // Sem itens ou com dados incompletos (ex.: abriu o endereço direto): volta ao carrinho.
   if (!comanda) return <Navigate to="/pedido" replace />;
-
-  const r = rascunho;
-  const pagamento =
-    r.pagamento === "dinheiro"
-      ? r.semTroco ? "Dinheiro · sem troco" : `Dinheiro · troco para ${brl(Number(paraDadosPedido(r).trocoPara))}`
-      : ROTULO[r.pagamento as keyof typeof ROTULO];
 
   /**
    * O link abre o WhatsApp em outra aba. Aqui guardamos a comanda e levamos esta aba para o agradecimento
@@ -71,25 +68,8 @@ export default function Finalizar() {
 
         <section aria-labelledby="titulo-resumo-final">
           <h2 className="t-subtitulo" id="titulo-resumo-final">Resumo</h2>
-          <dl className="resumo">
-            <div><dt>Pedido</dt><dd>{comanda.codigo}</dd></div>
-            <div><dt>Itens</dt><dd>{totalItens} {totalItens === 1 ? "item" : "itens"}</dd></div>
-            <div><dt>Total</dt><dd>{formatarPreco(total)}</dd></div>
-          </dl>
-          <dl className="resumo resumo--detalhes">
-            <div className="resumo--bloco">
-              <dt>Endereço</dt>
-              <dd>{`${r.rua}, ${r.numero} · ${r.complemento} · ${r.bairro}, ${r.cidade}/${r.uf}`}</dd>
-            </div>
-            <div className="resumo--bloco"><dt>Pagamento</dt><dd>{pagamento}</dd></div>
-            <div className="resumo__total"><dt>Total</dt><dd>{formatarPreco(total)}</dd></div>
-          </dl>
-        </section>
-
-        <section aria-labelledby="titulo-previa">
-          <h2 className="t-subtitulo" id="titulo-previa">Prévia da comanda</h2>
           <p className="previa__ajuda">É assim que a comanda vai aparecer no seu WhatsApp.</p>
-          <PreviaComanda texto={comanda.texto} rotuloId="titulo-previa" />
+          <PreviaComanda texto={comanda.texto} rotuloId="titulo-resumo-final" />
         </section>
 
         <p className="final__aviso">

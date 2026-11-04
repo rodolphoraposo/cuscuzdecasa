@@ -234,3 +234,31 @@ main:focus { outline: none; }
 .previa__ajuda { margin-top: var(--esp-8); font-size: 14px; color: var(--texto-secundario); }
 .previa { margin-top: var(--esp-16); padding: var(--esp-16); background: var(--fundo-superficie); border: 1px solid var(--borda-sutil); border-radius: var(--raio-12); font-size: 14px; line-height: 1.5; overflow-wrap: anywhere; }
 .previa__linha { white-space: pre-wrap; }
+
+/* ---------- Escolher o prato, horário de entrega e foto provisória ---------- */
+.pratos { display: grid; grid-template-columns: 1fr 1fr; gap: var(--esp-8); margin-bottom: var(--esp-16); }
+.prato-btn { min-height: 44px; padding: var(--esp-8) var(--esp-16); background: var(--fundo-superficie); border: 1px solid var(--borda-campo); border-radius: var(--raio-8); color: var(--texto-primario); font: 700 16px / 1.3 var(--fonte-titulo); cursor: pointer; }
+.prato-btn[aria-pressed="true"] { background: var(--fundo-suave); border-color: var(--acao-primaria); box-shadow: inset 0 0 0 1px var(--acao-primaria); }
+.pagto-lista--grade { grid-template-columns: 1fr 1fr; }
+.foto-pendente { display: grid; place-content: center; justify-items: center; gap: var(--esp-4); width: 100%; height: 100%; background: var(--fundo-rebaixado); color: var(--texto-secundario); font-size: 12px; text-align: center; }
+.foto-pendente img { width: 40%; max-width: 64px; height: auto; object-fit: contain; opacity: 0.55; }
+.item__foto .foto-pendente span, .pedido-item .foto-pendente span { display: none; }
+
+/* ---------- Menu do celular e sacola no cabeçalho ---------- */
+.header__painel { position: absolute; top: 100%; left: 0; right: 0; padding-block: var(--esp-8) var(--esp-16); background: var(--fundo-pagina); border-bottom: 1px solid var(--borda-sutil); box-shadow: var(--sombra-md); }
+.header__painel[hidden] { display: none; }
+.header__painel .container { display: grid; }
+.header__painel a { padding: var(--esp-12) 0; text-decoration: none; border-bottom: 1px solid var(--borda-sutil); }
+.header__painel a:last-child { border-bottom: 0; }
+.header__painel .header__painel-sec { font-size: 14px; color: var(--texto-secundario); }
+.header__sacola { position: relative; }
+.header__badge { position: absolute; top: -2px; right: -2px; display: grid; place-items: center; min-width: 18px; height: 18px; padding: 0 4px; background: var(--acao-primaria); color: var(--texto-sobre-acento); border-radius: var(--raio-total); font: 700 11px / 1 var(--fonte-texto); }
+@media (max-width: 380px) { .header__cta { display: none; } }
+@media (min-width: 900px) { .header__menu, .header__painel { display: none !important; } }
+
+/* ---------- Correções de layout em telas estreitas ---------- */
+/* Campos em colunas: sem isto, a largura mínima do input (~160px) empurra a coluna e sobrepõe o vizinho ou vaza a tela. */
+.linha > *, .cep-linha > * { min-width: 0; }
+.form input:not([type="radio"]):not([type="checkbox"]), .form textarea { width: 100%; min-width: 0; }
+.aviso-encerrado { margin-bottom: var(--esp-16); }
+.pedido .aviso-encerrado { margin-bottom: 0; }

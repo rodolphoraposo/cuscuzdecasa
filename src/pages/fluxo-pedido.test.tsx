@@ -2,7 +2,7 @@
 import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { CartProvider } from "../context/CartContext";
 import Finalizar from "./Finalizar";
 import Pedido from "./Pedido";
@@ -32,8 +32,11 @@ function abrir() {
   );
 }
 
+// Relógio fixo: 15:00 em Maceió (antes do limite de 16h), para os testes não dependerem da hora em que rodam.
+beforeAll(() => { vi.useFakeTimers({ toFake: ["Date"] }); vi.setSystemTime(new Date("2026-11-03T18:00:00Z")); });
+
 beforeEach(() => { localStorage.clear(); sessionStorage.clear(); vi.stubGlobal("fetch", viaCep); viaCep.mockClear(); });
-afterEach(() => { cleanup(); vi.unstubAllGlobals(); });
+afterEach(() => { cleanup(); vi.unstubAllGlobals(); vi.setSystemTime(new Date("2026-11-03T18:00:00Z")); });
 
 describe("fluxo Seu pedido → Falta só um passo", () => {
   it("conclui um pedido em dinheiro com troco e monta a comanda", async () => {
@@ -53,6 +56,7 @@ describe("fluxo Seu pedido → Falta só um passo", () => {
 
     await u.type(screen.getByLabelText("Número*"), "120");
     await u.type(screen.getByLabelText("Complemento (bloco e apto)*"), "Bloco B, apto 302");
+    await u.click(screen.getByRole("radio", { name: "18h às 19h" }));
     await u.click(screen.getByRole("radio", { name: "Dinheiro" }));
     await u.type(screen.getByLabelText("Troco para quanto?"), "50");
     await u.click(screen.getByRole("button", { name: /Finalizar pedido/ }));
@@ -63,14 +67,17 @@ describe("fluxo Seu pedido → Falta só um passo", () => {
     expect(link.rel).toContain("noopener");
     const texto = decodeURIComponent(link.href.split("text=")[1]);
     expect(texto).toContain("Rua Exemplo, 120 - Serraria");
-    expect(texto).toContain("1x Cuscuz do Sertão");
+    expect(texto).toContain("1x Do Sertão (cuscuz)");
+    expect(texto).toContain("*ENTREGA*\nHorário: hoje, 18h às 19h");
     expect(texto).toContain("   Acomp.: Vinagrete da casa\n   + Queijo coalho");
     expect(texto).toContain("*TOTAL:* R$ 22,98");
     expect(texto).toContain("Troco para: R$ 50,00 (levar R$ 27,02)");
     expect(texto).toMatch(/Pedido #\d{4} · /);
 
-    // prévia: a mesma comanda, com os títulos em negrito
-    const previa = screen.getByRole("group", { name: "Prévia da comanda" });
+    // sem bloco de resumo separado: só a comanda, com os títulos em negrito
+    expect(screen.queryByText("Prévia da comanda")).toBeNull();
+    expect(screen.queryByText("Endereço")).toBeNull();
+    const previa = screen.getByRole("group", { name: "Resumo" });
     expect(previa.textContent).toContain("Troco para: R$ 50,00 (levar R$ 27,02)");
     expect(previa.querySelector("strong")?.textContent).toBe("COMANDA · CUSCUZ DE CASA");
 
@@ -90,8 +97,16 @@ describe("fluxo Seu pedido → Falta só um passo", () => {
     expect(screen.getByRole("alert").textContent).toContain("Revise os campos");
     expect(screen.getByText("Informe seu nome.")).toBeTruthy();
     expect(screen.getByText("Escolha a forma de pagamento.")).toBeTruthy();
+    expect(screen.getByText("Escolha o horário de entrega.")).toBeTruthy();
     expect(screen.queryByRole("heading", { name: "Falta só um passo" })).toBeNull();
     expect(document.activeElement).toBe(screen.getByLabelText("Nome*"));
+  });
+
+  it("depois das 16h os pedidos de hoje estão encerrados: aviso e botão desativado", () => {
+    vi.setSystemTime(new Date("2026-11-03T20:00:00Z")); // 17:00 em Maceió
+    abrir();
+    expect(screen.getByText(/Os pedidos de hoje encerraram às 16h/)).toBeTruthy();
+    expect((screen.getByRole("button", { name: /Finalizar pedido/ }) as HTMLButtonElement).disabled).toBe(true);
   });
 
   it("CEP que falha não trava: avisa e deixa preencher à mão", async () => {

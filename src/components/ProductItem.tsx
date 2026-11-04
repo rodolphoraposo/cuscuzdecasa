@@ -1,12 +1,13 @@
 import { Link, useLocation } from "react-router-dom";
 import { formatarPreco, type Produto } from "../data/menu";
+import { FotoProduto } from "./FotoProduto";
 import { OrderControl } from "./OrderControl";
 
 export function ProductRow({ produto }: { produto: Produto }) {
   return (
     <li className="item">
       <div className={`item__foto${produto.ajuste === "contain" ? " item__foto--contain" : ""}`}>
-        <img src={produto.imagem} alt={produto.nome} loading="lazy" />
+        <FotoProduto produto={produto} />
       </div>
       <div className="item__corpo">
         <h3 className="item__nome"><ProdutoLink produto={produto} /></h3>
@@ -24,7 +25,7 @@ export function ProductCard({ produto }: { produto: Produto }) {
   return (
     <li className="card">
       <div className={`card__foto${produto.ajuste === "contain" ? " card__foto--contain" : ""}`}>
-        <img src={produto.imagem} alt={produto.nome} loading="lazy" />
+        <FotoProduto produto={produto} />
       </div>
       <div className="card__corpo">
         <h3 className="t-subtitulo"><ProdutoLink produto={produto} /></h3>

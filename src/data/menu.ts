@@ -17,13 +17,24 @@ export interface Categoria {
   nome: string;
 }
 
+import { ENTREGA_FIM_H, ENTREGA_INICIO_H, LIMITE_PEDIDO_H } from "../lib/entrega";
+
+export type PratoId = "cuscuz" | "macaxeira";
+export const pratos: { id: PratoId; nome: string }[] = [
+  { id: "cuscuz", nome: "Cuscuz" },
+  { id: "macaxeira", nome: "Macaxeira" },
+];
+
 export interface Produto {
   id: string;
   categoria: CategoriaId;
   nome: string;
   descricao: string;
   preco: number;
-  imagem: string;
+  /** Sem foto ainda: a tela mostra "Foto em breve" */
+  imagem?: string;
+  /** Base do prato (bebidas não têm) */
+  prato?: PratoId;
   /** Texto longo do Detalhe do item (a lista usa só "descricao") */
   descricaoLonga?: string;
   /** "Dica da casa", mostrada no Detalhe */
@@ -38,41 +49,81 @@ export const categorias: Categoria[] = [
   { id: "bebidas", nome: "Bebidas" },
 ];
 
+/** Nome do prato com a base, para o carrinho e a comanda: "Do Sertão (cuscuz)". */
+export const nomeCompleto = (p: Produto) => (p.prato ? `${p.nome} (${p.prato})` : p.nome);
+
 export const produtos: Produto[] = [
+  // ---------- Cuscuz · salgados ----------
   {
-    id: "frango-desfiado", categoria: "salgados", nome: "Cuscuz Asa Branca", descricao: "Frango desfiado bem temperadinho", preco: 14.99, imagem: frango,
+    id: "frango-desfiado", prato: "cuscuz", categoria: "salgados", nome: "Asa Branca", descricao: "Frango desfiado bem temperadinho", preco: 14.99, imagem: frango,
     descricaoLonga: "Cuscuz de milho quentinho e fofinho, recheado com peito de frango desfiado, refogado em temperos naturais e muito suculento.",
     dica: "Fica perfeito com adicional de requeijão tipo Catupiry ou Queijo Coalho!",
   },
   {
-    id: "carne-de-sol", categoria: "salgados", nome: "Cuscuz do Sertão", descricao: "Carne de sol desfiada acebolada", preco: 14.99, imagem: carneDeSol,
+    id: "carne-de-sol", prato: "cuscuz", categoria: "salgados", nome: "Do Sertão", descricao: "Carne de sol desfiada acebolada", preco: 14.99, imagem: carneDeSol,
     descricaoLonga: "O legítimo sabor nordestino! Cuscuz fofinho recheado com carne de sol artesanal, desfiada e acebolada na medida certa.",
     dica: "Adicione Queijo Coalho tostado e mude o seu dia!",
   },
   {
-    id: "calabresa", categoria: "salgados", nome: "Cuscuz Arretado", descricao: "Calabresa fina defumada", preco: 13.99, imagem: calabresa,
+    id: "calabresa", prato: "cuscuz", categoria: "salgados", nome: "Arretado", descricao: "Calabresa fina defumada", preco: 13.99, imagem: calabresa,
     descricaoLonga: "Para quem ama sabor marcante. Cuscuz de milho recheado com finas rodelas de calabresa defumada, salteadas até ficarem bem douradinhas.",
     dica: "Combina muito com um Ovo Mexido por cima.",
   },
   {
-    id: "carne-moida", categoria: "salgados", nome: "Cuscuz Tropeiro", descricao: "Carne moída bem suculenta", preco: 11.99, imagem: carneMoida,
+    id: "carne-moida", prato: "cuscuz", categoria: "salgados", nome: "Tropeiro", descricao: "Carne moída bem suculenta", preco: 11.99, imagem: carneMoida,
     descricaoLonga: "Comida com gostinho de casa! Cuscuz recheado com carne moída bem soltinha, cozida com temperos frescos e muito molhadinha.",
     dica: "Experimente adicionar Mussarela derretida.",
   },
   {
-    id: "salsicha-ao-molho", categoria: "salgados", nome: "Cuscuz de Feira", descricao: "Salsicha ao molho caseiro", preco: 11.99, imagem: salsicha,
+    id: "salsicha-ao-molho", prato: "cuscuz", categoria: "salgados", nome: "De Feira", descricao: "Salsicha ao molho caseiro", preco: 11.99, imagem: salsicha,
     descricaoLonga: "Aquele clássico irresistível. Salsichas picadas em um molho de tomate caseiro encorpado, temperado com carinho e servido com nosso cuscuz quentinho.",
   },
-
+  // ---------- Cuscuz · doces ----------
   {
-    id: "cartola", categoria: "doces", nome: "Cuscuz Cartola", descricao: "Banana frita com queijo coalho, açúcar e canela", preco: 12.99, imagem: cartola,
+    id: "cartola", prato: "cuscuz", categoria: "doces", nome: "Cartola", descricao: "Banana frita com queijo coalho, açúcar e canela", preco: 12.99, imagem: cartola,
     descricaoLonga: "A sobremesa mais amada do Nordeste em forma de cuscuz! Camadas de banana frita na chapa, queijo coalho derretido, finalizadas com uma chuvinha de açúcar e canela. Conforto em cada garfada.",
   },
   {
-    id: "romeu-e-julieta", categoria: "doces", nome: "Cuscuz Romeu & Julieta", descricao: "Queijo coalho derretido com goiabada cascão", preco: 12.99, imagem: romeu,
+    id: "romeu-e-julieta", prato: "cuscuz", categoria: "doces", nome: "Romeu & Julieta", descricao: "Queijo coalho derretido com goiabada cascão", preco: 12.99, imagem: romeu,
     descricaoLonga: "A combinação perfeita do salgado com o doce. Cuscuz quentinho recheado com o sabor marcante do queijo coalho derretido e a suavidade da goiabada cascão cremosa.",
   },
 
+  // ---------- Macaxeira ----------
+  // ATENÇÃO: preços PROVISÓRIOS (iguais aos do cuscuz equivalente) e sem foto. Confirme os valores antes de publicar.
+  // As dicas de Quintura (bacon), Da Terra (ovo frito) e Luar do Sertão (melaço) esperam esses itens existirem em "adicionais".
+  {
+    id: "macaxeira-frango", prato: "macaxeira", categoria: "salgados", nome: "Aprumada", descricao: "Frango desfiado super suculento", preco: 14.99,
+    descricaoLonga: "Macaxeira cozida no ponto certo e finalizada na chapa, coberta com peito de frango desfiado super suculento, refogado em temperos naturais e ervas frescas.",
+    dica: "Fica perfeita com adicional de Requeijão Cremoso maçaricado!",
+  },
+  {
+    id: "macaxeira-carne-de-sol", prato: "macaxeira", categoria: "salgados", nome: "Fulô de Mandacaru", descricao: "Carne de sol em cubos acebolada na manteiga de garrafa", preco: 14.99,
+    descricaoLonga: "Forte e marcante como o Sertão! Macaxeira super macia servida com uma generosa porção de carne de sol artesanal, desfiada e acebolada na manteiga de garrafa.",
+    dica: "Adicione Queijo Coalho tostado e mude o seu dia!",
+  },
+  {
+    id: "macaxeira-calabresa", prato: "macaxeira", categoria: "salgados", nome: "Quintura", descricao: "Calabresa defumada em rodelas, dourada e crocante", preco: 13.99,
+    descricaoLonga: "Para quem ama sabor intenso e marcante. Nossa macaxeira fumegante coberta com cubos de calabresa defumada, salteados na chapa até ficarem bem dourados e crocantes.",
+  },
+  {
+    id: "macaxeira-carne-moida", prato: "macaxeira", categoria: "salgados", nome: "Arriégua", descricao: "Carne moída bem soltinha e molhadinha", preco: 11.99,
+    descricaoLonga: "Aquele gostinho inconfundível de comida afetiva feita em casa. Macaxeira cozida derretendo na boca, servida com carne moída bem soltinha, temperos frescos e muito molhadinha.",
+    dica: "Experimente adicionar Queijo Mussarela derretido.",
+  },
+  {
+    id: "macaxeira-salsicha", prato: "macaxeira", categoria: "salgados", nome: "Da Terra", descricao: "Salsicha ao molho de tomate caseiro", preco: 11.99,
+    descricaoLonga: "O clássico popular que todo mundo respeita. Salsichas picadas em um molho de tomate caseiro encorpado, temperado com carinho e servido sobre a nossa macaxeira quentinha.",
+  },
+  {
+    id: "macaxeira-cartola", prato: "macaxeira", categoria: "doces", nome: "Luar do Sertão", descricao: "Banana frita, queijo coalho, açúcar e canela", preco: 12.99,
+    descricaoLonga: "Uma releitura surpreendente e iluminada da nossa sobremesa mais famosa. Macaxeira dourada na chapa, servida com fatias de banana frita, queijo coalho derretido e finalizada com açúcar e canela.",
+  },
+  {
+    id: "macaxeira-romeu-e-julieta", prato: "macaxeira", categoria: "doces", nome: "Xodózin", descricao: "Queijo coalho com goiabada cascão derretida", preco: 12.99,
+    descricaoLonga: "Aquele abraço quente entre o doce e o salgado. Macaxeira quentinha que desmancha na boca, acompanhada do sabor marcante do queijo coalho e o toque cremoso da goiabada cascão derretida.",
+  },
+
+  // ---------- Bebidas ----------
   { id: "coca-cola", categoria: "bebidas", nome: "Coca-Cola 350ml", descricao: "Refrigerante em lata - 350ml", preco: 5.99, imagem: coca },
   { id: "guarana-antartica", categoria: "bebidas", nome: "Guaraná Antártica", descricao: "Refrigerante em lata - 350ml", preco: 5.99, imagem: guarana },
   { id: "fanta-laranja", categoria: "bebidas", nome: "Fanta laranja", descricao: "Refrigerante em lata - 350ml", preco: 5.99, imagem: fanta },
@@ -99,8 +150,8 @@ export const contato = {
   /** WhatsApp no formato internacional, só dígitos */
   whatsapp: "5582994336126",
   telefoneExibicao: "(82) 99433-6126",
-  horarioPedidos: "16h",
-  horarioEntrega: "17h às 22h",
+  horarioPedidos: `${LIMITE_PEDIDO_H}h`,
+  horarioEntrega: `${ENTREGA_INICIO_H}h às ${ENTREGA_FIM_H}h`,
 };
 
 /** Entrega sem taxa (Figma: R$ 0,00). */

@@ -3,7 +3,7 @@ import { mascararCep, mascararTelefone, paraDadosPedido, rascunhoVazio, sanearRa
 
 const valido: Rascunho = {
   nome: "Rodolpho", telefone: "(82) 99433-6126", cep: "57046-000", rua: "Rua Exemplo", numero: "120",
-  complemento: "Bloco B, apto 302", bairro: "Serraria", cidade: "Maceió", uf: "AL", referencia: "",
+  complemento: "Bloco B, apto 302", bairro: "Serraria", cidade: "Maceió", uf: "AL", horario: "18-19", referencia: "",
   pagamento: "dinheiro", trocoTexto: "50,00", semTroco: false, observacoes: "",
 };
 
@@ -32,7 +32,7 @@ describe("validarPedido", () => {
   it("pedido completo não tem erros", () => expect(validarPedido(valido, 22.98)).toEqual({}));
   it("rascunho vazio acusa os campos na ordem do formulário", () => {
     expect(Object.keys(validarPedido(rascunhoVazio, 22.98))).toEqual(
-      ["nome", "telefone", "cep", "rua", "numero", "complemento", "bairro", "cidade", "uf", "pagamento"],
+      ["nome", "telefone", "cep", "rua", "numero", "complemento", "bairro", "cidade", "uf", "horario", "pagamento"],
     );
   });
   it("telefone: DDD e nono dígito", () => {
@@ -40,6 +40,10 @@ describe("validarPedido", () => {
     expect(validarPedido({ ...valido, telefone: "(82) 89433-6126" }, 20).telefone).toBeDefined();
     expect(validarPedido({ ...valido, telefone: "(02) 99433-6126" }, 20).telefone).toBeDefined();
     expect(validarPedido({ ...valido, telefone: "82994336" }, 20).telefone).toBeDefined();
+  });
+  it("horário de entrega precisa ser uma das faixas", () => {
+    expect(validarPedido({ ...valido, horario: "" }, 20).horario).toBeDefined();
+    expect(validarPedido({ ...valido, horario: "03-04" }, 20).horario).toBeDefined();
   });
   it("UF precisa existir", () => expect(validarPedido({ ...valido, uf: "XX" }, 20).uf).toBeDefined());
   it("troco: menor que o total, vazio, e dispensado", () => {

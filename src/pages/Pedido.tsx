@@ -1,10 +1,14 @@
 import { CaretLeft, Check, CreditCard, MagnifyingGlass, Minus, Money, PixLogo, Plus } from "@phosphor-icons/react";
 import { useEffect, useMemo, useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { AvisoEncerrado } from "../components/AvisoEncerrado";
+import { FotoProduto } from "../components/FotoProduto";
 import { Banner, Button, ButtonLink, Checkbox, EmptyState, Input, Textarea } from "../components/ui";
 import { useCart } from "../context/CartContext";
-import { adicionais, formatarPreco, taxaEntrega } from "../data/menu";
+import { adicionais, contato, formatarPreco, nomeCompleto, taxaEntrega } from "../data/menu";
 import { buscarCep } from "../lib/cep";
+import { janelasEntrega } from "../lib/entrega";
+import { useEntrega } from "../hooks/useEntrega";
 import {
   carregarRascunho, mascararCep, mascararTelefone, salvarRascunho, validarPedido,
   type Campo, type Rascunho,
@@ -34,6 +38,8 @@ export default function Pedido() {
   const navigate = useNavigate();
   const { linhas, totalPreco, alterar } = useCart();
   const total = Math.round((totalPreco + taxaEntrega) * 100) / 100;
+  const { dia } = useEntrega();
+  const fechado = dia === null; // pedidos de hoje encerrados
 
   const [r, setR] = useState<Rascunho>(carregarRascunho);
   const [tentou, setTentou] = useState(false);
@@ -92,6 +98,7 @@ export default function Pedido() {
 
   function enviar(ev: FormEvent) {
     ev.preventDefault();
+    if (fechado) return;
     setTentou(true);
     const primeiro = Object.keys(erros)[0];
     if (primeiro) return focar(primeiro);
@@ -124,30 +131,32 @@ export default function Pedido() {
             <h1 className="t-secao">Seu pedido</h1>
           </div>
 
+          <AvisoEncerrado />
+
           <section aria-labelledby="titulo-itens">
             <h2 className="t-subtitulo" id="titulo-itens">Itens</h2>
             <ul className="pedido-itens">
               {linhas.map((l) => (
                 <li className="pedido-item" key={l.chave}>
-                  <img className={l.produto.ajuste === "contain" ? "contain" : ""} src={l.produto.imagem} alt="" />
+                  <FotoProduto produto={l.produto} decorativa className={l.produto.ajuste === "contain" ? "contain" : ""} />
                   <div className="pedido-item__corpo">
-                    <h3 className="pedido-item__nome">{l.produto.nome}</h3>
+                    <h3 className="pedido-item__nome">{nomeCompleto(l.produto)}</h3>
                     {l.acompanhamentoNome && <p className="pedido-item__extra">Acompanhamento: {l.acompanhamentoNome}</p>}
                     {l.extras.map((e) => (
                       <p className="pedido-item__extra" key={e}>+ {adicionais.find((a) => a.id === e)?.nome}</p>
                     ))}
                     <div className="pedido-item__rodape">
                       <span className="preco">{formatarPreco(l.subtotal)}</span>
-                      <div className="stepper" role="group" aria-label={`Quantidade de ${l.produto.nome}`}>
+                      <div className="stepper" role="group" aria-label={`Quantidade de ${nomeCompleto(l.produto)}`}>
                         <button
                           type="button"
                           onClick={() => alterar(l.chave, -1)}
-                          aria-label={l.quantidade === 1 ? `Remover ${l.produto.nome} do pedido` : `Diminuir quantidade de ${l.produto.nome}`}
+                          aria-label={l.quantidade === 1 ? `Remover ${nomeCompleto(l.produto)} do pedido` : `Diminuir quantidade de ${nomeCompleto(l.produto)}`}
                         >
                           <Minus size={16} />
                         </button>
                         <output aria-live="polite">{l.quantidade}</output>
-                        <button type="button" onClick={() => alterar(l.chave, 1)} aria-label={`Aumentar quantidade de ${l.produto.nome}`}>
+                        <button type="button" onClick={() => alterar(l.chave, 1)} aria-label={`Aumentar quantidade de ${nomeCompleto(l.produto)}`}>
                           <Plus size={16} />
                         </button>
                       </div>
@@ -206,6 +215,26 @@ export default function Pedido() {
               />
             </fieldset>
 
+            <fieldset className="pedido__secao" aria-describedby={erro("horario") ? "erro-horario" : undefined}>
+              <legend className="t-subtitulo">Horário de entrega</legend>
+              <p className="aviso-privacidade">
+                Escolha a faixa em que prefere receber ({dia ?? "hoje"}). Pedidos até as {contato.horarioPedidos}, entrega das {contato.horarioEntrega}.
+              </p>
+              <div className={`pagto-lista pagto-lista--grade${erro("horario") ? " pagto-lista--erro" : ""}`}>
+                {janelasEntrega.map((j) => (
+                  <label className="pagto" key={j.id}>
+                    <input
+                      type="radio" name="horario" value={j.id} checked={r.horario === j.id}
+                      onChange={() => { mudar("horario", j.id); setTocados((t) => ({ ...t, horario: true })); }}
+                    />
+                    <span className="pagto__nome">{j.rotulo}</span>
+                    <span className="pagto__bolinha" aria-hidden="true" />
+                  </label>
+                ))}
+              </div>
+              {erro("horario") && <p className="erro-msg" id="erro-horario">{erro("horario")}</p>}
+            </fieldset>
+
             <fieldset className="pedido__secao" aria-describedby={erro("pagamento") ? "erro-pagamento" : undefined}>
               <legend className="t-subtitulo">Forma de pagamento</legend>
               <div className={`pagto-lista${erro("pagamento") ? " pagto-lista--erro" : ""}`}>
@@ -259,7 +288,7 @@ export default function Pedido() {
 
       <div className="detail-bar">
         <div className="container detail-bar__inner">
-          <Button type="submit" form="form-pedido" tamanho="lg" bloco>
+          <Button type="submit" form="form-pedido" tamanho="lg" bloco disabled={fechado}>
             <Check className="icon" aria-hidden="true" />
             Finalizar pedido · {formatarPreco(total)}
           </Button>

@@ -1,7 +1,7 @@
 import { Minus, Plus } from "@phosphor-icons/react";
 import { Link, useLocation } from "react-router-dom";
 import { chaveDe, useCart } from "../context/CartContext";
-import { exigeAcompanhamento, type Produto } from "../data/menu";
+import { exigeAcompanhamento, nomeCompleto, type Produto } from "../data/menu";
 
 /**
  * Salgados exigem escolher acompanhamento: "Pedir" abre o Detalhe do item.
@@ -10,7 +10,8 @@ import { exigeAcompanhamento, type Produto } from "../data/menu";
 export function OrderControl({ produto }: { produto: Produto }) {
   const { quantidadeSimples, adicionar, alterar } = useCart();
   const local = useLocation();
-  const { id, nome } = produto;
+  const { id } = produto;
+  const nome = nomeCompleto(produto);
   const qtd = quantidadeSimples(id);
 
   if (exigeAcompanhamento(produto)) {

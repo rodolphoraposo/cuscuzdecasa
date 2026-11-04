@@ -110,3 +110,10 @@ describe("acompanhamento na comanda", () => {
     expect(texto).toContain("1x Cuscuz do Sertão .. R$ 16,99\n   Acomp.: Refogado especial da casa\n   + Mussarela\n1x Coca-Cola");
   });
 });
+
+describe("horário de entrega na comanda", () => {
+  it("aparece logo abaixo de *ENTREGA*", () => {
+    const { texto } = montarComanda({ ...pedido, entrega: "hoje, 18h às 19h" }, itens, totais, agora);
+    expect(texto).toContain("*ENTREGA*\nHorário: hoje, 18h às 19h\nRua Exemplo, 123 - Serraria");
+  });
+});

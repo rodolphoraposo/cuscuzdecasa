@@ -1,6 +1,7 @@
 import { CaretLeft, Minus, Plus, Handbag } from "@phosphor-icons/react";
 import { useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { FotoProduto } from "../components/FotoProduto";
 import { Button, ButtonLink, Checkbox, EmptyState, Radio } from "../components/ui";
 import { MAX_QTD, useCart } from "../context/CartContext";
 import { aceitaAdicionais, acompanhamentos, adicionais, exigeAcompanhamento, formatarPreco, produtos, type Produto } from "../data/menu";
@@ -40,7 +41,7 @@ function Detalhe({ produto }: { produto: Produto }) {
   const opcoes = aceitaAdicionais(produto) ? adicionais : [];
   const unitario = produto.preco + extras.reduce((t, e) => t + (adicionais.find((a) => a.id === e)?.preco ?? 0), 0);
   const total = Math.round(unitario * 100) * qtd / 100;
-  const padrao = `/cardapio?categoria=${produto.categoria}`;
+  const padrao = `/cardapio?prato=${produto.prato ?? "cuscuz"}&categoria=${produto.categoria}`;
   const voltar = origem ?? padrao; // volta para onde o cliente estava (Início, lista ou grade)
   const aposAdicionar = origem?.startsWith("/cardapio") ? origem : padrao; // depois de adicionar, mostra o cardápio com a barra do pedido
 
@@ -65,7 +66,7 @@ function Detalhe({ produto }: { produto: Produto }) {
         <Link className="icon-btn icon-btn--destaque detail-hero__voltar" to={voltar} aria-label="Voltar ao cardápio">
           <CaretLeft size={20} />
         </Link>
-        <img src={produto.imagem} alt={produto.nome} />
+        <FotoProduto produto={produto} lazy={false} />
       </div>
 
       <div className="container">
