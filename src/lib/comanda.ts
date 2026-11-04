@@ -116,10 +116,13 @@ export function montarComanda(
 
   const rotulos = itens.map((i) => `${i.quantidade}x ${limpar(i.nome, 40)}`);
   const largura = Math.max(...rotulos.map((r) => r.length));
+  const precos = itens.map((i) => brl(i.subtotal));
+  const larguraPreco = Math.max(...precos.map((p) => p.length));
   const linhasItens = itens.flatMap((item, n) => {
-    const pontos = ".".repeat(largura - rotulos[n].length + 2);
+    // os pontos também absorvem a diferença de largura dos preços: o fim da linha fica alinhado
+    const pontos = ".".repeat(largura - rotulos[n].length + 2 + (larguraPreco - precos[n].length));
     return [
-      `${rotulos[n]} ${pontos} ${brl(item.subtotal)}`,
+      `${rotulos[n]} ${pontos} ${precos[n]}`,
       ...(item.acompanhamento ? [`   Acomp.: ${limpar(item.acompanhamento, 40)}`] : []),
       ...item.extras.map((e) => `   + ${limpar(e, 40)}`),
     ];
@@ -150,7 +153,8 @@ export function montarComanda(
       `Compl.: ${limpar(pedido.complemento, 60)}`,
       ...(referencia ? [`Ref.: ${referencia}`] : []),
     ].join("\n"),
-    `*ITENS*\n${linhasItens.join("\n")}`,
+    // Entre ``` o WhatsApp usa fonte monoespaçada, o que alinha os pontinhos e os preços.
+    `*ITENS*\n\`\`\`\n${linhasItens.join("\n")}\n\`\`\``,
     `*Subtotal:* ${brl(totais.subtotal)}\n*Entrega:* ${brl(totais.entrega)}\n*TOTAL:* ${brl(totais.total)}`,
     pagamento,
     ...(observacoes ? [`*OBS:* ${observacoes}`] : []),

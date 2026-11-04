@@ -44,9 +44,11 @@ describe("montarComanda", () => {
         "Ref.: Portaria 2",
         "",
         "*ITENS*",
+        "```",
         "1x Carne de Sol .. R$ 16,99",
         "   + Queijo coalho",
-        "1x Coca-Cola ..... R$ 5,99",
+        "1x Coca-Cola ...... R$ 5,99",
+        "```",
         "",
         "*Subtotal:* R$ 22,98",
         "*Entrega:* R$ 0,00",
@@ -115,5 +117,17 @@ describe("horário de entrega na comanda", () => {
   it("aparece logo abaixo de *ENTREGA*", () => {
     const { texto } = montarComanda({ ...pedido, entrega: "hoje, 18h às 19h" }, itens, totais, agora);
     expect(texto).toContain("*ENTREGA*\nHorário: hoje, 18h às 19h\nRua Exemplo, 123 - Serraria");
+  });
+});
+
+describe("itens em fonte monoespaçada", () => {
+  it("fica entre ``` e o fim das linhas (preços) alinha mesmo com preços de tamanhos diferentes", () => {
+    const { texto } = montarComanda(pedido, itens, totais, agora);
+    const bloco = texto.split("```")[1].trim().split("\n").filter((l) => !l.startsWith("   "));
+    expect(bloco.map((l) => l.length)).toEqual([27, 27]);
+  });
+  it("o cliente não consegue abrir nem fechar o bloco com crases", () => {
+    const { texto } = montarComanda({ ...pedido, nome: "``` abre", observacoes: "```" }, itens, totais, agora);
+    expect(texto.split("```")).toHaveLength(3); // só as duas crases triplas da comanda
   });
 });

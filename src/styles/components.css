@@ -262,3 +262,8 @@ main:focus { outline: none; }
 .form input:not([type="radio"]):not([type="checkbox"]), .form textarea { width: 100%; min-width: 0; }
 .aviso-encerrado { margin-bottom: var(--esp-16); }
 .pedido .aviso-encerrado { margin-bottom: 0; }
+
+/* ---------- Frase de chamada da Home e comanda em fonte monoespaçada ---------- */
+.hero__cta { padding: var(--esp-12) var(--esp-16); background: var(--destaque-fundo-suave); border-left: 4px solid var(--destaque); border-radius: var(--raio-8); color: var(--texto-primario); font: 700 22px / 1.25 var(--fonte-titulo); }
+@media (min-width: 900px) { .hero__cta { font-size: 26px; } }
+.previa__mono { margin-block: var(--esp-4); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; font-size: 13px; line-height: 1.5; overflow-x: auto; }

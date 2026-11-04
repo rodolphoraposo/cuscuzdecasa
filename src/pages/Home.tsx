@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import hero from "../assets/home/hero-carne-de-sol-recheio.webp";
 import logo from "../assets/logo/logo-full.webp";
+import { AvisoEncerrado } from "../components/AvisoEncerrado";
 import { Tag } from "../components/ui";
 import { ProductRow } from "../components/ProductItem";
 import { condominios, contato, destaquesHome, produtos } from "../data/menu";
@@ -23,9 +24,11 @@ export default function Home() {
           <p className="t-corpo hero__lead">
             Cuscuz recheado, quentinho e preparado com cuidado. Peça pelo cardápio digital e receba no seu condomínio.
           </p>
+          <p className="hero__cta">Faça seu pedido de dia e receba à noite!</p>
           <p className="t-legenda">
             Pedidos até as {contato.horarioPedidos} · entrega das {contato.horarioEntrega}
           </p>
+          <AvisoEncerrado />
           <div className="hero__acoes">
             <Link to="/cardapio" className="btn btn--primary btn--lg">Peça agora!</Link>
             <a href="#como-funciona" className="btn btn--soft btn--sm">Como funciona</a>

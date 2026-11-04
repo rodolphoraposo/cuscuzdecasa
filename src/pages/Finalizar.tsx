@@ -4,7 +4,7 @@ import { Link, Navigate, useNavigate } from "react-router-dom";
 import { PreviaComanda } from "../components/PreviaComanda";
 import { ButtonLink } from "../components/ui";
 import { useCart } from "../context/CartContext";
-import { adicionais, contato, nomeCompleto, taxaEntrega } from "../data/menu";
+import { adicionais, contato, taxaEntrega } from "../data/menu";
 import { linkWhatsApp, montarComanda } from "../lib/comanda";
 import { descricaoEntrega, diaDaEntrega } from "../lib/entrega";
 import { carregarRascunho, paraDadosPedido, validarPedido } from "../lib/formulario";
@@ -28,7 +28,7 @@ export default function Finalizar() {
       return montarComanda(
         { ...paraDadosPedido(rascunho), entrega: entregaDesc },
         linhas.map((l) => ({
-          nome: nomeCompleto(l.produto),
+          nome: l.produto.nome, // os nomes são únicos; sem a base, a linha cabe na tela do WhatsApp
           quantidade: l.quantidade,
           acompanhamento: l.acompanhamentoNome,
           extras: l.extras.map((e) => adicionais.find((a) => a.id === e)?.nome ?? ""),

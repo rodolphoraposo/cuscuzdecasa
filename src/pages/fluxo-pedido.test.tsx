@@ -67,7 +67,7 @@ describe("fluxo Seu pedido → Falta só um passo", () => {
     expect(link.rel).toContain("noopener");
     const texto = decodeURIComponent(link.href.split("text=")[1]);
     expect(texto).toContain("Rua Exemplo, 120 - Serraria");
-    expect(texto).toContain("1x Do Sertão (cuscuz)");
+    expect(texto).toContain("```\n1x Do Sertão ..");
     expect(texto).toContain("*ENTREGA*\nHorário: hoje, 18h às 19h");
     expect(texto).toContain("   Acomp.: Vinagrete da casa\n   + Queijo coalho");
     expect(texto).toContain("*TOTAL:* R$ 22,98");
@@ -80,6 +80,8 @@ describe("fluxo Seu pedido → Falta só um passo", () => {
     const previa = screen.getByRole("group", { name: "Resumo" });
     expect(previa.textContent).toContain("Troco para: R$ 50,00 (levar R$ 27,02)");
     expect(previa.querySelector("strong")?.textContent).toBe("COMANDA · CUSCUZ DE CASA");
+    expect(previa.querySelector(".previa__mono")?.textContent).toContain("Acomp.: Vinagrete da casa"); // itens em bloco monoespaçado
+    expect(previa.textContent).not.toContain("```"); // as crases não aparecem na prévia
 
     // enviar: abre o WhatsApp (outra aba) e esta aba vai para o agradecimento, sem voltar ao carrinho
     await u.click(link);
