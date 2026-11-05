@@ -49,11 +49,12 @@ export function Header() {
               <span className="header__badge" aria-hidden="true">{totalItens}</span>
             </Link>
           )}
-          <button type="button" className="icon-btn" aria-pressed={tema === "light"} aria-label="Tema claro" onClick={() => definir("light")}>
-            <Sun size={24} />
-          </button>
-          <button type="button" className="icon-btn" aria-pressed={tema === "dark"} aria-label="Tema escuro" onClick={() => definir("dark")}>
-            <Moon size={24} />
+          {/* Um botão só: mostra a Lua no tema claro (vai para o escuro) e o Sol no tema escuro (vai para o claro). */}
+          <button
+            type="button" className="icon-btn" aria-label={tema === "light" ? "Ativar tema escuro" : "Ativar tema claro"}
+            onClick={() => definir(tema === "light" ? "dark" : "light")}
+          >
+            {tema === "light" ? <Moon size={24} /> : <Sun size={24} />}
           </button>
           <button
             ref={botaoMenu} type="button" className="icon-btn header__menu" aria-expanded={aberto} aria-controls="menu-mobile"

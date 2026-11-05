@@ -67,7 +67,7 @@ describe("fluxo Seu pedido → Falta só um passo", () => {
     expect(link.rel).toContain("noopener");
     const texto = decodeURIComponent(link.href.split("text=")[1]);
     expect(texto).toContain("Rua Exemplo, 120 - Serraria");
-    expect(texto).toContain("```\n1x Do Sertão ..");
+    expect(texto).toContain("```1x Do Sertão ..");
     expect(texto).toContain("*ENTREGA*\nHorário: hoje, 18h às 19h");
     expect(texto).toContain("   Acomp.: Vinagrete da casa\n   + Queijo coalho");
     expect(texto).toContain("*TOTAL:* R$ 22,98");

@@ -271,3 +271,4 @@ main:focus { outline: none; }
 /* ---------- Desfazer remoção ---------- */
 .desfazer { display: flex; align-items: center; justify-content: space-between; gap: var(--esp-12); margin-top: var(--esp-16); padding: var(--esp-8) var(--esp-16); background: var(--fundo-superficie); border: 1px solid var(--borda-sutil); border-radius: var(--raio-8); font-size: 14px; }
 .desfazer__btn { min-height: 32px; padding: var(--esp-4) var(--esp-8); background: none; border: 0; color: var(--acao-primaria); font: 700 14px / 1.4 var(--fonte-texto); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.pagto__nome small { display: block; font-size: 12px; line-height: 1.4; color: var(--texto-secundario); }

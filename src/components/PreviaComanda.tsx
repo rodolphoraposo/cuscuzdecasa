@@ -5,33 +5,25 @@ import type { ReactNode } from "react";
  * Tudo vira elementos do React (nada de HTML injetado).
  */
 export function PreviaComanda({ texto, rotuloId }: { texto: string; rotuloId: string }) {
-  const blocos: ReactNode[] = [];
-  let mono: string[] | null = null;
-
-  const linhas = texto.split("\n");
-  for (let i = 0; i < linhas.length; i++) {
-    const linha = linhas[i];
-    if (linha === "```") {
-      if (mono === null) {
-        mono = [];
-      } else {
-        blocos.push(
-          <div className="previa__mono" key={`m${i}`}>
-            {mono.map((l, j) => <p className="previa__linha" key={j}>{l}</p>)}
-          </div>,
-        );
-        mono = null;
-      }
-    } else if (mono !== null) {
-      mono.push(linha);
-    } else {
-      blocos.push(<p className="previa__linha" key={i}>{linha === "" ? "\u00a0" : negritos(linha)}</p>);
-    }
-  }
-
+  const partes = texto.split("```"); // posições ímpares = bloco monoespaçado
   return (
     <div className="previa" role="group" aria-labelledby={rotuloId}>
-      {blocos}
+      {partes.map((parte, i) => {
+        if (i % 2 === 1) {
+          return (
+            <div className="previa__mono" key={i}>
+              {parte.split("\n").map((linha, j) => <p className="previa__linha" key={j}>{linha}</p>)}
+            </div>
+          );
+        }
+        // o "\n" colado ao bloco só termina a linha: não é linha em branco
+        let trecho = parte;
+        if (i > 0) trecho = trecho.replace(/^\n/, "");
+        if (i < partes.length - 1) trecho = trecho.replace(/\n$/, "");
+        return trecho.split("\n").map((linha, j) => (
+          <p className="previa__linha" key={`${i}-${j}`}>{linha === "" ? "\u00a0" : negritos(linha)}</p>
+        ));
+      })}
     </div>
   );
 }

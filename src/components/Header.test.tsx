@@ -47,4 +47,14 @@ describe("cabeçalho no celular", () => {
     abrir();
     expect(screen.getByRole("link", { name: "Ver pedido, 2 itens" }).getAttribute("href")).toBe("/pedido");
   });
+
+  it("um botão só alterna o tema: Lua no claro, Sol no escuro", async () => {
+    const u = userEvent.setup();
+    abrir();
+    expect(screen.queryByRole("button", { name: "Ativar tema claro" })).toBeNull();
+    await u.click(screen.getByRole("button", { name: "Ativar tema escuro" }));
+    expect(document.documentElement.dataset.theme).toBe("dark");
+    await u.click(screen.getByRole("button", { name: "Ativar tema claro" }));
+    expect(document.documentElement.dataset.theme).toBe("light");
+  });
 });

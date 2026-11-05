@@ -65,7 +65,7 @@ describe("sequência do pedido: prato → capriche → bebida", () => {
     expect(screen.queryByRole("link", { name: /Ver pedido/ })).toBeNull();
   });
 
-  it("macaxeira: escolher o prato mostra os 5 salgados, com foto provisória e acompanhamento", async () => {
+  it("macaxeira: escolher o prato mostra os 5 salgados (Arriégua agora é de carne suína)", async () => {
     const u = userEvent.setup();
     abrir("/cardapio");
     expect(screen.queryByRole("link", { name: "Aprumada" })).toBeNull();
@@ -74,7 +74,9 @@ describe("sequência do pedido: prato → capriche → bebida", () => {
     for (const n of ["Aprumada", "Fulô de Mandacaru", "Quintura", "Arriégua", "Da Terra"]) {
       expect(screen.getByRole("link", { name: n })).toBeTruthy();
     }
-    expect(screen.getAllByRole("img", { name: /em breve/ }).length).toBe(5);
+    expect(screen.getByText("Carne suína em cubos acebolada")).toBeTruthy();
+    expect(screen.queryByText(/carne moída bem soltinha e molhadinha/i)).toBeNull();
+    expect(screen.queryAllByRole("img", { name: /em breve/ })).toHaveLength(0); // todos têm foto
     await u.click(screen.getByRole("tab", { name: "Doces" }));
     expect(screen.getByRole("link", { name: "Luar do Sertão" })).toBeTruthy();
     expect(screen.getByRole("link", { name: "Xodózin" })).toBeTruthy();

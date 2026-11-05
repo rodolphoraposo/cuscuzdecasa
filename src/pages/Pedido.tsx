@@ -29,7 +29,7 @@ const MENSAGEM_CEP: Record<StatusCep, string> = {
 const FORMAS = [
   { id: "pix", nome: "Pix", Icone: PixLogo },
   { id: "dinheiro", nome: "Dinheiro", Icone: Money },
-  { id: "cartao", nome: "Cartão na entrega", Icone: CreditCard },
+  { id: "cartao", nome: "Cartão na entrega", detalhe: "Crédito ou débito", Icone: CreditCard },
 ] as const;
 
 const soDigitos = (v: string) => v.replace(/\D/g, "");
@@ -266,14 +266,14 @@ export default function Pedido() {
             <fieldset className="pedido__secao" aria-describedby={erro("pagamento") ? "erro-pagamento" : undefined}>
               <legend className="t-subtitulo">Forma de pagamento</legend>
               <div className={`pagto-lista${erro("pagamento") ? " pagto-lista--erro" : ""}`}>
-                {FORMAS.map(({ id, nome, Icone }) => (
+                {FORMAS.map(({ id, nome, Icone, ...resto }) => (
                   <label className="pagto" key={id}>
                     <input
                       type="radio" name="pagamento" value={id} checked={r.pagamento === id}
                       onChange={() => { mudar("pagamento", id); setTocados((t) => ({ ...t, pagamento: true })); }}
                     />
                     <Icone className="icon" size={24} aria-hidden="true" />
-                    <span className="pagto__nome">{nome}</span>
+                    <span className="pagto__nome">{nome}{"detalhe" in resto && <small>{resto.detalhe}</small>}</span>
                     <span className="pagto__bolinha" aria-hidden="true" />
                   </label>
                 ))}

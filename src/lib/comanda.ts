@@ -8,7 +8,7 @@ export type FormaPagamento = "pix" | "dinheiro" | "cartao";
 const ROTULO_PAGAMENTO: Record<FormaPagamento, string> = {
   pix: "Pix",
   dinheiro: "Dinheiro",
-  cartao: "Cartão na entrega",
+  cartao: "Cartão na entrega · levar maquineta",
 };
 
 export interface ItemComanda {
@@ -153,8 +153,8 @@ export function montarComanda(
       `Compl.: ${limpar(pedido.complemento, 60)}`,
       ...(referencia ? [`Ref.: ${referencia}`] : []),
     ].join("\n"),
-    // Entre ``` o WhatsApp usa fonte monoespaçada, o que alinha os pontinhos e os preços.
-    `*ITENS*\n\`\`\`\n${linhasItens.join("\n")}\n\`\`\``,
+    // Entre ``` o WhatsApp usa fonte monoespaçada (alinha pontinhos e preços). Crases coladas no texto: sem linhas em branco extras.
+    `*ITENS*\n\`\`\`${linhasItens.join("\n")}\`\`\``,
     `*Subtotal:* ${brl(totais.subtotal)}\n*Entrega:* ${brl(totais.entrega)}\n*TOTAL:* ${brl(totais.total)}`,
     pagamento,
     ...(observacoes ? [`*OBS:* ${observacoes}`] : []),

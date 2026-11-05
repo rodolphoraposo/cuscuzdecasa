@@ -27,7 +27,7 @@ npm run build    # verificação de tipos + build de produção
 | Fotos dos pratos / logos usadas no site | `src/assets/produtos/`, `src/assets/logo/` |
 | Pacote completo de logos (não vai para o site) | `design/logo/` |
 
-Ao trocar fotos, mantenha o formato `.webp` e importe no `menu.ts`. Um produto sem foto mostra "Foto em breve".
+Fotos: sempre `.webp` em `src/assets/produtos/`. O nome do arquivo de cada produto fica em `arquivoDaFoto` (`menu.ts`). Sem o arquivo, a tela mostra "Foto em breve". `npm test` avisa se faltar alguma foto ou se alguma passar de 300 KB.
 
 ## Estrutura
 
@@ -64,8 +64,7 @@ Início → Cardápio (Cuscuz ou Macaxeira → salgados/doces/bebidas) → Detal
 
 - [ ] Preencher CPF/CNPJ e e-mail em `src/data/empresa.ts` e pedir revisão profissional dos Termos e da Privacidade.
 - [ ] Atualizar o número do WhatsApp em `contato` (`menu.ts`).
-- [ ] Macaxeira: confirmar preços e colocar as fotos.
-- [ ] Decidir a forma de pagamento "Cartão na entrega" (hoje ela aparece no pedido).
+- [ ] Macaxeira: confirmar os preços (hoje iguais aos do cuscuz equivalente).
 - [ ] Confirmar `APOS_O_LIMITE` em `entrega.ts`.
 - [ ] Fazer um pedido de teste real até o WhatsApp (comanda em fonte monoespaçada) e compartilhar o link para conferir a prévia (Open Graph).
 - [ ] Conferir em um celular de verdade e abrir o site publicado verificando o console do navegador.

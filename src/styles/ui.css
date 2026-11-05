@@ -48,8 +48,8 @@
 }
 .icon-btn:hover { background: var(--fundo-suave); }
 .icon-btn[aria-pressed="true"] { background: var(--fundo-suave); }
-.icon-btn--destaque { background: var(--destaque); color: var(--texto-sobre-destaque); }
-.icon-btn--destaque:hover { background: var(--milho-600); }
+.icon-btn--destaque { background: var(--secundaria); color: var(--texto-sobre-destaque); }
+.icon-btn--destaque:hover { background: var(--fundo-aviso); }
 
 /* ---------- Campos (input / select / textarea): sm 32 · md 40 · lg 48 ---------- */
 .field { display: grid; gap: var(--esp-8); width: 100%; max-width: 320px; }

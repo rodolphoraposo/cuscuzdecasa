@@ -1,14 +1,3 @@
-import carneMoida from "../assets/produtos/carne-moida.webp";
-import salsicha from "../assets/produtos/salsicha-ao-molho.webp";
-import calabresa from "../assets/produtos/calabresa.webp";
-import frango from "../assets/produtos/frango-desfiado.webp";
-import carneDeSol from "../assets/produtos/carne-de-sol.webp";
-import romeu from "../assets/produtos/romeu-e-julieta.webp";
-import cartola from "../assets/produtos/cartola.webp";
-import coca from "../assets/produtos/coca-cola.webp";
-import guarana from "../assets/produtos/guarana-antartica.webp";
-import fanta from "../assets/produtos/fanta-laranja.webp";
-import agua from "../assets/produtos/agua-mineral.webp";
 
 export type CategoriaId = "salgados" | "doces" | "bebidas";
 
@@ -52,39 +41,39 @@ export const categorias: Categoria[] = [
 /** Nome do prato com a base, para o carrinho e a comanda: "Do Sertão (cuscuz)". */
 export const nomeCompleto = (p: Produto) => (p.prato ? `${p.nome} (${p.prato})` : p.nome);
 
-export const produtos: Produto[] = [
+const catalogo: Produto[] = [
   // ---------- Cuscuz · salgados ----------
   {
-    id: "frango-desfiado", prato: "cuscuz", categoria: "salgados", nome: "Asa Branca", descricao: "Frango desfiado bem temperadinho", preco: 14.99, imagem: frango,
+    id: "frango-desfiado", prato: "cuscuz", categoria: "salgados", nome: "Asa Branca", descricao: "Frango desfiado bem temperadinho", preco: 14.99,
     descricaoLonga: "Cuscuz de milho quentinho e fofinho, recheado com peito de frango desfiado, refogado em temperos naturais e muito suculento.",
     dica: "Fica perfeito com adicional de requeijão tipo Catupiry ou Queijo Coalho!",
   },
   {
-    id: "carne-de-sol", prato: "cuscuz", categoria: "salgados", nome: "Do Sertão", descricao: "Carne de sol desfiada acebolada", preco: 14.99, imagem: carneDeSol,
+    id: "carne-de-sol", prato: "cuscuz", categoria: "salgados", nome: "Do Sertão", descricao: "Carne de sol desfiada acebolada", preco: 14.99,
     descricaoLonga: "O legítimo sabor nordestino! Cuscuz fofinho recheado com carne de sol artesanal, desfiada e acebolada na medida certa.",
     dica: "Adicione Queijo Coalho tostado e mude o seu dia!",
   },
   {
-    id: "calabresa", prato: "cuscuz", categoria: "salgados", nome: "Arretado", descricao: "Calabresa fina defumada", preco: 13.99, imagem: calabresa,
+    id: "calabresa", prato: "cuscuz", categoria: "salgados", nome: "Arretado", descricao: "Calabresa fina defumada", preco: 13.99,
     descricaoLonga: "Para quem ama sabor marcante. Cuscuz de milho recheado com finas rodelas de calabresa defumada, salteadas até ficarem bem douradinhas.",
     dica: "Combina muito com um Ovo Mexido por cima.",
   },
   {
-    id: "carne-moida", prato: "cuscuz", categoria: "salgados", nome: "Tropeiro", descricao: "Carne moída bem suculenta", preco: 11.99, imagem: carneMoida,
+    id: "carne-moida", prato: "cuscuz", categoria: "salgados", nome: "Tropeiro", descricao: "Carne moída bem suculenta", preco: 11.99,
     descricaoLonga: "Comida com gostinho de casa! Cuscuz recheado com carne moída bem soltinha, cozida com temperos frescos e muito molhadinha.",
     dica: "Experimente adicionar Mussarela derretida.",
   },
   {
-    id: "salsicha-ao-molho", prato: "cuscuz", categoria: "salgados", nome: "De Feira", descricao: "Salsicha ao molho caseiro", preco: 11.99, imagem: salsicha,
+    id: "salsicha-ao-molho", prato: "cuscuz", categoria: "salgados", nome: "De Feira", descricao: "Salsicha ao molho caseiro", preco: 11.99,
     descricaoLonga: "Aquele clássico irresistível. Salsichas picadas em um molho de tomate caseiro encorpado, temperado com carinho e servido com nosso cuscuz quentinho.",
   },
   // ---------- Cuscuz · doces ----------
   {
-    id: "cartola", prato: "cuscuz", categoria: "doces", nome: "Cartola", descricao: "Banana frita com queijo coalho, açúcar e canela", preco: 12.99, imagem: cartola,
+    id: "cartola", prato: "cuscuz", categoria: "doces", nome: "Cartola", descricao: "Banana frita com queijo coalho, açúcar e canela", preco: 12.99,
     descricaoLonga: "A sobremesa mais amada do Nordeste em forma de cuscuz! Camadas de banana frita na chapa, queijo coalho derretido, finalizadas com uma chuvinha de açúcar e canela. Conforto em cada garfada.",
   },
   {
-    id: "romeu-e-julieta", prato: "cuscuz", categoria: "doces", nome: "Romeu & Julieta", descricao: "Queijo coalho derretido com goiabada cascão", preco: 12.99, imagem: romeu,
+    id: "romeu-e-julieta", prato: "cuscuz", categoria: "doces", nome: "Romeu & Julieta", descricao: "Queijo coalho derretido com goiabada cascão", preco: 12.99,
     descricaoLonga: "A combinação perfeita do salgado com o doce. Cuscuz quentinho recheado com o sabor marcante do queijo coalho derretido e a suavidade da goiabada cascão cremosa.",
   },
 
@@ -106,8 +95,8 @@ export const produtos: Produto[] = [
     descricaoLonga: "Para quem ama sabor intenso e marcante. Nossa macaxeira fumegante coberta com cubos de calabresa defumada, salteados na chapa até ficarem bem dourados e crocantes.",
   },
   {
-    id: "macaxeira-carne-moida", prato: "macaxeira", categoria: "salgados", nome: "Arriégua", descricao: "Carne moída bem soltinha e molhadinha", preco: 11.99,
-    descricaoLonga: "Aquele gostinho inconfundível de comida afetiva feita em casa. Macaxeira cozida derretendo na boca, servida com carne moída bem soltinha, temperos frescos e muito molhadinha.",
+    id: "macaxeira-carne-suina", prato: "macaxeira", categoria: "salgados", nome: "Arriégua", descricao: "Carne suína em cubos acebolada", preco: 11.99,
+    descricaoLonga: "Aquele gostinho inconfundível de comida afetiva feita em casa. Macaxeira cozida derretendo na boca, servida com carne suína em cubos acebolada, temperos frescos e muito molhadinha.",
     dica: "Experimente adicionar Queijo Mussarela derretido.",
   },
   {
@@ -124,11 +113,40 @@ export const produtos: Produto[] = [
   },
 
   // ---------- Bebidas ----------
-  { id: "coca-cola", categoria: "bebidas", nome: "Coca-Cola 350ml", descricao: "Refrigerante em lata - 350ml", preco: 5.99, imagem: coca },
-  { id: "guarana-antartica", categoria: "bebidas", nome: "Guaraná Antártica", descricao: "Refrigerante em lata - 350ml", preco: 5.99, imagem: guarana },
-  { id: "fanta-laranja", categoria: "bebidas", nome: "Fanta laranja", descricao: "Refrigerante em lata - 350ml", preco: 5.99, imagem: fanta },
-  { id: "agua-mineral", categoria: "bebidas", nome: "Água mineral sem gás", descricao: "Garrafa pet - 500ml", preco: 2.99, imagem: agua },
+  { id: "coca-cola", categoria: "bebidas", nome: "Coca-Cola 350ml", descricao: "Refrigerante em lata - 350ml", preco: 5.99 },
+  { id: "guarana-antartica", categoria: "bebidas", nome: "Guaraná Antártica", descricao: "Refrigerante em lata - 350ml", preco: 5.99 },
+  { id: "fanta-laranja", categoria: "bebidas", nome: "Fanta laranja", descricao: "Refrigerante em lata - 350ml", preco: 5.99 },
+  { id: "agua-mineral", categoria: "bebidas", nome: "Água mineral sem gás", descricao: "Garrafa pet - 500ml", preco: 2.99 },
 ];
+
+/** Fotos de src/assets/produtos (sempre .webp), achadas pelo nome do arquivo. Sem arquivo, a tela mostra "Foto em breve". */
+const arquivos = import.meta.glob<string>("../assets/produtos/*.webp", { eager: true, import: "default" });
+const foto = (nome: string): string | undefined =>
+  Object.entries(arquivos).find(([caminho]) => caminho.endsWith(`/${nome}.webp`))?.[1];
+
+/** Qual arquivo é a foto de cada produto (nome do arquivo sem o ".webp"). */
+export const arquivoDaFoto: Record<string, string> = {
+  "frango-desfiado": "asa_branca",
+  "carne-de-sol": "do_sertao",
+  calabresa: "arretado",
+  "carne-moida": "tropeiro",
+  "salsicha-ao-molho": "de_feira",
+  cartola: "cartola",
+  "romeu-e-julieta": "romeu_e_julieta",
+  "macaxeira-frango": "aprumada",
+  "macaxeira-carne-de-sol": "fulo_de_mandacaru",
+  "macaxeira-calabresa": "quintura",
+  "macaxeira-carne-suina": "arriegua",
+  "macaxeira-salsicha": "da_terra",
+  "macaxeira-cartola": "luardosertao",
+  "macaxeira-romeu-e-julieta": "xodozin",
+  "coca-cola": "coca-cola",
+  "guarana-antartica": "guarana-antartica",
+  "fanta-laranja": "fanta_laranja",
+  "agua-mineral": "agua_sem_gas",
+};
+
+export const produtos: Produto[] = catalogo.map((p) => ({ ...p, imagem: foto(arquivoDaFoto[p.id]) }));
 
 /** Produtos que aparecem na prévia da Home */
 export const destaquesHome = ["frango-desfiado", "carne-de-sol", "calabresa", "cartola"];

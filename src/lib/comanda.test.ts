@@ -44,11 +44,9 @@ describe("montarComanda", () => {
         "Ref.: Portaria 2",
         "",
         "*ITENS*",
-        "```",
-        "1x Carne de Sol .. R$ 16,99",
+        "```1x Carne de Sol .. R$ 16,99",
         "   + Queijo coalho",
-        "1x Coca-Cola ...... R$ 5,99",
-        "```",
+        "1x Coca-Cola ...... R$ 5,99```",
         "",
         "*Subtotal:* R$ 22,98",
         "*Entrega:* R$ 0,00",
@@ -129,5 +127,13 @@ describe("itens em fonte monoespaçada", () => {
   it("o cliente não consegue abrir nem fechar o bloco com crases", () => {
     const { texto } = montarComanda({ ...pedido, nome: "``` abre", observacoes: "```" }, itens, totais, agora);
     expect(texto.split("```")).toHaveLength(3); // só as duas crases triplas da comanda
+  });
+});
+
+describe("pagamento no cartão", () => {
+  it("avisa quem entrega para levar a maquineta", () => {
+    const { texto } = montarComanda({ ...pedido, pagamento: "cartao", trocoPara: null }, itens, totais, agora);
+    expect(texto).toContain("*PAGAMENTO:* Cartão na entrega · levar maquineta");
+    expect(texto).not.toContain("Troco");
   });
 });
