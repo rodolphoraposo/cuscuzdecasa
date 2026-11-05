@@ -1,5 +1,7 @@
 import { CaretLeft, ListDashes, SquaresFour } from "@phosphor-icons/react";
 import { Link, useLocation, useSearchParams } from "react-router-dom";
+import type { KeyboardEvent } from "react";
+import { usePageTitle } from "../hooks/usePageTitle";
 import { AvisoEncerrado } from "../components/AvisoEncerrado";
 import { CartBar } from "../components/CartBar";
 import { Banner, ButtonLink } from "../components/ui";
@@ -17,6 +19,19 @@ export default function Menu() {
   // Depois de adicionar um prato, o Detalhe leva às bebidas com este aviso (some ao trocar de aba).
   const sugerirBebida = (useLocation().state as { sugerirBebida?: boolean } | null)?.sugerirBebida === true && categoria === "bebidas";
   // Bebidas valem para qualquer prato; salgados e doces dependem do prato escolhido (cuscuz ou macaxeira).
+  usePageTitle("Cardápio");
+
+  // Setas, Home e End trocam de aba (padrão de abas do teclado); só a aba atual entra na ordem do Tab.
+  const aoTeclarNasAbas = (e: KeyboardEvent<HTMLDivElement>) => {
+    const i = categorias.findIndex((c) => c.id === categoria);
+    const n = categorias.length;
+    const j = e.key === "ArrowRight" ? (i + 1) % n : e.key === "ArrowLeft" ? (i - 1 + n) % n : e.key === "Home" ? 0 : e.key === "End" ? n - 1 : -1;
+    if (j < 0) return;
+    e.preventDefault();
+    atualizar("categoria", categorias[j].id);
+    window.setTimeout(() => document.getElementById(`aba-${categorias[j].id}`)?.focus(), 0);
+  };
+
   const itens = produtos.filter((p) => p.categoria === categoria && (categoria === "bebidas" || p.prato === prato));
 
   const atualizar = (chave: string, valor: string) => {
@@ -47,13 +62,14 @@ export default function Menu() {
           </div>
         )}
 
-        <div className="tabs" role="tablist" aria-label="Categorias do cardápio">
+        <div className="tabs" role="tablist" aria-label="Categorias do cardápio" onKeyDown={aoTeclarNasAbas}>
           {categorias.map((c) => (
             <button
               key={c.id}
               role="tab"
               id={`aba-${c.id}`}
               aria-selected={c.id === categoria}
+              tabIndex={c.id === categoria ? 0 : -1}
               aria-controls="painel-cardapio"
               type="button"
               onClick={() => atualizar("categoria", c.id)}

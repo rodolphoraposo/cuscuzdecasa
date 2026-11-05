@@ -36,6 +36,7 @@ describe("cabeçalho no celular", () => {
     await u.click(screen.getByRole("button", { name: "Abrir menu" }));
     await u.keyboard("{Escape}");
     expect(screen.queryByRole("navigation", { name: "Menu" })).toBeNull();
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: "Abrir menu" })); // foco devolvido ao botão
   });
 
   it("sacola com a quantidade só aparece quando há itens", () => {

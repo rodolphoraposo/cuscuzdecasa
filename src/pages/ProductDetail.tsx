@@ -17,6 +17,7 @@ export default function ProductDetail() {
     return (
       <section className="section container">
         <EmptyState
+          nivel={1}
           titulo="Item não encontrado"
           texto="Esse item não está mais no cardápio. Veja as opções disponíveis."
           acao={<ButtonLink to="/cardapio">Ver cardápio</ButtonLink>}

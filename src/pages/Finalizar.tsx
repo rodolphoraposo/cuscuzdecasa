@@ -10,9 +10,11 @@ import { descricaoEntrega, diaDaEntrega } from "../lib/entrega";
 import { carregarRascunho, paraDadosPedido, validarPedido } from "../lib/formulario";
 import { salvarUltimoPedido } from "../lib/ultimoPedido";
 import { usePageTitle } from "../hooks/usePageTitle";
+import { useNoIndex } from "../hooks/useNoIndex";
 
 export default function Finalizar() {
   usePageTitle("Finalizar pedido");
+  useNoIndex();
   const navigate = useNavigate();
   const { linhas, totalPreco } = useCart();
   const total = Math.round((totalPreco + taxaEntrega) * 100) / 100;

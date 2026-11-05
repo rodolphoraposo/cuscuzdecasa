@@ -126,11 +126,12 @@ export function Banner({ tipo, children, onFechar }: { tipo: TipoAviso; children
     </div>
   );
 }
-export function EmptyState({ titulo, texto, acao }: { titulo: string; texto: string; acao?: ReactNode }) {
+export function EmptyState({ titulo, texto, acao, nivel = 3 }: { titulo: string; texto: string; acao?: ReactNode; nivel?: 1 | 2 | 3 }) {
+  const Titulo = `h${nivel}` as "h1" | "h2" | "h3"; // a página inteira vazia (404, carrinho vazio) precisa do seu h1
   return (
     <div className="vazio">
       <div className="vazio__icone"><MagnifyingGlass className="icon" /></div>
-      <h3 className="t-subtitulo">{titulo}</h3>
+      <Titulo className="t-subtitulo">{titulo}</Titulo>
       <p className="t-corpo">{texto}</p>
       {acao}
     </div>

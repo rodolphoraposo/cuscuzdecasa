@@ -4,7 +4,7 @@ export const empresa: { nome: string; documento: string; email: string; cidade: 
   /** CNPJ ou CPF do responsável. PREENCHA antes de divulgar (se vazio, a linha não aparece). */
   documento: "",
   /** E-mail de contato (opcional). Se vazio, o contato é só pelo WhatsApp. */
-  email: "rodolphoraposo@cuscuzdecasa.com.br",
+  email: "",
   cidade: "Maceió, Alagoas",
   atualizadoEm: "02/11/2026",
 };

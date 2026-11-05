@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /pedido
+Disallow: /design-system
+
+Sitemap: https://www.cuscuzdecasa.com.br/sitemap.xml

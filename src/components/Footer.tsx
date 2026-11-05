@@ -9,8 +9,8 @@ export function Footer() {
       <div className="container">
         <div className="footer__grid">
           <div style={{ display: "grid", gap: "var(--esp-16)", justifyItems: "start" }}>
-            <img className="footer__logo footer__logo--creme" src={logoCreme} alt="Cuscuz de Casa" />
-            <img className="footer__logo footer__logo--marrom" src={logoMarrom} alt="Cuscuz de Casa" />
+            <img className="footer__logo footer__logo--creme" width="88" height="114" src={logoCreme} alt="Cuscuz de Casa" />
+            <img className="footer__logo footer__logo--marrom" width="88" height="114" src={logoMarrom} alt="Cuscuz de Casa" />
             <p className="footer__slogan">Cuscuz é sempre uma boa ideia!</p>
           </div>
 

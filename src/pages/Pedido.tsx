@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { AvisoEncerrado } from "../components/AvisoEncerrado";
 import { FotoProduto } from "../components/FotoProduto";
 import { Banner, Button, ButtonLink, Checkbox, EmptyState, Input, Textarea } from "../components/ui";
-import { useCart } from "../context/CartContext";
+import { useCart, type LinhaPedido } from "../context/CartContext";
 import { adicionais, contato, formatarPreco, nomeCompleto, taxaEntrega } from "../data/menu";
 import { buscarCep } from "../lib/cep";
 import { janelasEntrega } from "../lib/entrega";
@@ -14,6 +14,7 @@ import {
   type Campo, type Rascunho,
 } from "../lib/formulario";
 import { usePageTitle } from "../hooks/usePageTitle";
+import { useNoIndex } from "../hooks/useNoIndex";
 
 type StatusCep = "ocioso" | "buscando" | "ok" | "nao-encontrado" | "falha";
 
@@ -35,8 +36,9 @@ const soDigitos = (v: string) => v.replace(/\D/g, "");
 
 export default function Pedido() {
   usePageTitle("Seu pedido");
+  useNoIndex();
   const navigate = useNavigate();
-  const { linhas, totalPreco, alterar } = useCart();
+  const { linhas, totalPreco, alterar, adicionar } = useCart();
   const total = Math.round((totalPreco + taxaEntrega) * 100) / 100;
   const { dia } = useEntrega();
   const fechado = dia === null; // pedidos de hoje encerrados
@@ -45,12 +47,35 @@ export default function Pedido() {
   const [tentou, setTentou] = useState(false);
   const [tocados, setTocados] = useState<Partial<Record<Campo, boolean>>>({});
   const [statusCep, setStatusCep] = useState<StatusCep>("ocioso");
+  const [removido, setRemovido] = useState<{ id: string; extras: string[]; acomp: string | null; nome: string } | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const busca = useRef<AbortController | null>(null);
   const ultimoCep = useRef("");
 
   useEffect(() => salvarRascunho(r), [r]);
   useEffect(() => () => busca.current?.abort(), []);
+  useEffect(() => {
+    if (!removido) return;
+    const t = window.setTimeout(() => setRemovido(null), 8000);
+    return () => window.clearTimeout(t);
+  }, [removido]);
+
+  /** "−" na quantidade 1 remove o item: guarda o que saiu para o cliente poder desfazer. */
+  const diminuir = (l: LinhaPedido) => {
+    if (l.quantidade === 1) setRemovido({ id: l.produto.id, extras: l.extras, acomp: l.acompanhamento, nome: nomeCompleto(l.produto) });
+    alterar(l.chave, -1);
+  };
+  const desfazer = () => {
+    if (!removido) return;
+    adicionar(removido.id, removido.extras, 1, removido.acomp);
+    setRemovido(null);
+  };
+  const avisoRemovido = removido && (
+    <div className="desfazer" role="status">
+      <span>{removido.nome} foi removido do pedido.</span>
+      <button type="button" className="desfazer__btn" onClick={desfazer}>Desfazer</button>
+    </div>
+  );
 
   const erros = useMemo(() => validarPedido(r, total), [r, total]);
   const erro = (c: Campo) => (tentou || tocados[c] ? erros[c] : undefined);
@@ -109,7 +134,9 @@ export default function Pedido() {
   if (linhas.length === 0) {
     return (
       <section className="section container">
+        {avisoRemovido}
         <EmptyState
+          nivel={1}
           titulo="Seu pedido está vazio"
           texto="Escolha seus cuscuz no cardápio para começar."
           acao={<ButtonLink to="/cardapio">Ver cardápio</ButtonLink>}
@@ -150,7 +177,7 @@ export default function Pedido() {
                       <div className="stepper" role="group" aria-label={`Quantidade de ${nomeCompleto(l.produto)}`}>
                         <button
                           type="button"
-                          onClick={() => alterar(l.chave, -1)}
+                          onClick={() => diminuir(l)}
                           aria-label={l.quantidade === 1 ? `Remover ${nomeCompleto(l.produto)} do pedido` : `Diminuir quantidade de ${nomeCompleto(l.produto)}`}
                         >
                           <Minus size={16} />
@@ -165,6 +192,7 @@ export default function Pedido() {
                 </li>
               ))}
             </ul>
+            {avisoRemovido}
             <Link className="pedido__mais" to="/cardapio">Adicionar mais itens</Link>
           </section>
 

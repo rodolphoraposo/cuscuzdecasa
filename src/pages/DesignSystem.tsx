@@ -1,5 +1,7 @@
 import { Check } from "@phosphor-icons/react";
 import { useState } from "react";
+import { useNoIndex } from "../hooks/useNoIndex";
+import { usePageTitle } from "../hooks/usePageTitle";
 import { Avatar, Badge, Banner, Breadcrumb, Button, Checkbox, EmptyState, Input, Radio, Select, Stat, Switch, Tag, Textarea, Toast } from "../components/ui";
 
 const tamanhos = ["sm", "md", "lg"] as const;
@@ -17,6 +19,8 @@ const linha: React.CSSProperties = { display: "flex", flexWrap: "wrap", gap: "va
 
 /** Referência visual dos componentes (rota /design-system) para conferir com o Figma. */
 export default function DesignSystem() {
+  usePageTitle("Design System");
+  useNoIndex();
   const [aba, setAba] = useState(0);
   return (
     <div className="container section">

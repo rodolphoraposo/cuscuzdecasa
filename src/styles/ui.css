@@ -161,7 +161,7 @@
   background: var(--fundo-rebaixado); color: var(--texto-primario);
 }
 .badge--ponto::before { content: ""; width: 6px; height: 6px; border-radius: var(--raio-total); background: currentColor; }
-.badge--marca   { background: var(--secundaria-fundo-suave); color: var(--acao-primaria); }
+.badge--marca   { background: var(--secundaria-fundo-suave); color: var(--acao-primaria-hover); } /* hover: contraste ≥ 4,5:1 sobre o fundo suave */
 .badge--aviso   { background: var(--fundo-aviso);   color: var(--texto-aviso); }
 .badge--sucesso { background: var(--fundo-sucesso); color: var(--texto-sucesso); }
 .badge--erro    { background: var(--fundo-erro);    color: var(--texto-erro); }

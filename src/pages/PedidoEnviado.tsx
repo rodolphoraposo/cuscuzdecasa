@@ -8,9 +8,11 @@ import { linkWhatsApp } from "../lib/comanda";
 import { limparRascunho } from "../lib/formulario";
 import { carregarUltimoPedido } from "../lib/ultimoPedido";
 import { usePageTitle } from "../hooks/usePageTitle";
+import { useNoIndex } from "../hooks/useNoIndex";
 
 export default function PedidoEnviado() {
   usePageTitle("Obrigado pelo pedido");
+  useNoIndex();
   const { limpar } = useCart();
   const ultimo = useMemo(carregarUltimoPedido, []);
 

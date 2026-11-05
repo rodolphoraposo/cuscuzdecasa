@@ -90,7 +90,7 @@ export default function Home() {
 
       <section className="section container">
         <div className="marca">
-          <img src={logo} alt="Cuscuz de Casa" loading="lazy" />
+          <img src={logo} alt="Cuscuz de Casa" width="600" height="600" loading="lazy" />
           <h2 className="t-secao">Uma marca que começa em casa</h2>
           <p className="t-corpo">Comida preparada com cuidado: quente, farta, próxima e fácil de pedir.</p>
         </div>

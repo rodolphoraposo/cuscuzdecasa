@@ -1,5 +1,5 @@
 import { Handbag, List, Moon, Sun, X } from "@phosphor-icons/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import icone from "../assets/logo/logo-icon.webp";
 import wordmark from "../assets/logo/wordmark.webp";
@@ -11,12 +11,17 @@ export function Header() {
   const { totalItens } = useCart();
   const [aberto, setAberto] = useState(false);
   const local = useLocation();
+  const botaoMenu = useRef<HTMLButtonElement>(null);
 
   // O menu do celular fecha ao navegar e com a tecla Esc.
   useEffect(() => { setAberto(false); }, [local.pathname, local.hash]);
   useEffect(() => {
     if (!aberto) return;
-    const fechar = (e: KeyboardEvent) => { if (e.key === "Escape") setAberto(false); };
+    const fechar = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      setAberto(false);
+      botaoMenu.current?.focus(); // o foco volta para o botão, em vez de se perder
+    };
     document.addEventListener("keydown", fechar);
     return () => document.removeEventListener("keydown", fechar);
   }, [aberto]);
@@ -26,7 +31,7 @@ export function Header() {
       <div className="container header__inner">
         <Link to="/" className="header__brand" aria-label="Cuscuz de Casa — página inicial">
           <img src={icone} alt="" width="40" height="40" />
-          <img src={wordmark} alt="" height="36" />
+          <img src={wordmark} alt="" width="74" height="36" />
         </Link>
 
         <nav className="header__nav t-corpo" aria-label="Principal">
@@ -51,7 +56,7 @@ export function Header() {
             <Moon size={24} />
           </button>
           <button
-            type="button" className="icon-btn header__menu" aria-expanded={aberto} aria-controls="menu-mobile"
+            ref={botaoMenu} type="button" className="icon-btn header__menu" aria-expanded={aberto} aria-controls="menu-mobile"
             aria-label={aberto ? "Fechar menu" : "Abrir menu"} onClick={() => setAberto((a) => !a)}
           >
             {aberto ? <X size={24} /> : <List size={24} />}
