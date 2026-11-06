@@ -14,6 +14,18 @@ export const pratos: { id: PratoId; nome: string }[] = [
   { id: "macaxeira", nome: "Macaxeira" },
 ];
 
+/** Botões do topo do Cardápio: dois pratos e as bebidas. */
+export type SecaoId = PratoId | "bebidas";
+export const secoes: { id: SecaoId; nome: string }[] = [...pratos, { id: "bebidas", nome: "Bebidas" }];
+
+/** Abas de Cuscuz e Macaxeira (Bebidas não tem abas). */
+export type AbaId = "todos" | "salgados" | "doces";
+export const abas: { id: AbaId; nome: string }[] = [
+  { id: "todos", nome: "Todos" },
+  { id: "salgados", nome: "Salgados" },
+  { id: "doces", nome: "Doces" },
+];
+
 export interface Produto {
   id: string;
   categoria: CategoriaId;

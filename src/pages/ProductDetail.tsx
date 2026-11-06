@@ -42,7 +42,7 @@ function Detalhe({ produto }: { produto: Produto }) {
   const opcoes = aceitaAdicionais(produto) ? adicionais : [];
   const unitario = produto.preco + extras.reduce((t, e) => t + (adicionais.find((a) => a.id === e)?.preco ?? 0), 0);
   const total = Math.round(unitario * 100) * qtd / 100;
-  const padrao = `/cardapio?prato=${produto.prato ?? "cuscuz"}&categoria=${produto.categoria}`;
+  const padrao = produto.prato ? `/cardapio?prato=${produto.prato}&categoria=${produto.categoria}` : "/cardapio?prato=bebidas";
   const voltar = origem ?? padrao; // volta para onde o cliente estava (Início, lista ou grade)
   const aposAdicionar = origem?.startsWith("/cardapio") ? origem : padrao; // depois de adicionar, mostra o cardápio com a barra do pedido
 
@@ -57,7 +57,7 @@ function Detalhe({ produto }: { produto: Produto }) {
     }
     adicionar(produto.id, extras, qtd, acomp);
     // Sequência do pedido: prato → capriche → bebida → dados. Depois de um prato, sugere a bebida.
-    if (produto.categoria !== "bebidas") navigate("/cardapio?categoria=bebidas", { state: { sugerirBebida: true } });
+    if (produto.categoria !== "bebidas") navigate("/cardapio?prato=bebidas", { state: { sugerirBebida: true } });
     else navigate(aposAdicionar);
   };
 

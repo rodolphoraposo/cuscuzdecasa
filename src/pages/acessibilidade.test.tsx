@@ -26,15 +26,15 @@ describe("teclado nas abas do cardápio", () => {
 
     abas()[0].focus();
     await u.keyboard("{ArrowRight}");
-    expect(await screen.findByRole("tab", { name: "Doces", selected: true })).toBe(document.activeElement);
+    expect(await screen.findByRole("tab", { name: "Salgados", selected: true })).toBe(document.activeElement);
     await u.keyboard("{End}");
-    expect(await screen.findByRole("tab", { name: "Bebidas", selected: true })).toBe(document.activeElement);
+    expect(await screen.findByRole("tab", { name: "Doces", selected: true })).toBe(document.activeElement);
     await u.keyboard("{ArrowRight}"); // dá a volta
-    expect(await screen.findByRole("tab", { name: "Salgados", selected: true })).toBe(document.activeElement);
+    expect(await screen.findByRole("tab", { name: "Todos", selected: true })).toBe(document.activeElement);
     await u.keyboard("{ArrowLeft}");
-    expect(await screen.findByRole("tab", { name: "Bebidas", selected: true })).toBe(document.activeElement);
+    expect(await screen.findByRole("tab", { name: "Doces", selected: true })).toBe(document.activeElement);
     await u.keyboard("{Home}");
-    expect(await screen.findByRole("tab", { name: "Salgados", selected: true })).toBe(document.activeElement);
+    expect(await screen.findByRole("tab", { name: "Todos", selected: true })).toBe(document.activeElement);
   });
 });
 

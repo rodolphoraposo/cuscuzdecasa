@@ -46,7 +46,7 @@ scripts/       csp-hash.mjs
 
 ## Fluxo do cliente
 
-Início → Cardápio (Cuscuz ou Macaxeira → salgados/doces/bebidas) → Detalhe (acompanhamento, adicionais, quantidade) → sugestão de bebida → Seu pedido (dados, CEP, horário, pagamento, troco) → Resumo com a prévia da comanda → WhatsApp → Agradecimento.
+Início → Cardápio (Cuscuz, Macaxeira ou Bebidas; em Cuscuz e Macaxeira, abas Todos/Salgados/Doces) → Detalhe (acompanhamento, adicionais, quantidade) → sugestão de bebida → Seu pedido (dados, CEP, horário, pagamento, troco) → Resumo com a prévia da comanda → WhatsApp → Agradecimento.
 
 ## Segurança e privacidade
 

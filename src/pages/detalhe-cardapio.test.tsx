@@ -41,12 +41,12 @@ describe("sequência do pedido: prato → capriche → bebida", () => {
     await u.click(screen.getByRole("checkbox", { name: /Queijo coalho/ }));
     await u.click(screen.getByRole("button", { name: /Adicionar · / }));
 
-    expect(local()).toBe("/cardapio?categoria=bebidas");
+    expect(local()).toBe("/cardapio?prato=bebidas");
     expect(screen.getByText(/Quer uma bebida para acompanhar/)).toBeTruthy();
     expect(screen.getByRole("link", { name: /Não quero bebida/ }).getAttribute("href")).toBe("/pedido");
     expect(screen.getByRole("link", { name: /Ver pedido · 1 item/ })).toBeTruthy();
 
-    await u.click(screen.getByRole("tab", { name: "Salgados" })); // trocar de aba encerra a sugestão
+    await u.click(screen.getByRole("button", { name: "Cuscuz" })); // trocar de seção encerra a sugestão
     expect(screen.queryByText(/Quer uma bebida/)).toBeNull();
   });
 
@@ -80,8 +80,10 @@ describe("sequência do pedido: prato → capriche → bebida", () => {
     await u.click(screen.getByRole("tab", { name: "Doces" }));
     expect(screen.getByRole("link", { name: "Luar do Sertão" })).toBeTruthy();
     expect(screen.getByRole("link", { name: "Xodózin" })).toBeTruthy();
-    await u.click(screen.getByRole("tab", { name: "Bebidas" }));
-    expect(screen.queryByRole("group", { name: "Escolha o prato" })).toBeNull(); // bebidas valem para qualquer prato
+    await u.click(screen.getByRole("button", { name: "Bebidas" }));
+    expect(local()).toBe("/cardapio?prato=bebidas");
+    expect(screen.queryByRole("tablist")).toBeNull(); // bebidas: sem abas, com todos os produtos
+    expect(screen.getByRole("link", { name: "Coca-Cola 350ml" })).toBeTruthy();
   });
 
   it("macaxeira salgada pede acompanhamento e entra no pedido com o nome completo", async () => {
@@ -89,7 +91,38 @@ describe("sequência do pedido: prato → capriche → bebida", () => {
     abrir("/cardapio/macaxeira-frango");
     await u.click(screen.getByRole("radio", { name: "Vinagrete da casa" }));
     await u.click(screen.getByRole("button", { name: /Adicionar · / }));
-    expect(local()).toBe("/cardapio?categoria=bebidas");
+    expect(local()).toBe("/cardapio?prato=bebidas");
     expect(JSON.parse(localStorage.getItem("cuscuz-pedido-v3") ?? "[]")[0]).toMatchObject({ id: "macaxeira-frango", acomp: "vinagrete" });
+  });
+
+  it("três botões no topo; Cuscuz e Macaxeira têm as abas Todos, Salgados e Doces", async () => {
+    const u = userEvent.setup();
+    abrir("/cardapio");
+    const botoes = screen.getByRole("group", { name: "Escolha o que pedir" });
+    expect(within(botoes).getAllByRole("button").map((b) => b.textContent)).toEqual(["Cuscuz", "Macaxeira", "Bebidas"]);
+    expect(within(botoes).getByRole("button", { name: "Cuscuz" }).getAttribute("aria-pressed")).toBe("true");
+    expect(screen.getAllByRole("tab").map((a) => a.textContent)).toEqual(["Todos", "Salgados", "Doces"]);
+    expect(screen.getByRole("tab", { name: "Todos", selected: true })).toBeTruthy(); // abre em "Todos"
+    expect(screen.getByRole("heading", { level: 2, name: "7 Opções" })).toBeTruthy(); // 5 salgados + 2 doces
+
+    await u.click(screen.getByRole("tab", { name: "Salgados" }));
+    expect(screen.getByRole("heading", { level: 2, name: "5 Opções" })).toBeTruthy();
+    await u.click(screen.getByRole("tab", { name: "Doces" }));
+    expect(screen.getByRole("heading", { level: 2, name: "2 Opções" })).toBeTruthy();
+
+    await u.click(screen.getByRole("button", { name: "Macaxeira" }));
+    expect(screen.getByRole("tab", { name: "Doces", selected: true })).toBeTruthy(); // a aba escolhida continua
+    expect(screen.getByRole("link", { name: "Luar do Sertão" })).toBeTruthy();
+    expect(screen.queryByRole("link", { name: "Cartola" })).toBeNull();
+  });
+
+  it("Bebidas mostra os 4 produtos sem abas, e o endereço antigo (?categoria=bebidas) continua valendo", () => {
+    abrir("/cardapio?prato=bebidas");
+    expect(screen.queryByRole("tablist")).toBeNull();
+    expect(screen.getByRole("heading", { level: 2, name: "4 Opções" })).toBeTruthy();
+    cleanup();
+    abrir("/cardapio?categoria=bebidas");
+    expect(screen.getByRole("button", { name: "Bebidas" }).getAttribute("aria-pressed")).toBe("true");
+    expect(screen.getByRole("heading", { level: 2, name: "4 Opções" })).toBeTruthy();
   });
 });

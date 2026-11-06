@@ -6,37 +6,43 @@ import { AvisoEncerrado } from "../components/AvisoEncerrado";
 import { CartBar } from "../components/CartBar";
 import { Banner, ButtonLink } from "../components/ui";
 import { ProductCard, ProductRow } from "../components/ProductItem";
-import { categorias, pratos, produtos, type CategoriaId, type PratoId } from "../data/menu";
+import { abas, produtos, secoes, type AbaId, type SecaoId } from "../data/menu";
 
 type Vista = "lista" | "grade";
 
 export default function Menu() {
   const [params, setParams] = useSearchParams();
 
-  const categoria = (categorias.find((c) => c.id === params.get("categoria"))?.id ?? "salgados") as CategoriaId;
-  const prato = (pratos.find((x) => x.id === params.get("prato"))?.id ?? "cuscuz") as PratoId;
+  // Endereço: ?prato=cuscuz|macaxeira|bebidas &categoria=todos|salgados|doces &vista=lista|grade
+  // ("?categoria=bebidas" é o formato antigo do link e continua levando às bebidas).
+  const secao = (params.get("categoria") === "bebidas" ? "bebidas" : (secoes.find((s) => s.id === params.get("prato"))?.id ?? "cuscuz")) as SecaoId;
+  const aba = (abas.find((x) => x.id === params.get("categoria"))?.id ?? "todos") as AbaId;
+  const comAbas = secao !== "bebidas";
   const vista: Vista = params.get("vista") === "grade" ? "grade" : "lista";
-  // Depois de adicionar um prato, o Detalhe leva às bebidas com este aviso (some ao trocar de aba).
-  const sugerirBebida = (useLocation().state as { sugerirBebida?: boolean } | null)?.sugerirBebida === true && categoria === "bebidas";
-  // Bebidas valem para qualquer prato; salgados e doces dependem do prato escolhido (cuscuz ou macaxeira).
+  // Depois de adicionar um prato, o Detalhe leva às bebidas com este aviso (some ao trocar de seção).
+  const sugerirBebida = (useLocation().state as { sugerirBebida?: boolean } | null)?.sugerirBebida === true && secao === "bebidas";
   usePageTitle("Cardápio");
 
   // Setas, Home e End trocam de aba (padrão de abas do teclado); só a aba atual entra na ordem do Tab.
   const aoTeclarNasAbas = (e: KeyboardEvent<HTMLDivElement>) => {
-    const i = categorias.findIndex((c) => c.id === categoria);
-    const n = categorias.length;
+    const i = abas.findIndex((x) => x.id === aba);
+    const n = abas.length;
     const j = e.key === "ArrowRight" ? (i + 1) % n : e.key === "ArrowLeft" ? (i - 1 + n) % n : e.key === "Home" ? 0 : e.key === "End" ? n - 1 : -1;
     if (j < 0) return;
     e.preventDefault();
-    atualizar("categoria", categorias[j].id);
-    window.setTimeout(() => document.getElementById(`aba-${categorias[j].id}`)?.focus(), 0);
+    atualizar("categoria", abas[j].id);
+    window.setTimeout(() => document.getElementById(`aba-${abas[j].id}`)?.focus(), 0);
   };
 
-  const itens = produtos.filter((p) => p.categoria === categoria && (categoria === "bebidas" || p.prato === prato));
+  // Bebidas: todas, sem abas. Cuscuz e Macaxeira: filtram pelo prato e pela aba (Todos = salgados e doces).
+  const itens = secao === "bebidas"
+    ? produtos.filter((p) => p.categoria === "bebidas")
+    : produtos.filter((p) => p.prato === secao && (aba === "todos" || p.categoria === aba));
 
   const atualizar = (chave: string, valor: string) => {
     const next = new URLSearchParams(params);
     next.set(chave, valor);
+    if (chave === "prato" && valor === "bebidas") next.delete("categoria"); // bebidas não usam abas
     setParams(next, { replace: true });
   };
 
@@ -52,32 +58,32 @@ export default function Menu() {
 
         <AvisoEncerrado />
 
-        {categoria !== "bebidas" && (
-          <div className="pratos" role="group" aria-label="Escolha o prato">
-            {pratos.map((x) => (
-              <button key={x.id} type="button" className="prato-btn" aria-pressed={x.id === prato} onClick={() => atualizar("prato", x.id)}>
+        <div className="pratos" role="group" aria-label="Escolha o que pedir">
+          {secoes.map((s) => (
+            <button key={s.id} type="button" className="prato-btn" aria-pressed={s.id === secao} onClick={() => atualizar("prato", s.id)}>
+              {s.nome}
+            </button>
+          ))}
+        </div>
+
+        {comAbas && (
+          <div className="tabs" role="tablist" aria-label="Categorias do cardápio" onKeyDown={aoTeclarNasAbas}>
+            {abas.map((x) => (
+              <button
+                key={x.id}
+                role="tab"
+                id={`aba-${x.id}`}
+                aria-selected={x.id === aba}
+                tabIndex={x.id === aba ? 0 : -1}
+                aria-controls="painel-cardapio"
+                type="button"
+                onClick={() => atualizar("categoria", x.id)}
+              >
                 {x.nome}
               </button>
             ))}
           </div>
         )}
-
-        <div className="tabs" role="tablist" aria-label="Categorias do cardápio" onKeyDown={aoTeclarNasAbas}>
-          {categorias.map((c) => (
-            <button
-              key={c.id}
-              role="tab"
-              id={`aba-${c.id}`}
-              aria-selected={c.id === categoria}
-              tabIndex={c.id === categoria ? 0 : -1}
-              aria-controls="painel-cardapio"
-              type="button"
-              onClick={() => atualizar("categoria", c.id)}
-            >
-              {c.nome}
-            </button>
-          ))}
-        </div>
 
         {sugerirBebida && (
           <div className="sugestao">
@@ -98,7 +104,7 @@ export default function Menu() {
           </div>
         </div>
 
-        <div role="tabpanel" id="painel-cardapio" aria-labelledby={`aba-${categoria}`} style={{ minHeight: "40vh" }}>
+        <div role={comAbas ? "tabpanel" : "region"} id="painel-cardapio" aria-labelledby={comAbas ? `aba-${aba}` : undefined} aria-label={comAbas ? undefined : "Bebidas"} style={{ minHeight: "40vh" }}>
           {vista === "lista" ? (
             <ul className="lista">
               {itens.map((p) => <ProductRow key={p.id} produto={p} />)}
