@@ -168,6 +168,8 @@ export const contato = {
   /** WhatsApp no formato internacional, só dígitos */
   whatsapp: "5582994336126",
   telefoneExibicao: "(82) 99433-6126",
+  /** Instagram da casa (só o nome de usuário, sem @) */
+  instagram: "cuscuzdecasaoficial",
   horarioPedidos: `${LIMITE_PEDIDO_H}h`,
   horarioEntrega: `${ENTREGA_INICIO_H}h às ${ENTREGA_FIM_H}h`,
 };

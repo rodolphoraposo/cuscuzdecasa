@@ -4,6 +4,7 @@ import { Link, NavLink, useLocation } from "react-router-dom";
 import icone from "../assets/logo/logo-icon.webp";
 import wordmark from "../assets/logo/wordmark.webp";
 import { useCart } from "../context/CartContext";
+import { contato } from "../data/menu";
 import { useTheme } from "../context/useTheme";
 
 export function Header() {
@@ -71,6 +72,12 @@ export function Header() {
           <Link to="/cardapio">Cardápio</Link>
           <Link to="/#como-funciona">Como funciona</Link>
           <Link to="/#onde-entregamos">Onde entregamos</Link>
+          <a
+            className="header__painel-sec" href={`https://www.instagram.com/${contato.instagram}/`} target="_blank" rel="noopener noreferrer"
+            aria-label="Instagram (abre em nova aba)"
+          >
+            Instagram
+          </a>
           <Link to="/termos" className="header__painel-sec">Termos de Uso</Link>
           <Link to="/privacidade" className="header__painel-sec">Política de Privacidade</Link>
         </div>

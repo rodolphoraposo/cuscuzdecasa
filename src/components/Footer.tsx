@@ -1,3 +1,4 @@
+import { InstagramLogo } from "@phosphor-icons/react";
 import { Link } from "react-router-dom";
 import { contato } from "../data/menu";
 import logoCreme from "../assets/logo/logo-creme.webp";
@@ -22,9 +23,16 @@ export function Footer() {
             <Link to="/termos">Termos de Uso</Link>
           </nav>
 
-          <p>
+          <div className="footer__contato">
             <a href={`https://wa.me/${contato.whatsapp}`}>{contato.telefoneExibicao}</a>
-          </p>
+            <a
+              href={`https://www.instagram.com/${contato.instagram}/`} target="_blank" rel="noopener noreferrer"
+              aria-label={`@${contato.instagram} no Instagram (abre em nova aba)`}
+            >
+              <InstagramLogo size={20} aria-hidden="true" />
+              @{contato.instagram}
+            </a>
+          </div>
         </div>
         <p className="footer__copy t-legenda">© {new Date().getFullYear()} Cuscuz de Casa · Maceió, AL</p>
       </div>

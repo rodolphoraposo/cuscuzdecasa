@@ -18,7 +18,7 @@ npm run build    # verificação de tipos + build de produção
 | --- | --- |
 | Pratos, descrições, dicas, **preços**, fotos | `src/data/menu.ts` (lista `produtos`) |
 | Adicionais ("Capriche seu prato") e acompanhamentos | `src/data/menu.ts` (`adicionais`, `acompanhamentos`) |
-| **Número do WhatsApp**, telefone exibido, taxa de entrega | `src/data/menu.ts` (`contato`, `taxaEntrega`) |
+| **Número do WhatsApp**, telefone exibido, **Instagram**, taxa de entrega | `src/data/menu.ts` (`contato`, `taxaEntrega`) |
 | Dados da empresa nos Termos e na Privacidade (CPF/CNPJ, e-mail) | `src/data/empresa.ts` |
 | Horário limite, janelas de entrega, **o que acontece depois das 16h** | `src/lib/entrega.ts` (`APOS_O_LIMITE`: `"bloquear"` ou `"amanha"`) |
 | Formato da comanda do WhatsApp e número do pedido (`#0000`) | `src/lib/comanda.ts` |
@@ -27,7 +27,7 @@ npm run build    # verificação de tipos + build de produção
 | Fotos dos pratos / logos usadas no site | `src/assets/produtos/`, `src/assets/logo/` |
 | Pacote completo de logos (não vai para o site) | `design/logo/` |
 
-Fotos: sempre `.webp` em `src/assets/produtos/`. O nome do arquivo de cada produto fica em `arquivoDaFoto` (`menu.ts`). Sem o arquivo, a tela mostra "Foto em breve". `npm test` avisa se faltar alguma foto ou se alguma passar de 300 KB.
+Fotos: sempre `.webp` em `src/assets/produtos/`. O nome do arquivo de cada produto fica em `arquivoDaFoto` (`menu.ts`). Sem o arquivo, a tela mostra "Foto em breve". `npm test` avisa se faltar alguma foto ou se alguma passar de 300 KB. **Fotos grandes: rode `npm run fotos`**, que reduz só as acima de 300 KB (mantém nome e proporção) e guarda o original em `design/fotos-originais/` (fora do Git).
 
 ## Estrutura
 
