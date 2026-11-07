@@ -2,7 +2,8 @@ import { describe, expect, it } from "vitest";
 import { mascararCep, mascararTelefone, paraDadosPedido, rascunhoVazio, sanearRascunho, validarPedido, valorEmReais, type Rascunho } from "./formulario";
 
 const valido: Rascunho = {
-  nome: "Rodolpho", telefone: "(82) 99152-0132", cep: "57046-000", rua: "Rua Exemplo", numero: "120",
+  tipo: "entrega",
+  nome: "Rodolpho", telefone: "(82) 99433-6126", cep: "57046-000", rua: "Rua Exemplo", numero: "120",
   complemento: "Bloco B, apto 302", bairro: "Serraria", cidade: "Maceió", uf: "AL", horario: "18-19", referencia: "",
   pagamento: "dinheiro", trocoTexto: "50,00", semTroco: false, observacoes: "",
 };
@@ -11,9 +12,9 @@ describe("máscaras", () => {
   it("telefone com 10 e 11 dígitos, aos poucos", () => {
     expect(mascararTelefone("")).toBe("");
     expect(mascararTelefone("8")).toBe("(8");
-    expect(mascararTelefone("829915")).toBe("(82) 9915");
-    expect(mascararTelefone("82991520132")).toBe("(82) 99152-0132");
-    expect(mascararTelefone("82991520132999")).toBe("(82) 99152-0132");
+    expect(mascararTelefone("829943")).toBe("(82) 9943");
+    expect(mascararTelefone("8234336126")).toBe("(82) 3433-6126");
+    expect(mascararTelefone("82994336126999")).toBe("(82) 99433-6126");
   });
   it("CEP", () => {
     expect(mascararCep("57046")).toBe("57046");
@@ -36,10 +37,10 @@ describe("validarPedido", () => {
     );
   });
   it("telefone: DDD e nono dígito", () => {
-    expect(validarPedido({ ...valido, telefone: "(82) 3152-0132" }, 20).telefone).toBeUndefined();
-    expect(validarPedido({ ...valido, telefone: "(82) 89152-0132" }, 20).telefone).toBeDefined();
-    expect(validarPedido({ ...valido, telefone: "(02) 99152-0132" }, 20).telefone).toBeDefined();
-    expect(validarPedido({ ...valido, telefone: "82991520" }, 20).telefone).toBeDefined();
+    expect(validarPedido({ ...valido, telefone: "(82) 3433-6126" }, 20).telefone).toBeUndefined();
+    expect(validarPedido({ ...valido, telefone: "(82) 89433-6126" }, 20).telefone).toBeDefined();
+    expect(validarPedido({ ...valido, telefone: "(02) 99433-6126" }, 20).telefone).toBeDefined();
+    expect(validarPedido({ ...valido, telefone: "82994336" }, 20).telefone).toBeDefined();
   });
   it("horário de entrega precisa ser uma das faixas", () => {
     expect(validarPedido({ ...valido, horario: "" }, 20).horario).toBeDefined();
@@ -69,3 +70,19 @@ describe("paraDadosPedido e sanearRascunho", () => {
     expect(r.semTroco).toBe(false);
   });
 });
+
+describe("delivery e retirada", () => {
+  it("na retirada não pede endereço: só nome, telefone, horário e pagamento", () => {
+    const e = validarPedido({ ...rascunhoVazio, tipo: "retirada" }, 20);
+    expect(Object.keys(e)).toEqual(["nome", "telefone", "horario", "pagamento"]);
+    expect(e.horario).toBe("Escolha o horário de retirada.");
+    const semEndereco = { ...valido, tipo: "retirada" as const, cep: "", rua: "", numero: "", complemento: "", bairro: "", cidade: "", uf: "" };
+    expect(validarPedido(semEndereco, 22.98)).toEqual({});
+  });
+  it("o padrão é delivery; valores estranhos do sessionStorage voltam para delivery", () => {
+    expect(rascunhoVazio.tipo).toBe("entrega");
+    expect(sanearRascunho({ tipo: "voando" }).tipo).toBe("entrega");
+    expect(sanearRascunho({ tipo: "retirada" }).tipo).toBe("retirada");
+  });
+});
+

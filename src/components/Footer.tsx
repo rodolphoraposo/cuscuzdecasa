@@ -24,6 +24,7 @@ export function Footer() {
           </nav>
 
           <div className="footer__contato">
+            <p>Funcionamos de {contato.diasFuncionamento}</p>
             <a href={`https://wa.me/${contato.whatsapp}`}>{contato.telefoneExibicao}</a>
             <a
               href={`https://www.instagram.com/${contato.instagram}/`} target="_blank" rel="noopener noreferrer"

@@ -22,7 +22,7 @@ export default function Privacidade() {
       <h2>2. Quais dados usamos</h2>
       <ul>
         <li><strong>Identificação e contato:</strong> nome e telefone/WhatsApp.</li>
-        <li><strong>Endereço de entrega:</strong> CEP, rua, condomínio ou residencial, número, complemento, bairro, cidade, UF e ponto de referência.</li>
+        <li><strong>Endereço de entrega (só nos pedidos de delivery):</strong> CEP, rua, condomínio ou residencial, número, complemento, bairro, cidade, UF e ponto de referência.</li>
         <li><strong>Pedido:</strong> itens, adicionais, quantidades, valores, observações (por exemplo, alergias) e forma de pagamento, incluindo o valor para troco.</li>
         <li><strong>Dados técnicos:</strong> a hospedagem do site registra endereço IP, navegador, data e hora de acesso.</li>
       </ul>

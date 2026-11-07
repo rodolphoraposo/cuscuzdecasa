@@ -125,4 +125,21 @@ describe("sequência do pedido: prato → capriche → bebida", () => {
     expect(screen.getByRole("button", { name: "Bebidas" }).getAttribute("aria-pressed")).toBe("true");
     expect(screen.getByRole("heading", { level: 2, name: "4 Opções" })).toBeTruthy();
   });
+
+  it("'Sem acompanhamento' é uma escolha válida: deixa seguir e aparece assim no pedido", async () => {
+    const u = userEvent.setup();
+    abrir("/cardapio/carne-de-sol");
+    const radios = (screen.getAllByRole("radio") as HTMLInputElement[]).filter((r) => r.name === "acompanhamento");
+    expect(radios).toHaveLength(3);
+    await u.click(screen.getByRole("radio", { name: "Sem acompanhamento" }));
+    await u.click(screen.getByRole("button", { name: /Adicionar · / }));
+    expect(local()).toBe("/cardapio?prato=bebidas");
+    expect(JSON.parse(localStorage.getItem("cuscuz-pedido-v3") ?? "[]")[0]).toMatchObject({ id: "carne-de-sol", acomp: "sem-acompanhamento" });
+
+    cleanup();
+    abrir("/pedido");
+    expect(screen.getByText("Sem acompanhamento")).toBeTruthy();
+    expect(screen.queryByText(/^Acompanhamento:/)).toBeNull();
+  });
 });
+

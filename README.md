@@ -20,7 +20,8 @@ npm run build    # verificação de tipos + build de produção
 | Adicionais ("Capriche seu prato") e acompanhamentos | `src/data/menu.ts` (`adicionais`, `acompanhamentos`) |
 | **Número do WhatsApp**, telefone exibido, **Instagram**, taxa de entrega | `src/data/menu.ts` (`contato`, `taxaEntrega`) |
 | Dados da empresa nos Termos e na Privacidade (CPF/CNPJ, e-mail) | `src/data/empresa.ts` |
-| Horário limite, janelas de entrega, **o que acontece depois das 16h** | `src/lib/entrega.ts` (`APOS_O_LIMITE`: `"bloquear"` ou `"amanha"`) |
+| **Dias de funcionamento**, horário limite, janelas de entrega/retirada, **o que acontece fora do horário** | `src/lib/entrega.ts` (`DIAS_DE_FUNCIONAMENTO`, `TEXTO_DIAS`, `APOS_O_LIMITE`: `"bloquear"` ou `"amanha"`) |
+| Texto que o cliente lê ao escolher **Retirada na casa** (o endereço da casa não fica no site) | `src/data/empresa.ts` (`retiradaInstrucao`) |
 | Formato da comanda do WhatsApp e número do pedido (`#0000`) | `src/lib/comanda.ts` |
 | Formas de pagamento | `src/pages/Pedido.tsx` (`FORMAS`) e `src/lib/comanda.ts` |
 | Cores, tipografia, espaçamentos (tokens do Figma) | `src/styles/tokens.css` |
@@ -46,7 +47,7 @@ scripts/       csp-hash.mjs
 
 ## Fluxo do cliente
 
-Início → Cardápio (Cuscuz, Macaxeira ou Bebidas; em Cuscuz e Macaxeira, abas Todos/Salgados/Doces) → Detalhe (acompanhamento, adicionais, quantidade) → sugestão de bebida → Seu pedido (dados, CEP, horário, pagamento, troco) → Resumo com a prévia da comanda → WhatsApp → Agradecimento.
+Início → Cardápio (Cuscuz, Macaxeira ou Bebidas; em Cuscuz e Macaxeira, abas Todos/Salgados/Doces) → Detalhe (acompanhamento, adicionais, quantidade) → sugestão de bebida → Seu pedido (Delivery, já marcado, ou Retirada na casa; dados, CEP e endereço só no delivery, horário, pagamento, troco) → Resumo com a prévia da comanda → WhatsApp → Agradecimento.
 
 ## Segurança e privacidade
 
@@ -65,7 +66,8 @@ Início → Cardápio (Cuscuz, Macaxeira ou Bebidas; em Cuscuz e Macaxeira, abas
 - [ ] Preencher CPF/CNPJ e e-mail em `src/data/empresa.ts` e pedir revisão profissional dos Termos e da Privacidade.
 - [ ] Atualizar o número do WhatsApp em `contato` (`menu.ts`).
 - [ ] Macaxeira: confirmar os preços (hoje iguais aos do cuscuz equivalente).
-- [ ] Confirmar `APOS_O_LIMITE` em `entrega.ts`.
+- [ ] Confirmar `APOS_O_LIMITE` em `entrega.ts`. A casa funciona de segunda a sexta: **num sábado ou domingo o site fica fechado**. Para testar no fim de semana, inclua `0`/`6` em `DIAS_DE_FUNCIONAMENTO` (e volte depois).
+- [ ] Conferir o texto da retirada (`retiradaInstrucao`) e se as faixas de horário da retirada são as mesmas da entrega.
 - [ ] Fazer um pedido de teste real até o WhatsApp (comanda em fonte monoespaçada) e compartilhar o link para conferir a prévia (Open Graph).
 - [ ] Conferir em um celular de verdade e abrir o site publicado verificando o console do navegador.
 - [ ] O número do pedido (`#0000`) é provisório e não é sequencial: troque `numeroPedido` quando houver contador (Operatta/Supabase).

@@ -10,6 +10,15 @@ beforeAll(() => { window.scrollTo = vi.fn() as unknown as typeof window.scrollTo
 afterEach(cleanup);
 const abrir = () => render(<MemoryRouter><CartProvider><App /></CartProvider></MemoryRouter>);
 
+describe("Contato oficial no rodapé", () => {
+  it("mostra o número oficial, os dias de funcionamento e o Instagram", () => {
+    abrir();
+    const rodape = within(screen.getByRole("contentinfo"));
+    expect(rodape.getByRole("link", { name: "(82) 99152-0132" }).getAttribute("href")).toBe("https://wa.me/5582991520132");
+    expect(rodape.getByText("Funcionamos de segunda a sexta")).toBeTruthy();
+  });
+});
+
 describe("Instagram da casa", () => {
   it("rodapé tem o link para o perfil, em nova aba e sem vazar a página de origem", () => {
     abrir();

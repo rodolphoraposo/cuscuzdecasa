@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { diaDaEntrega } from "../lib/entrega";
+import { diaDaEntrega, motivoFechado } from "../lib/entrega";
 
 /** Dia da entrega conforme o horário de agora (atualiza sozinho com a aba aberta). null = pedidos de hoje encerrados. */
 export function useEntrega() {
@@ -8,5 +8,5 @@ export function useEntrega() {
     const t = window.setInterval(() => setAgora(new Date()), 30_000);
     return () => window.clearInterval(t);
   }, []);
-  return { agora, dia: diaDaEntrega(agora) };
+  return { agora, dia: diaDaEntrega(agora), motivo: motivoFechado(agora) };
 }

@@ -1,7 +1,9 @@
 import { janelasEntrega } from "./entrega";
-import { brl, limpar, type DadosPedido, type FormaPagamento } from "./comanda";
+import { brl, limpar, type DadosPedido, type FormaPagamento, type TipoPedido } from "./comanda";
 
 export interface Rascunho {
+  /** Delivery (padrão, sempre o primeiro) ou retirada na casa */
+  tipo: TipoPedido;
   nome: string;
   telefone: string;
   cep: string;
@@ -20,6 +22,7 @@ export interface Rascunho {
 }
 
 export const rascunhoVazio: Rascunho = {
+  tipo: "entrega",
   nome: "", telefone: "", cep: "", rua: "", numero: "", complemento: "", bairro: "", cidade: "", uf: "",
   horario: "", referencia: "", pagamento: "", trocoTexto: "", semTroco: false, observacoes: "",
 };
@@ -67,6 +70,7 @@ export function validarPedido(r: Rascunho, total: number): Erros {
   const telOk = (tel.length === 10 || tel.length === 11) && Number(tel.slice(0, 2)) >= 11 && (tel.length === 10 || tel[2] === "9");
   if (!telOk) e.telefone = "Informe um WhatsApp com DDD, como (82) 99999-9999.";
 
+  if (r.tipo !== "retirada") { // na retirada não há endereço
   if (digitos(r.cep).length !== 8) e.cep = "Informe um CEP com 8 números.";
   if (limpar(r.rua, 80).length < 3) e.rua = "Informe a rua, condomínio ou residencial.";
   if (!limpar(r.numero, 10)) e.numero = "Informe o número (ou S/N).";
@@ -74,7 +78,8 @@ export function validarPedido(r: Rascunho, total: number): Erros {
   if (limpar(r.bairro, 60).length < 2) e.bairro = "Informe o bairro.";
   if (limpar(r.cidade, 60).length < 2) e.cidade = "Informe a cidade.";
   if (!UFS.has(r.uf.trim().toUpperCase())) e.uf = "Use a sigla, como AL.";
-  if (!janelasEntrega.some((j) => j.id === r.horario)) e.horario = "Escolha o horário de entrega.";
+  }
+  if (!janelasEntrega.some((j) => j.id === r.horario)) e.horario = r.tipo === "retirada" ? "Escolha o horário de retirada." : "Escolha o horário de entrega.";
   if (!r.pagamento) e.pagamento = "Escolha a forma de pagamento.";
 
   if (r.pagamento === "dinheiro" && !r.semTroco) {
@@ -101,6 +106,7 @@ export function sanearRascunho(bruto: unknown): Rascunho {
     complemento: texto("complemento"), bairro: texto("bairro"), cidade: texto("cidade"), uf: texto("uf"),
     referencia: texto("referencia"), trocoTexto: texto("trocoTexto"), observacoes: texto("observacoes"),
     semTroco: o.semTroco === true,
+    tipo: o.tipo === "retirada" ? "retirada" : "entrega",
     horario: janelasEntrega.some((j) => j.id === o.horario) ? (o.horario as string) : "",
     pagamento: FORMAS.includes(o.pagamento as string) ? (o.pagamento as FormaPagamento) : "",
   };

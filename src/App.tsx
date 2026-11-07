@@ -1,6 +1,7 @@
 import { Route, Routes, useLocation } from "react-router-dom";
 import { Footer } from "./components/Footer";
 import { Header } from "./components/Header";
+import { useFocoLivreDaBarra } from "./hooks/useFocoLivreDaBarra";
 import { ScrollManager } from "./components/ScrollManager";
 import DesignSystem from "./pages/DesignSystem";
 import Home from "./pages/Home";
@@ -15,6 +16,7 @@ import ProductDetail from "./pages/ProductDetail";
 
 export default function App() {
   const { pathname } = useLocation();
+  useFocoLivreDaBarra();
   /** Detalhe, carrinho e finalização são telas focadas, sem o menu do site. */
   const fluxoDePedido = pathname.startsWith("/cardapio/") || pathname.startsWith("/pedido");
 

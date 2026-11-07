@@ -26,19 +26,19 @@ export default function Termos() {
 
       <h2>3. Horários e área de entrega</h2>
       <p>
-        Recebemos pedidos até as {contato.horarioPedidos} e entregamos das {contato.horarioEntrega}. Entregamos nos
+        Funcionamos de {contato.diasFuncionamento}. Recebemos pedidos até as {contato.horarioPedidos} e entregamos das {contato.horarioEntrega}. Entregamos nos
         condomínios da Serraria: {condominios.join(", ")}. Se o seu não está na lista, chame no WhatsApp {zap}.{" "}
         {taxaEntrega === 0 ? "No momento, a entrega não tem taxa." : null}
       </p>
       <p>
-        Ao finalizar, você escolhe a faixa de horário da entrega (de 1 hora). Fazemos o possível para cumprir, mas o
-        horário pode variar um pouco.
+        Ao finalizar, você escolhe entre delivery e retirada na casa, e a faixa de horário (de 1 hora). {empresa.retiradaInstrucao}{" "}
+        Fazemos o possível para cumprir o horário, mas ele pode variar um pouco.
       </p>
 
       <h2>4. Preços e pagamento</h2>
       <ul>
         <li>Os preços são em reais e valem os mostrados no momento do pedido. Eles podem mudar, sem afetar pedidos já enviados.</li>
-        <li>Formas de pagamento: Pix, dinheiro ou cartão de crédito ou débito na entrega (levamos a maquineta). O pagamento é feito na entrega, na forma escolhida, salvo combinação diferente pelo WhatsApp.</li>
+        <li>Formas de pagamento: Pix, dinheiro ou cartão de crédito ou débito, na entrega (levamos a maquineta) ou na retirada. O pagamento é feito na entrega ou na retirada, na forma escolhida, salvo combinação diferente pelo WhatsApp.</li>
         <li>Se pagar em dinheiro e precisar de troco, informe o valor da nota, que deve ser igual ou maior que o total.</li>
       </ul>
 

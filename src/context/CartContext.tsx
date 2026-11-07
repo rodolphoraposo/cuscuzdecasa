@@ -123,7 +123,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
             return qtd < 1 ? [] : [{ ...s, qtd }];
           }),
         ),
-      limpar: () => setSalvos([]),
+      limpar: () => {
+        setSalvos([]);
+        try {
+          localStorage.setItem(STORAGE_KEY, "[]");
+        } catch {
+          /* armazenamento indisponível: segue só em memória */
+        }
+      },
     };
   }, [salvos]);
 

@@ -45,7 +45,7 @@ describe("fluxo Seu pedido → Falta só um passo", () => {
     expect(screen.getAllByText(/22,98/).length).toBeGreaterThan(0);
 
     await u.type(screen.getByLabelText("Nome*"), "Rodolpho");
-    await u.type(screen.getByLabelText("Telefone / WhatsApp*"), "82991520132");
+    await u.type(screen.getByLabelText("Telefone / WhatsApp*"), "82994336126");
     await u.type(screen.getByLabelText("CEP*"), "57046000"); // busca sozinho ao completar 8 dígitos
 
     await waitFor(() => expect(screen.getByLabelText("Rua / Condomínio / Residencial*")).toHaveProperty("value", "Rua Exemplo"));
@@ -63,7 +63,7 @@ describe("fluxo Seu pedido → Falta só um passo", () => {
 
     expect(await screen.findByRole("heading", { name: "Falta só um passo" })).toBeTruthy();
     const link = screen.getByRole("link", { name: /Enviar comanda para o WhatsApp/ }) as HTMLAnchorElement;
-    expect(link.href.startsWith("https://wa.me/5582991520132?text=")).toBe(true);
+    expect(link.href.startsWith("https://wa.me/5582991520132?text=")).toBe(true); // número oficial da casa
     expect(link.rel).toContain("noopener");
     const texto = decodeURIComponent(link.href.split("text=")[1]);
     expect(texto).toContain("Rua Exemplo, 120 - Serraria");
@@ -109,6 +109,44 @@ describe("fluxo Seu pedido → Falta só um passo", () => {
     abrir();
     expect(screen.getByText(/Os pedidos de hoje encerraram às 16h/)).toBeTruthy();
     expect((screen.getByRole("button", { name: /Finalizar pedido/ }) as HTMLButtonElement).disabled).toBe(true);
+  });
+
+  it("fim de semana: a casa não funciona, com aviso claro e botão desativado", () => {
+    vi.setSystemTime(new Date("2026-11-07T15:00:00Z")); // sábado, 12:00 em Maceió
+    abrir();
+    expect(screen.getByText(/Hoje a casa não funciona\. Atendemos de segunda a sexta/)).toBeTruthy();
+    expect((screen.getByRole("button", { name: /Finalizar pedido/ }) as HTMLButtonElement).disabled).toBe(true);
+  });
+
+  it("Delivery vem primeiro e já marcado; Retirada na casa dispensa o endereço e segue na comanda", async () => {
+    const u = userEvent.setup();
+    abrir();
+    const tipos = (screen.getAllByRole("radio") as HTMLInputElement[]).filter((r) => r.name === "tipo");
+    expect(tipos.map((r) => r.value)).toEqual(["entrega", "retirada"]);
+    expect(tipos[0].checked).toBe(true);
+    expect(screen.getByLabelText("CEP*")).toBeTruthy();
+
+    await u.click(screen.getByRole("radio", { name: /Retirada na casa/ }));
+    expect(screen.queryByLabelText("CEP*")).toBeNull();
+    expect(screen.getByText(/Enviamos o endereço para retirada/)).toBeTruthy();
+    expect(screen.getByRole("radio", { name: /Cartão na retirada/ })).toBeTruthy();
+
+    await u.type(screen.getByLabelText("Nome*"), "Rodolpho");
+    await u.type(screen.getByLabelText("Telefone / WhatsApp*"), "82991520132");
+    await u.click(screen.getByRole("radio", { name: "18h às 19h" }));
+    await u.click(screen.getByRole("radio", { name: "Pix" }));
+    await u.click(screen.getByRole("button", { name: /Finalizar pedido/ }));
+
+    expect(await screen.findByRole("heading", { name: "Falta só um passo" })).toBeTruthy();
+    const previa = screen.getByRole("group", { name: "Resumo" });
+    expect(previa.textContent).toContain("RETIRADA NA CASA");
+    expect(previa.textContent).toContain("Horário: hoje, 18h às 19h");
+    expect(previa.textContent).not.toContain("CEP");
+    expect(previa.textContent).not.toContain("Entrega:");
+    expect(previa.textContent).toContain("TOTAL: R$ 22,98");
+
+    await u.click(screen.getByRole("link", { name: /Enviar comanda para o WhatsApp/ }));
+    expect(await screen.findByText(/Retirada na casa das 17h às 21h/, {}, { timeout: 2000 })).toBeTruthy();
   });
 
   it("CEP que falha não trava: avisa e deixa preencher à mão", async () => {

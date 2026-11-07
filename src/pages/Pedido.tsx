@@ -1,11 +1,12 @@
-import { CaretLeft, Check, CreditCard, MagnifyingGlass, Minus, Money, PixLogo, Plus } from "@phosphor-icons/react";
+import { CaretLeft, Check, CreditCard, MagnifyingGlass, Minus, Money, Motorcycle, PixLogo, Plus, Storefront } from "@phosphor-icons/react";
 import { useEffect, useMemo, useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AvisoEncerrado } from "../components/AvisoEncerrado";
 import { FotoProduto } from "../components/FotoProduto";
 import { Banner, Button, ButtonLink, Checkbox, EmptyState, Input, Textarea } from "../components/ui";
 import { useCart, type LinhaPedido } from "../context/CartContext";
-import { adicionais, contato, formatarPreco, nomeCompleto, taxaEntrega } from "../data/menu";
+import { empresa } from "../data/empresa";
+import { SEM_ACOMPANHAMENTO, adicionais, contato, formatarPreco, nomeCompleto, taxaEntrega } from "../data/menu";
 import { buscarCep } from "../lib/cep";
 import { janelasEntrega } from "../lib/entrega";
 import { useEntrega } from "../hooks/useEntrega";
@@ -26,6 +27,12 @@ const MENSAGEM_CEP: Record<StatusCep, string> = {
   falha: "Não foi possível buscar o CEP agora. Preencha o endereço manualmente.",
 };
 
+/** Delivery sempre primeiro (e já marcado); retirada na casa depois. */
+const TIPOS = [
+  { id: "entrega", nome: "Delivery", detalhe: "Entrega no seu condomínio", Icone: Motorcycle },
+  { id: "retirada", nome: "Retirada na casa", detalhe: "Sem taxa de entrega", Icone: Storefront },
+] as const;
+
 const FORMAS = [
   { id: "pix", nome: "Pix", Icone: PixLogo },
   { id: "dinheiro", nome: "Dinheiro", Icone: Money },
@@ -39,11 +46,13 @@ export default function Pedido() {
   useNoIndex();
   const navigate = useNavigate();
   const { linhas, totalPreco, alterar, adicionar } = useCart();
-  const total = Math.round((totalPreco + taxaEntrega) * 100) / 100;
   const { dia } = useEntrega();
   const fechado = dia === null; // pedidos de hoje encerrados
 
   const [r, setR] = useState<Rascunho>(carregarRascunho);
+  const retirada = r.tipo === "retirada";
+  const taxa = retirada ? 0 : taxaEntrega; // retirada na casa não tem taxa
+  const total = Math.round((totalPreco + taxa) * 100) / 100;
   const [tentou, setTentou] = useState(false);
   const [tocados, setTocados] = useState<Partial<Record<Campo, boolean>>>({});
   const [statusCep, setStatusCep] = useState<StatusCep>("ocioso");
@@ -168,7 +177,11 @@ export default function Pedido() {
                   <FotoProduto produto={l.produto} decorativa className={l.produto.ajuste === "contain" ? "contain" : ""} />
                   <div className="pedido-item__corpo">
                     <h3 className="pedido-item__nome">{nomeCompleto(l.produto)}</h3>
-                    {l.acompanhamentoNome && <p className="pedido-item__extra">Acompanhamento: {l.acompanhamentoNome}</p>}
+                    {l.acompanhamentoNome && (
+                      <p className="pedido-item__extra">
+                        {l.acompanhamento === SEM_ACOMPANHAMENTO ? l.acompanhamentoNome : `Acompanhamento: ${l.acompanhamentoNome}`}
+                      </p>
+                    )}
                     {l.extras.map((e) => (
                       <p className="pedido-item__extra" key={e}>+ {adicionais.find((a) => a.id === e)?.nome}</p>
                     ))}
@@ -200,6 +213,21 @@ export default function Pedido() {
             {comErros && <Banner tipo="erro">Revise os campos destacados para continuar.</Banner>}
 
             <fieldset className="pedido__secao">
+              <legend className="t-subtitulo">Como você quer receber?</legend>
+              <div className="pagto-lista">
+                {TIPOS.map(({ id, nome, detalhe, Icone }) => (
+                  <label className="pagto" key={id}>
+                    <input type="radio" name="tipo" value={id} checked={r.tipo === id} onChange={() => mudar("tipo", id)} />
+                    <Icone className="icon" size={24} aria-hidden="true" />
+                    <span className="pagto__nome">{nome}<small>{detalhe}</small></span>
+                    <span className="pagto__bolinha" aria-hidden="true" />
+                  </label>
+                ))}
+              </div>
+              {retirada && <p className="aviso-privacidade">{empresa.retiradaInstrucao}</p>}
+            </fieldset>
+
+            <fieldset className="pedido__secao">
               <legend className="t-subtitulo">Seus dados</legend>
               <p className="aviso-privacidade">
                 Usamos seus dados só para entregar o pedido.{" "}
@@ -209,6 +237,7 @@ export default function Pedido() {
               <Input rotulo="Telefone / WhatsApp*" placeholder="(82) 99999-9999" type="tel" inputMode="tel" autoComplete="tel-national" required {...campo("telefone", mascararTelefone)} />
             </fieldset>
 
+            {!retirada && (
             <fieldset className="pedido__secao">
               <legend className="t-subtitulo">Endereço de entrega</legend>
               <div className="cep-linha">
@@ -242,11 +271,12 @@ export default function Pedido() {
                 value={r.referencia} onChange={(e) => mudar("referencia", e.target.value)}
               />
             </fieldset>
+            )}
 
             <fieldset className="pedido__secao" aria-describedby={erro("horario") ? "erro-horario" : undefined}>
-              <legend className="t-subtitulo">Horário de entrega</legend>
+              <legend className="t-subtitulo">{retirada ? "Horário de retirada" : "Horário de entrega"}</legend>
               <p className="aviso-privacidade">
-                Escolha a faixa em que prefere receber ({dia ?? "hoje"}). Pedidos até as {contato.horarioPedidos}, entrega das {contato.horarioEntrega}.
+                Escolha a faixa em que prefere {retirada ? "retirar" : "receber"} ({dia ?? "hoje"}). Atendemos de {contato.diasFuncionamento}, com pedidos até as {contato.horarioPedidos} e {retirada ? "retirada" : "entrega"} das {contato.horarioEntrega}.
               </p>
               <div className={`pagto-lista pagto-lista--grade${erro("horario") ? " pagto-lista--erro" : ""}`}>
                 {janelasEntrega.map((j) => (
@@ -273,7 +303,7 @@ export default function Pedido() {
                       onChange={() => { mudar("pagamento", id); setTocados((t) => ({ ...t, pagamento: true })); }}
                     />
                     <Icone className="icon" size={24} aria-hidden="true" />
-                    <span className="pagto__nome">{nome}{"detalhe" in resto && <small>{resto.detalhe}</small>}</span>
+                    <span className="pagto__nome">{id === "cartao" && retirada ? "Cartão na retirada" : nome}{"detalhe" in resto && <small>{resto.detalhe}</small>}</span>
                     <span className="pagto__bolinha" aria-hidden="true" />
                   </label>
                 ))}
@@ -307,7 +337,7 @@ export default function Pedido() {
             <h2 className="t-subtitulo" id="titulo-resumo">Resumo</h2>
             <dl className="resumo">
               <div><dt>Subtotal</dt><dd>{formatarPreco(totalPreco)}</dd></div>
-              <div><dt>Entrega</dt><dd>{formatarPreco(taxaEntrega)}</dd></div>
+              {!retirada && <div><dt>Entrega</dt><dd>{formatarPreco(taxa)}</dd></div>}
               <div className="resumo__total"><dt>Total</dt><dd>{formatarPreco(total)}</dd></div>
             </dl>
           </section>

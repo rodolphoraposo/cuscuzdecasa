@@ -3,6 +3,7 @@ import { useEffect, useMemo } from "react";
 import { Navigate } from "react-router-dom";
 import { ButtonLink } from "../components/ui";
 import { useCart } from "../context/CartContext";
+import { empresa } from "../data/empresa";
 import { contato } from "../data/menu";
 import { linkWhatsApp } from "../lib/comanda";
 import { limparRascunho } from "../lib/formulario";
@@ -32,8 +33,10 @@ export default function PedidoEnviado() {
           <div className="final-card__icone"><Check size={40} aria-hidden="true" /></div>
           <h1 className="t-secao">Obrigado pelo seu pedido!</h1>
           <p className="t-corpo">
-            Abrimos o WhatsApp com a comanda <strong>{ultimo.codigo}</strong>. Confirme o envio por lá e a cozinha começa o preparo.
-            Entregamos das {contato.horarioEntrega}.
+            Abrimos o WhatsApp com a comanda <strong>{ultimo.codigo}</strong>. Confirme o envio por lá e a cozinha começa o preparo.{" "}
+            {ultimo.tipo === "retirada"
+              ? `Retirada na casa das ${contato.horarioEntrega}. ${empresa.retiradaInstrucao}`
+              : `Entregamos das ${contato.horarioEntrega}.`}
           </p>
         </div>
 

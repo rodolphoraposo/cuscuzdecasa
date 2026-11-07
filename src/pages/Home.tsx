@@ -26,8 +26,9 @@ export default function Home() {
           </p>
           <p className="hero__cta">Faça seu pedido de dia e receba à noite!</p>
           <p className="t-legenda">
-            Pedidos até as {contato.horarioPedidos} · entrega das {contato.horarioEntrega}
+            {contato.diasFuncionamento.charAt(0).toUpperCase() + contato.diasFuncionamento.slice(1)} · Pedidos até as {contato.horarioPedidos} · entrega das {contato.horarioEntrega}
           </p>
+          <p className="t-legenda">Delivery ou retirada na casa.</p>
           <AvisoEncerrado />
           <div className="hero__acoes">
             <Link to="/cardapio" className="btn btn--primary btn--lg">Peça agora!</Link>
@@ -76,7 +77,7 @@ export default function Home() {
       <section className="section container" id="onde-entregamos">
         <h2 className="t-secao">Onde entregamos</h2>
         <p className="t-corpo" style={{ marginTop: "var(--esp-8)", color: "var(--texto-secundario)" }}>
-          Entregamos nos condomínios da Serraria.
+          Entregamos nos condomínios da Serraria. Também aceitamos pedidos para retirada na casa.
         </p>
         <ul className="chips">
           {condominios.map((c) => (

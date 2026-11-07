@@ -16,9 +16,10 @@ export default function Finalizar() {
   usePageTitle("Finalizar pedido");
   useNoIndex();
   const navigate = useNavigate();
-  const { linhas, totalPreco } = useCart();
-  const total = Math.round((totalPreco + taxaEntrega) * 100) / 100;
+  const { linhas, totalPreco, limpar } = useCart();
   const rascunho = useMemo(carregarRascunho, []);
+  const taxa = rascunho.tipo === "retirada" ? 0 : taxaEntrega;
+  const total = Math.round((totalPreco + taxa) * 100) / 100;
   const agora = useMemo(() => new Date(), []);
   const dia = diaDaEntrega(agora);
   const entregaDesc = dia ? descricaoEntrega(rascunho.horario, dia) : "";
@@ -36,7 +37,7 @@ export default function Finalizar() {
           extras: l.extras.map((e) => adicionais.find((a) => a.id === e)?.nome ?? ""),
           subtotal: l.subtotal,
         })),
-        { subtotal: totalPreco, entrega: taxaEntrega, total },
+        { subtotal: totalPreco, entrega: taxa, total },
         agora,
       );
     } catch {
@@ -53,7 +54,8 @@ export default function Finalizar() {
    * (replace: o "voltar" não retorna a esta tela). O pequeno atraso deixa o link abrir antes de trocar de tela.
    */
   const aoEnviar = () => {
-    salvarUltimoPedido({ codigo: comanda.codigo, texto: comanda.texto });
+    salvarUltimoPedido({ codigo: comanda.codigo, texto: comanda.texto, tipo: rascunho.tipo });
+    limpar();
     window.setTimeout(() => navigate("/pedido/enviado", { replace: true }), 300);
   };
 

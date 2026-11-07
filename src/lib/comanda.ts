@@ -3,6 +3,9 @@
  * Módulo puro: não importa imagens nem React, então roda em testes.
  */
 
+/** Delivery ("entrega") ou retirada na casa. */
+export type TipoPedido = "entrega" | "retirada";
+
 export type FormaPagamento = "pix" | "dinheiro" | "cartao";
 
 const ROTULO_PAGAMENTO: Record<FormaPagamento, string> = {
@@ -37,8 +40,10 @@ export interface DadosPedido {
   /** Só para dinheiro: valor da nota. null/undefined = não precisa de troco. */
   trocoPara?: number | null;
   observacoes?: string;
-  /** Ex.: "hoje, 18h às 19h" */
+  /** Ex.: "hoje, 18h às 19h" (horário da entrega ou da retirada) */
   entrega?: string;
+  /** Padrão: delivery. Na retirada, não há endereço nem linha de entrega. */
+  tipo?: TipoPedido;
 }
 
 export interface TotaisPedido {
@@ -47,7 +52,7 @@ export interface TotaisPedido {
   total: number;
 }
 
-const FUSO = "America/Maceio";
+export const FUSO = "America/Maceio";
 
 /** Moeda com espaço comum (o NBSP do Intl quebra a formatação no WhatsApp). */
 export const brl = (valor: number) =>
@@ -131,21 +136,24 @@ export function montarComanda(
   const referencia = limpar(pedido.referencia, 80);
   const observacoes = limpar(pedido.observacoes, 300);
 
-  let pagamento = `*PAGAMENTO:* ${ROTULO_PAGAMENTO[pedido.pagamento]}`;
+  const retirada = pedido.tipo === "retirada";
+  let pagamento = `*PAGAMENTO:* ${retirada && pedido.pagamento === "cartao" ? "Cartão na retirada" : ROTULO_PAGAMENTO[pedido.pagamento]}`;
   if (pedido.pagamento === "dinheiro") {
     if (pedido.trocoPara == null) {
       pagamento += "\nTroco: não precisa";
     } else {
       if (pedido.trocoPara < totais.total) throw new RangeError("Troco menor que o total do pedido");
       const levar = Math.round((pedido.trocoPara - totais.total) * 100) / 100;
-      pagamento += `\nTroco para: ${brl(pedido.trocoPara)} (levar ${brl(levar)})`;
+      pagamento += `\nTroco para: ${brl(pedido.trocoPara)} (${retirada ? "devolver" : "levar"} ${brl(levar)})`;
     }
   }
 
   const blocos = [
     `*COMANDA · CUSCUZ DE CASA*\nPedido ${codigo} · ${dataHora(agora)}`,
     `*CLIENTE*\n${limpar(pedido.nome, 80)}\nTel: ${formatarTelefone(pedido.telefone)}`,
-    [
+    retirada
+      ? ["*RETIRADA NA CASA*", ...(pedido.entrega ? [`Horário: ${limpar(pedido.entrega, 40)}`] : [])].join("\n")
+      : [
       "*ENTREGA*",
       ...(pedido.entrega ? [`Horário: ${limpar(pedido.entrega, 40)}`] : []),
       `${limpar(pedido.rua, 80)}, ${limpar(pedido.numero, 10)} - ${limpar(pedido.bairro, 60)}`,
@@ -155,7 +163,9 @@ export function montarComanda(
     ].join("\n"),
     // Entre ``` o WhatsApp usa fonte monoespaçada (alinha pontinhos e preços). Crases coladas no texto: sem linhas em branco extras.
     `*ITENS*\n\`\`\`${linhasItens.join("\n")}\`\`\``,
-    `*Subtotal:* ${brl(totais.subtotal)}\n*Entrega:* ${brl(totais.entrega)}\n*TOTAL:* ${brl(totais.total)}`,
+    retirada
+      ? `*Subtotal:* ${brl(totais.subtotal)}\n*TOTAL:* ${brl(totais.total)}`
+      : `*Subtotal:* ${brl(totais.subtotal)}\n*Entrega:* ${brl(totais.entrega)}\n*TOTAL:* ${brl(totais.total)}`,
     pagamento,
     ...(observacoes ? [`*OBS:* ${observacoes}`] : []),
   ];

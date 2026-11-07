@@ -15,7 +15,7 @@ describe("páginas legais e 404", () => {
     abrir("/termos");
     expect(screen.getByRole("heading", { level: 1, name: "Termos de Uso" })).toBeTruthy();
     expect(document.body.textContent).toContain("até as 16h");
-    expect(document.body.textContent).toContain("17h às 22h");
+    expect(document.body.textContent).toContain("17h às 21h");
     expect(document.body.textContent).toContain("Sierra Park");
     expect(document.body.textContent).toContain("queijo coalho, mussarela, requeijão");
     expect(document.body.textContent).not.toContain("Conteúdo em preparação");
