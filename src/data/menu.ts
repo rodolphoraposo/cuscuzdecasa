@@ -57,17 +57,17 @@ const catalogo: Produto[] = [
   // ---------- Cuscuz · salgados ----------
   {
     id: "frango-desfiado", prato: "cuscuz", categoria: "salgados", nome: "Asa Branca", descricao: "Frango desfiado bem temperadinho", preco: 14.99,
-    descricaoLonga: "Cuscuz de milho quentinho e fofinho, recheado com peito de frango desfiado, refogado em temperos naturais e muito suculento.",
+    descricaoLonga: "Cuscuz de milho fofinho. recheado com filé de peito de frango desfiado, refogado em temperos naturais, com cebola e pimentão e muito suculento.",
     dica: "Fica perfeito com adicional de requeijão tipo Catupiry ou Queijo Coalho!",
   },
   {
     id: "carne-de-sol", prato: "cuscuz", categoria: "salgados", nome: "Do Sertão", descricao: "Carne de sol desfiada acebolada", preco: 14.99,
-    descricaoLonga: "O legítimo sabor nordestino! Cuscuz fofinho recheado com carne de sol artesanal, desfiada e acebolada na medida certa.",
+    descricaoLonga: "O legítimo sabor nordestino! Cuscuz fofinho recheado com carne de sol desfiada e acebolada na medida certa.",
     dica: "Adicione Queijo Coalho tostado e mude o seu dia!",
   },
   {
     id: "calabresa", prato: "cuscuz", categoria: "salgados", nome: "Arretado", descricao: "Calabresa fina defumada", preco: 13.99,
-    descricaoLonga: "Para quem ama sabor marcante. Cuscuz de milho recheado com finas rodelas de calabresa defumada, salteadas até ficarem bem douradinhas.",
+    descricaoLonga: "Para quem ama sabor marcante. Cuscuz de milho recheado com finas rodelas de calabresa defumada, com anéis de cebola refogados.",
     dica: "Combina muito com um Ovo Mexido por cima.",
   },
   {
@@ -94,21 +94,21 @@ const catalogo: Produto[] = [
   // As dicas de Quintura (bacon), Da Terra (ovo frito) e Luar do Sertão (melaço) esperam esses itens existirem em "adicionais".
   {
     id: "macaxeira-frango", prato: "macaxeira", categoria: "salgados", nome: "Aprumada", descricao: "Frango desfiado super suculento", preco: 14.99,
-    descricaoLonga: "Macaxeira cozida no ponto certo e finalizada na chapa, coberta com peito de frango desfiado super suculento, refogado em temperos naturais e ervas frescas.",
+    descricaoLonga: "Macaxeira cozida no ponto certo, coberta com filé de peito de frango em cubos, refogado em temperos naturais, com cebola e pimentão e muito suculento.",
     dica: "Fica perfeita com adicional de Requeijão Cremoso maçaricado!",
   },
   {
     id: "macaxeira-carne-de-sol", prato: "macaxeira", categoria: "salgados", nome: "Fulô de Mandacaru", descricao: "Carne de sol em cubos acebolada na manteiga de garrafa", preco: 14.99,
-    descricaoLonga: "Forte e marcante como o Sertão! Macaxeira super macia servida com uma generosa porção de carne de sol artesanal, desfiada e acebolada na manteiga de garrafa.",
-    dica: "Adicione Queijo Coalho tostado e mude o seu dia!",
+    descricaoLonga: "Forte e marcante como o Sertão! Macaxeira super macia servida com uma generosa porção de carne de sol em cubos acebolada no azeite.",
+    dica: "Adicione Queijo Coalho e mude o seu dia!",
   },
   {
     id: "macaxeira-calabresa", prato: "macaxeira", categoria: "salgados", nome: "Quintura", descricao: "Calabresa defumada em rodelas, dourada e crocante", preco: 13.99,
-    descricaoLonga: "Para quem ama sabor intenso e marcante. Nossa macaxeira fumegante coberta com cubos de calabresa defumada, salteados na chapa até ficarem bem dourados e crocantes.",
+    descricaoLonga: "Para quem ama sabor intenso e marcante. Nossa macaxeira fumegante coberta com rodelas de calabresa defumada com anéis de cebola refogados.",
   },
   {
     id: "macaxeira-carne-suina", prato: "macaxeira", categoria: "salgados", nome: "Arriégua", descricao: "Carne suína em cubos acebolada", preco: 11.99,
-    descricaoLonga: "Aquele gostinho inconfundível de comida afetiva feita em casa. Macaxeira cozida derretendo na boca, servida com carne suína em cubos acebolada, temperos frescos e muito molhadinha.",
+    descricaoLonga: "Aquele gostinho inconfundível de comida afetiva feita em casa. Macaxeira cozida derretendo na boca, servida com carne suína em cubos acebolada.",
     dica: "Experimente adicionar Queijo Mussarela derretido.",
   },
   {
@@ -117,7 +117,7 @@ const catalogo: Produto[] = [
   },
   {
     id: "macaxeira-cartola", prato: "macaxeira", categoria: "doces", nome: "Luar do Sertão", descricao: "Banana frita, queijo coalho, açúcar e canela", preco: 12.99,
-    descricaoLonga: "Uma releitura surpreendente e iluminada da nossa sobremesa mais famosa. Macaxeira dourada na chapa, servida com fatias de banana frita, queijo coalho derretido e finalizada com açúcar e canela.",
+    descricaoLonga: "Uma releitura surpreendente e iluminada da nossa sobremesa mais famosa. Macaxeira cozida, servida com fatias de banana frita, queijo coalho e finalizada com açúcar e canela.",
   },
   {
     id: "macaxeira-romeu-e-julieta", prato: "macaxeira", categoria: "doces", nome: "Xodózin", descricao: "Queijo coalho com goiabada cascão derretida", preco: 12.99,
@@ -178,8 +178,8 @@ export const condominios = [
 
 export const contato = {
   /** WhatsApp no formato internacional, só dígitos */
-  whatsapp: "5582994336126",
-  telefoneExibicao: "(82) 99433-6126",
+  whatsapp: "5582991520132",
+  telefoneExibicao: "(82) 99152-0132",
   /** Instagram da casa (só o nome de usuário, sem @) */
   instagram: "cuscuzdecasaoficial",
   horarioPedidos: `${LIMITE_PEDIDO_H}h`,

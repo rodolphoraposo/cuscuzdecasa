@@ -45,7 +45,7 @@ describe("fluxo Seu pedido → Falta só um passo", () => {
     expect(screen.getAllByText(/22,98/).length).toBeGreaterThan(0);
 
     await u.type(screen.getByLabelText("Nome*"), "Rodolpho");
-    await u.type(screen.getByLabelText("Telefone / WhatsApp*"), "82994336126");
+    await u.type(screen.getByLabelText("Telefone / WhatsApp*"), "82991520132");
     await u.type(screen.getByLabelText("CEP*"), "57046000"); // busca sozinho ao completar 8 dígitos
 
     await waitFor(() => expect(screen.getByLabelText("Rua / Condomínio / Residencial*")).toHaveProperty("value", "Rua Exemplo"));
@@ -63,7 +63,7 @@ describe("fluxo Seu pedido → Falta só um passo", () => {
 
     expect(await screen.findByRole("heading", { name: "Falta só um passo" })).toBeTruthy();
     const link = screen.getByRole("link", { name: /Enviar comanda para o WhatsApp/ }) as HTMLAnchorElement;
-    expect(link.href.startsWith("https://wa.me/5582994336126?text=")).toBe(true);
+    expect(link.href.startsWith("https://wa.me/5582991520132?text=")).toBe(true);
     expect(link.rel).toContain("noopener");
     const texto = decodeURIComponent(link.href.split("text=")[1]);
     expect(texto).toContain("Rua Exemplo, 120 - Serraria");
