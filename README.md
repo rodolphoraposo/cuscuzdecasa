@@ -65,7 +65,7 @@ Início → Cardápio (Cuscuz, Macaxeira ou Bebidas; em Cuscuz e Macaxeira, abas
 
 - [ ] Preencher CPF/CNPJ e e-mail em `src/data/empresa.ts` e pedir revisão profissional dos Termos e da Privacidade.
 - [ ] Atualizar o número do WhatsApp em `contato` (`menu.ts`).
-- [ ] Macaxeira: confirmar os preços (hoje iguais aos do cuscuz equivalente).
+- [ ] Confirmar os preços dos itens de macaxeira antes de publicar.
 - [ ] Confirmar `APOS_O_LIMITE` em `entrega.ts`. A casa funciona de segunda a sexta: **num sábado ou domingo o site fica fechado**. Para testar no fim de semana, inclua `0`/`6` em `DIAS_DE_FUNCIONAMENTO` (e volte depois).
 - [ ] Conferir o texto da retirada (`retiradaInstrucao`) e se as faixas de horário da retirada são as mesmas da entrega.
 - [ ] Fazer um pedido de teste real até o WhatsApp (comanda em fonte monoespaçada) e compartilhar o link para conferir a prévia (Open Graph).

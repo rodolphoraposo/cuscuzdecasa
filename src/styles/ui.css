@@ -15,7 +15,7 @@
 .btn--md { height: 40px; padding: 0 var(--esp-16); border-radius: var(--raio-8); }
 .btn--lg { height: 48px; padding: 0 var(--esp-24); border-radius: var(--raio-8); font-size: 16px; }
 .btn--block { display: flex; width: 100%; }
-.btn:focus-visible { outline: 2px solid var(--anel-foco); outline-offset: 0; }
+.btn:focus-visible { outline: 2px solid var(--anel-foco); outline-offset: 2px; }
 
 .btn--primary { background: var(--acao-primaria); color: var(--texto-sobre-acento); }
 .btn--primary:hover { background: var(--acao-primaria-hover); }

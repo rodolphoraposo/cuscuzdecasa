@@ -42,7 +42,7 @@ describe("fluxo Seu pedido → Falta só um passo", () => {
   it("conclui um pedido em dinheiro com troco e monta a comanda", async () => {
     const u = userEvent.setup();
     abrir();
-    expect(screen.getAllByText(/22,98/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/22,99/).length).toBeGreaterThan(0);
 
     await u.type(screen.getByLabelText("Nome*"), "Rodolpho");
     await u.type(screen.getByLabelText("Telefone / WhatsApp*"), "82994336126");
@@ -70,15 +70,15 @@ describe("fluxo Seu pedido → Falta só um passo", () => {
     expect(texto).toContain("```1x Do Sertão ..");
     expect(texto).toContain("*ENTREGA*\nHorário: hoje, 18h às 19h");
     expect(texto).toContain("   Acomp.: Vinagrete da casa\n   + Queijo coalho");
-    expect(texto).toContain("*TOTAL:* R$ 22,98");
-    expect(texto).toContain("Troco para: R$ 50,00 (levar R$ 27,02)");
+    expect(texto).toContain("*TOTAL:* R$ 28,98");
+    expect(texto).toContain("Troco para: R$ 50,00 (levar R$ 21,02)");
     expect(texto).toMatch(/Pedido #\d{4} · /);
 
     // sem bloco de resumo separado: só a comanda, com os títulos em negrito
     expect(screen.queryByText("Prévia da comanda")).toBeNull();
     expect(screen.queryByText("Endereço")).toBeNull();
     const previa = screen.getByRole("group", { name: "Resumo" });
-    expect(previa.textContent).toContain("Troco para: R$ 50,00 (levar R$ 27,02)");
+    expect(previa.textContent).toContain("Troco para: R$ 50,00 (levar R$ 21,02)");
     expect(previa.querySelector("strong")?.textContent).toBe("COMANDA · CUSCUZ DE CASA");
     expect(previa.querySelector(".previa__mono")?.textContent).toContain("Acomp.: Vinagrete da casa"); // itens em bloco monoespaçado
     expect(previa.textContent).not.toContain("```"); // as crases não aparecem na prévia
@@ -143,7 +143,7 @@ describe("fluxo Seu pedido → Falta só um passo", () => {
     expect(previa.textContent).toContain("Horário: hoje, 18h às 19h");
     expect(previa.textContent).not.toContain("CEP");
     expect(previa.textContent).not.toContain("Entrega:");
-    expect(previa.textContent).toContain("TOTAL: R$ 22,98");
+    expect(previa.textContent).toContain("TOTAL: R$ 28,98");
 
     await u.click(screen.getByRole("link", { name: /Enviar comanda para o WhatsApp/ }));
     expect(await screen.findByText(/Retirada na casa das 17h às 21h/, {}, { timeout: 2000 })).toBeTruthy();

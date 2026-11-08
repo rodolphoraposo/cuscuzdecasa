@@ -58,27 +58,27 @@ const catalogo: Produto[] = [
   {
     id: "frango-desfiado", prato: "cuscuz", categoria: "salgados", nome: "Asa Branca", descricao: "Frango desfiado bem temperadinho", preco: 15.99,
     descricaoLonga: "Cuscuz de milho quentinho e fofinho, recheado com peito de frango desfiado, refogado em temperos naturais e muito suculento.",
-    dica: "Fica perfeito com adicional de requeijão tipo Catupiry, Mussarela ou Queijo Coalho!",
+    dica: "Fica perfeito com adicional de requeijão tipo Catupiry, muçarela ou queijo coalho!",
   },
   {
     id: "calabresa", prato: "cuscuz", categoria: "salgados", nome: "Arretado", descricao: "Calabresa fina defumada", preco: 15.99,
     descricaoLonga: "Para quem ama sabor marcante. Cuscuz de milho recheado com finas rodelas de calabresa defumada, salteadas até ficarem bem douradinhas.",
-    dica: "Combina muito com um Ovo Mexido ou fatia de Mussarela.",
+    dica: "Combina muito com ovo mexido ou uma fatia de muçarela.",
   },
   {
     id: "salsicha-ao-molho", prato: "cuscuz", categoria: "salgados", nome: "De Feira", descricao: "Salsicha ao molho caseiro", preco: 15.99,
-    descricaoLonga: "Aquele clássico irresistível. Salsichas em rodelas em um molho de tomate especial da casa, temperado com carinho e servido com nosso cuscuz quentinho.",
-    dica: "Combina muito com um Ovo Cozido ou fatia de Mussarela.",
+    descricaoLonga: "Aquele clássico irresistível: rodelas de salsicha em molho de tomate especial da casa, temperado com carinho e acompanhadas do nosso cuscuz quentinho.",
+    dica: "Combina muito com ovo cozido ou uma fatia de muçarela.",
   },
   {
     id: "carne-de-sol", prato: "cuscuz", categoria: "salgados", nome: "Do Sertão", descricao: "Carne de sol desfiada acebolada", preco: 17.99,
     descricaoLonga: "O legítimo sabor nordestino! Cuscuz fofinho recheado com carne de sol artesanal, desfiada e acebolada na medida certa.",
-    dica: "Adicione Queijo Coalho ou requeijão tipo Catupiry e mude o seu dia!",
+    dica: "Adicione queijo coalho ou requeijão tipo Catupiry e mude o seu dia!",
   },
   // {
   //   id: "carne-moida", prato: "cuscuz", categoria: "salgados", nome: "Tropeiro", descricao: "Carne moída bem suculenta", preco: 11.99,
   //   descricaoLonga: "Comida com gostinho de casa! Cuscuz recheado com carne moída bem soltinha, cozida com temperos frescos e muito molhadinha.",
-  //   dica: "Experimente adicionar Mussarela derretida.",
+  //   dica: "Experimente adicionar muçarela derretida.",
   // },
   // ---------- Cuscuz · doces ----------
   {
@@ -91,32 +91,31 @@ const catalogo: Produto[] = [
   },
 
   // ---------- Macaxeira ----------
-  // ATENÇÃO: preços PROVISÓRIOS (iguais aos do cuscuz equivalente) e sem foto. Confirme os valores antes de publicar.
-  // As dicas de Quintura (bacon), Da Terra (ovo frito) e Luar do Sertão (melaço) esperam esses itens existirem em "adicionais".
+  // Confirme os preços de macaxeira antes de publicar.
   {
-    id: "macaxeira-frango", prato: "macaxeira", categoria: "salgados", nome: "Aprumada", descricao: "Frango desfiado super suculento", preco: 15.99,
-    descricaoLonga: "Macaxeira cozida no ponto certo, coberta com peito de frango em cubos suculento, refogado em temperos naturais com cebola e pimentão.",
-    dica: "Fica perfeita com adicional de Requeijão Cremoso maçaricado!",
+    id: "macaxeira-frango", prato: "macaxeira", categoria: "salgados", nome: "Aprumada", descricao: "Frango em cubos, bem suculento", preco: 15.99,
+    descricaoLonga: "Macaxeira cozida no ponto certo, coberta com cubos suculentos de peito de frango, refogados com temperos naturais, cebola e pimentão.",
+    dica: "Fica perfeita com adicional de requeijão cremoso!",
   },
   {
     id: "macaxeira-calabresa", prato: "macaxeira", categoria: "salgados", nome: "Quintura", descricao: "Calabresa defumada em rodelas, dourada e crocante", preco: 15.99,
-    descricaoLonga: "Para quem ama sabor intenso e marcante. Nossa macaxeira coberta com rodelas de calabresa defumada, com anéis de cebolas.",
-    dica: "Adicione Queijo Coalho ou Ovo Mexido para completar!",
+    descricaoLonga: "Para quem ama sabores intensos e marcantes: nossa macaxeira é coberta com rodelas de calabresa defumada e anéis de cebola.",
+    dica: "Adicione queijo coalho ou ovo mexido para completar!",
   },
   {
     id: "macaxeira-salsicha", prato: "macaxeira", categoria: "salgados", nome: "Da Terra", descricao: "Salsicha ao molho de tomate caseiro", preco: 15.99,
     descricaoLonga: "O clássico popular que todo mundo respeita. Salsichas picadas em um molho de tomate caseiro encorpado, temperado com carinho e servido sobre a nossa macaxeira quentinha.",
-    dica: "Adicione Queijo Coalho ou Ovo Cozido para caprichar no sabor final!",
+    dica: "Adicione queijo coalho ou ovo cozido para caprichar no sabor final!",
   },
   {
     id: "macaxeira-carne-suina", prato: "macaxeira", categoria: "salgados", nome: "Arriégua", descricao: "Carne suína em cubos acebolada", preco: 17.99,
-    descricaoLonga: "Aquele gostinho inconfundível de comida afetiva feita em casa. Macaxeira cozida derretendo na boca, servida com carne suína em cubos acebolada, temperos frescos.",
-    dica: "Experimente adicionar Queijo Mussarela derretido.",
+    descricaoLonga: "Aquele gostinho inconfundível de comida afetiva feita em casa: macaxeira cozida até ficar macia, servida com carne suína em cubos, acebolada e preparada com temperos frescos.",
+    dica: "Experimente adicionar queijo muçarela derretido.",
   },
   {
     id: "macaxeira-carne-de-sol", prato: "macaxeira", categoria: "salgados", nome: "Fulô de Mandacaru", descricao: "Carne de sol em cubos acebolada na manteiga de garrafa", preco: 15.99,
-    descricaoLonga: "Forte e marcante como o Sertão! Macaxeira super macia servida com uma generosa porção de carne de sol artesanal, em cubos e acebolada.",
-    dica: "Adicione Queijo Coalho e mude o seu dia!",
+    descricaoLonga: "Forte e marcante como o Sertão: macaxeira bem macia, servida com uma generosa porção de carne de sol artesanal em cubos e acebolada.",
+    dica: "Adicione queijo coalho e mude o seu dia!",
   },
   {
     id: "macaxeira-cartola", prato: "macaxeira", categoria: "doces", nome: "Luar do Sertão", descricao: "Banana frita, queijo coalho, açúcar e canela", preco: 17.99,
@@ -124,14 +123,14 @@ const catalogo: Produto[] = [
   },
   {
     id: "macaxeira-romeu-e-julieta", prato: "macaxeira", categoria: "doces", nome: "Xodózin", descricao: "Queijo coalho com goiabada cascão derretida", preco: 17.99,
-    descricaoLonga: "Aquele abraço quente entre o doce e o salgado. Macaxeira quentinha que desmancha na boca, acompanhada do sabor marcante do queijo coalho e o toque cremoso da goiabada cremosa.",
+    descricaoLonga: "Aquele abraço quente entre o doce e o salgado: macaxeira quentinha, que desmancha na boca, com o sabor marcante do queijo coalho e o toque cremoso da goiabada cascão.",
   },
 
   // ---------- Bebidas ----------
-  { id: "coca-cola", categoria: "bebidas", nome: "Coca-Cola 350ml", descricao: "Refrigerante em lata - 350ml", preco: 5.99 },
-  { id: "guarana-antartica", categoria: "bebidas", nome: "Guaraná Antártica", descricao: "Refrigerante em lata - 350ml", preco: 5.99 },
-  { id: "fanta-laranja", categoria: "bebidas", nome: "Fanta laranja", descricao: "Refrigerante em lata - 350ml", preco: 5.99 },
-  { id: "agua-mineral", categoria: "bebidas", nome: "Água mineral sem gás", descricao: "Garrafa pet - 500ml", preco: 2.99 },
+  { id: "coca-cola", categoria: "bebidas", nome: "Coca-Cola 350 ml", descricao: "Refrigerante em lata · 350 ml", preco: 5.99 },
+  { id: "guarana-antartica", categoria: "bebidas", nome: "Guaraná Antarctica", descricao: "Refrigerante em lata · 350 ml", preco: 5.99 },
+  { id: "fanta-laranja", categoria: "bebidas", nome: "Fanta Laranja", descricao: "Refrigerante em lata · 350 ml", preco: 5.99 },
+  { id: "agua-mineral", categoria: "bebidas", nome: "Água mineral sem gás", descricao: "Garrafa PET · 500 ml", preco: 2.99 },
 ];
 
 /** Fotos de src/assets/produtos (sempre .webp), achadas pelo nome do arquivo. Sem arquivo, a tela mostra "Foto em breve". */
@@ -203,11 +202,11 @@ export interface Adicional {
   preco: number;
 }
 
-/** Adicionais do Detalhe do item: + R$ 2,00 cada (conforme o Figma). */
+/** Adicionais do Detalhe do item, com preços definidos por ingrediente. */
 export const adicionais: Adicional[] = [
   { id: "queijo-coalho", nome: "Queijo coalho", preco: 5 },
   { id: "requeijao", nome: "Requeijão", preco: 5 },
-  { id: "mussarela", nome: "Mussarela", preco: 5 },
+  { id: "mussarela", nome: "Muçarela", preco: 5 },
   { id: "ovo-mexido", nome: "Ovo mexido", preco: 2 },
   { id: "ovo-cozido", nome: "Ovo cozido", preco: 2 },
   { id: "banana-frita", nome: "Banana frita", preco: 2 },

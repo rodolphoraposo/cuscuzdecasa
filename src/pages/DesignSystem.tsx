@@ -1,11 +1,12 @@
 import { Check } from "@phosphor-icons/react";
-import { useState } from "react";
+import { useState, type KeyboardEvent } from "react";
 import { useNoIndex } from "../hooks/useNoIndex";
 import { usePageTitle } from "../hooks/usePageTitle";
 import { Avatar, Badge, Banner, Breadcrumb, Button, Checkbox, EmptyState, Input, Radio, Select, Stat, Switch, Tag, Textarea, Toast } from "../components/ui";
 
 const tamanhos = ["sm", "md", "lg"] as const;
 const variantes = ["primary", "outline", "ghost"] as const;
+const abasNavegacao = ["Visão geral", "Detalhes", "Histórico", "Configurações"] as const;
 
 function Bloco({ titulo, children }: { titulo: string; children: React.ReactNode }) {
   return (
@@ -22,6 +23,17 @@ export default function DesignSystem() {
   usePageTitle("Design System");
   useNoIndex();
   const [aba, setAba] = useState(0);
+  const aoTeclarNasAbas = (e: KeyboardEvent<HTMLDivElement>) => {
+    const proxima = e.key === "ArrowRight" ? (aba + 1) % abasNavegacao.length
+      : e.key === "ArrowLeft" ? (aba - 1 + abasNavegacao.length) % abasNavegacao.length
+      : e.key === "Home" ? 0
+      : e.key === "End" ? abasNavegacao.length - 1
+      : -1;
+    if (proxima < 0) return;
+    e.preventDefault();
+    setAba(proxima);
+    window.setTimeout(() => document.getElementById(`aba-demo-${proxima}`)?.focus(), 0);
+  };
   return (
     <div className="container section">
       <h1 className="t-pagina" style={{ marginBottom: "var(--esp-32)" }}>Design System</h1>
@@ -99,10 +111,19 @@ export default function DesignSystem() {
       </Bloco>
 
       <Bloco titulo="Navegação">
-        <div role="tablist" style={{ display: "flex", borderBottom: "2px solid var(--borda-sutil)", maxWidth: 480 }}>
-          {["Visão geral", "Detalhes", "Histórico", "Configurações"].map((t, i) => (
-            <button key={t} role="tab" className="aba" aria-selected={aba === i} onClick={() => setAba(i)} style={{ marginBottom: -2 }}>{t}</button>
+        <div role="tablist" aria-label="Exemplo de abas" onKeyDown={aoTeclarNasAbas} style={{ display: "flex", flexWrap: "wrap", borderBottom: "2px solid var(--borda-sutil)", maxWidth: 480 }}>
+          {abasNavegacao.map((t, i) => (
+            <button
+              key={t} id={`aba-demo-${i}`} type="button" role="tab" className="aba"
+              aria-selected={aba === i} aria-controls="painel-demo" tabIndex={aba === i ? 0 : -1}
+              onClick={() => setAba(i)} style={{ marginBottom: -2 }}
+            >
+              {t}
+            </button>
           ))}
+        </div>
+        <div id="painel-demo" role="tabpanel" aria-labelledby={`aba-demo-${aba}`} tabIndex={0}>
+          Conteúdo da aba {abasNavegacao[aba].toLowerCase()}.
         </div>
         <Breadcrumb itens={["Painel", "Clientes", "Detalhe"]} />
       </Bloco>

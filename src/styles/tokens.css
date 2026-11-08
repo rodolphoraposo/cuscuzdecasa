@@ -75,7 +75,8 @@
 
   --texto-primario: var(--neutro-900);
   --texto-secundario: var(--neutro-700);
-  --texto-discreto: var(--neutro-500);
+  /* Neutro-500 não atingia 4,5:1 sobre os fundos claros. */
+  --texto-discreto: var(--neutro-600);
   --texto-sobre-acento: var(--neutro-0);
 
   --borda-sutil: var(--neutro-200);

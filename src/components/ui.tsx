@@ -51,7 +51,7 @@ export function Select({ rotulo, legenda, erro, tamanho = "md", children, ...res
   return (
     <Field rotulo={rotulo} legenda={legenda} erro={erro} id={id}>
       <div className={`control control--${tamanho}`}>
-        <select id={id} aria-invalid={erro} {...rest}>{children}</select>
+        <select id={id} aria-invalid={erro} aria-describedby={legenda ? `${id}-legenda` : undefined} {...rest}>{children}</select>
         <CaretDown className="icon" />
       </div>
     </Field>
@@ -63,7 +63,7 @@ export function Textarea({ rotulo, legenda, erro, tamanho = "md", ...rest }: Fie
   return (
     <Field rotulo={rotulo} legenda={legenda} erro={erro} id={id}>
       <div className={`control control--area control--${tamanho}`}>
-        <textarea id={id} aria-invalid={erro} {...rest} />
+        <textarea id={id} aria-invalid={erro} aria-describedby={legenda ? `${id}-legenda` : undefined} {...rest} />
       </div>
     </Field>
   );
@@ -180,4 +180,3 @@ export function Breadcrumb({ itens }: { itens: string[] }) {
     </nav>
   );
 }
-

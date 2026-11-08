@@ -1,9 +1,11 @@
 // @vitest-environment jsdom
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, useLocation } from "react-router-dom";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import App from "../App";
+import DesignSystem from "./DesignSystem";
+import { Select, Textarea } from "../components/ui";
 import { CartProvider } from "../context/CartContext";
 
 const Local = () => { const l = useLocation(); return <output data-testid="local">{l.pathname + l.search}</output>; };
@@ -69,18 +71,54 @@ describe("estrutura das páginas", () => {
   });
 });
 
+describe("componentes do Design System", () => {
+  it("associa a legenda aos campos Select e Textarea", () => {
+    render(
+      <>
+        <Select rotulo="Categoria" legenda="Escolha uma categoria">
+          <option value="salgados">Salgados</option>
+        </Select>
+        <Textarea rotulo="Observações" legenda="Até 200 caracteres" />
+      </>,
+    );
+
+    for (const [rotulo, legenda] of [
+      ["Categoria", "Escolha uma categoria"],
+      ["Observações", "Até 200 caracteres"],
+    ]) {
+      const campo = screen.getByLabelText(rotulo);
+      const idLegenda = campo.getAttribute("aria-describedby");
+      expect(idLegenda).toBeTruthy();
+      expect(document.getElementById(idLegenda!)?.textContent).toBe(legenda);
+    }
+  });
+
+  it("as abas da referência visual seguem o padrão de teclado e painel", async () => {
+    const u = userEvent.setup();
+    render(<DesignSystem />);
+    const abas = () => screen.getAllByRole("tab");
+    expect(abas().map((aba) => aba.getAttribute("tabindex"))).toEqual(["0", "-1", "-1", "-1"]);
+
+    abas()[0].focus();
+    await u.keyboard("{ArrowRight}");
+    const selecionada = await screen.findByRole("tab", { name: "Detalhes", selected: true });
+    await waitFor(() => expect(selecionada).toBe(document.activeElement));
+    expect(screen.getByRole("tabpanel").getAttribute("aria-labelledby")).toBe(selecionada.id);
+  });
+});
+
 describe("desfazer remoção no carrinho", () => {
   it("remover o último item mostra o aviso e o botão Desfazer devolve o item", async () => {
     const u = userEvent.setup();
     localStorage.setItem("cuscuz-pedido-v3", JSON.stringify([{ id: "coca-cola", qtd: 1, extras: [], acomp: null }]));
     abrir("/pedido");
-    await u.click(screen.getByRole("button", { name: "Remover Coca-Cola 350ml do pedido" }));
+    await u.click(screen.getByRole("button", { name: "Remover Coca-Cola 350 ml do pedido" }));
     expect(screen.getByRole("heading", { level: 1, name: "Seu pedido está vazio" })).toBeTruthy();
-    expect(screen.getByText("Coca-Cola 350ml foi removido do pedido.").closest("[role=status]")).toBeTruthy(); // anunciado por leitores de tela
+    expect(screen.getByText("Coca-Cola 350 ml foi removido do pedido.").closest("[role=status]")).toBeTruthy(); // anunciado por leitores de tela
 
     await u.click(screen.getByRole("button", { name: "Desfazer" }));
     expect(screen.queryByRole("heading", { name: "Seu pedido está vazio" })).toBeNull();
-    expect(screen.getByRole("heading", { level: 3, name: "Coca-Cola 350ml" })).toBeTruthy();
+    expect(screen.getByRole("heading", { level: 3, name: "Coca-Cola 350 ml" })).toBeTruthy();
   });
 
   it("com dois itens, o aviso aparece junto da lista e Desfazer restaura adicionais e acompanhamento", async () => {

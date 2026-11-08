@@ -17,7 +17,7 @@ describe("páginas legais e 404", () => {
     expect(document.body.textContent).toContain("até as 16h");
     expect(document.body.textContent).toContain("17h às 21h");
     expect(document.body.textContent).toContain("Sierra Park");
-    expect(document.body.textContent).toContain("queijo coalho, mussarela, requeijão");
+    expect(document.body.textContent).toContain("queijo coalho, requeijão, muçarela");
     expect(document.body.textContent).not.toContain("Conteúdo em preparação");
   });
   it("Política de Privacidade cita os terceiros que realmente recebem dados", () => {

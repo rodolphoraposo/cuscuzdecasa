@@ -147,7 +147,7 @@ export default function Pedido() {
         <EmptyState
           nivel={1}
           titulo="Seu pedido está vazio"
-          texto="Escolha seus cuscuz no cardápio para começar."
+          texto="Escolha seus itens no cardápio para começar."
           acao={<ButtonLink to="/cardapio">Ver cardápio</ButtonLink>}
         />
       </section>

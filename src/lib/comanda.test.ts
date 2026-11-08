@@ -106,8 +106,8 @@ describe("auxiliares", () => {
 
 describe("acompanhamento na comanda", () => {
   it("aparece abaixo do item, antes dos adicionais", () => {
-    const { texto } = montarComanda(pedido, [{ nome: "Cuscuz do Sertão", quantidade: 1, acompanhamento: "Refogado especial da casa", extras: ["Mussarela"], subtotal: 16.99 }, itens[1]], totais, agora);
-    expect(texto).toContain("1x Cuscuz do Sertão .. R$ 16,99\n   Acomp.: Refogado especial da casa\n   + Mussarela\n1x Coca-Cola");
+    const { texto } = montarComanda(pedido, [{ nome: "Cuscuz do Sertão", quantidade: 1, acompanhamento: "Refogado especial da casa", extras: ["Muçarela"], subtotal: 16.99 }, itens[1]], totais, agora);
+    expect(texto).toContain("1x Cuscuz do Sertão .. R$ 16,99\n   Acomp.: Refogado especial da casa\n   + Muçarela\n1x Coca-Cola");
   });
 });
 
@@ -167,4 +167,3 @@ describe("acompanhamento 'Sem acompanhamento'", () => {
     expect(texto).toContain("   Acomp.: Sem acompanhamento");
   });
 });
-

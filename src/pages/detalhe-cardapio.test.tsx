@@ -22,12 +22,12 @@ describe("sequência do pedido: prato → capriche → bebida", () => {
   it("lista mostra os novos nomes e 'Pedir' do salgado abre o Detalhe", async () => {
     const u = userEvent.setup();
     abrir("/cardapio");
-    for (const n of ["Asa Branca", "Do Sertão", "Arretado", "Tropeiro", "De Feira"]) {
+    for (const n of ["Asa Branca", "Do Sertão", "Arretado", "De Feira"]) {
       expect(screen.getByRole("link", { name: n })).toBeTruthy();
     }
     await u.click(screen.getByRole("link", { name: "Pedir Do Sertão (cuscuz)" }));
     expect(local()).toBe("/cardapio/carne-de-sol");
-    expect(screen.getByText(/Adicione Queijo Coalho tostado/)).toBeTruthy();
+    expect(screen.getByText(/Adicione queijo coalho ou requeijão tipo Catupiry/)).toBeTruthy();
   });
 
   it("exige acompanhamento; depois leva às bebidas com a sugestão", async () => {
@@ -83,7 +83,7 @@ describe("sequência do pedido: prato → capriche → bebida", () => {
     await u.click(screen.getByRole("button", { name: "Bebidas" }));
     expect(local()).toBe("/cardapio?prato=bebidas");
     expect(screen.queryByRole("tablist")).toBeNull(); // bebidas: sem abas, com todos os produtos
-    expect(screen.getByRole("link", { name: "Coca-Cola 350ml" })).toBeTruthy();
+    expect(screen.getByRole("link", { name: "Coca-Cola 350 ml" })).toBeTruthy();
   });
 
   it("macaxeira salgada pede acompanhamento e entra no pedido com o nome completo", async () => {
@@ -103,10 +103,10 @@ describe("sequência do pedido: prato → capriche → bebida", () => {
     expect(within(botoes).getByRole("button", { name: "Cuscuz" }).getAttribute("aria-pressed")).toBe("true");
     expect(screen.getAllByRole("tab").map((a) => a.textContent)).toEqual(["Todos", "Salgados", "Doces"]);
     expect(screen.getByRole("tab", { name: "Todos", selected: true })).toBeTruthy(); // abre em "Todos"
-    expect(screen.getByRole("heading", { level: 2, name: "7 Opções" })).toBeTruthy(); // 5 salgados + 2 doces
+    expect(screen.getByRole("heading", { level: 2, name: "6 Opções" })).toBeTruthy(); // 4 salgados + 2 doces
 
     await u.click(screen.getByRole("tab", { name: "Salgados" }));
-    expect(screen.getByRole("heading", { level: 2, name: "5 Opções" })).toBeTruthy();
+    expect(screen.getByRole("heading", { level: 2, name: "4 Opções" })).toBeTruthy();
     await u.click(screen.getByRole("tab", { name: "Doces" }));
     expect(screen.getByRole("heading", { level: 2, name: "2 Opções" })).toBeTruthy();
 
@@ -142,4 +142,3 @@ describe("sequência do pedido: prato → capriche → bebida", () => {
     expect(screen.queryByText(/^Acompanhamento:/)).toBeNull();
   });
 });
-
