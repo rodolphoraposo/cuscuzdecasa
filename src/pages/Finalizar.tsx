@@ -1,5 +1,5 @@
 import { Check } from "@phosphor-icons/react";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { PreviaComanda } from "../components/PreviaComanda";
 import { ButtonLink } from "../components/ui";
@@ -8,7 +8,7 @@ import { adicionais, contato, taxaEntrega } from "../data/menu";
 import { linkWhatsApp, montarComanda } from "../lib/comanda";
 import { descricaoEntrega, diaDaEntrega } from "../lib/entrega";
 import { carregarRascunho, paraDadosPedido, validarPedido } from "../lib/formulario";
-import { salvarPedidoOperatta } from "../lib/operatta";
+import { proximoNumeroPedido, salvarPedidoOperatta } from "../lib/operatta";
 import { salvarUltimoPedido } from "../lib/ultimoPedido";
 import { usePageTitle } from "../hooks/usePageTitle";
 import { useNoIndex } from "../hooks/useNoIndex";
@@ -25,8 +25,8 @@ export default function Finalizar() {
   const dia = diaDaEntrega(agora);
   const entregaDesc = dia ? descricaoEntrega(rascunho.horario, dia) : "";
 
-  // O código do pedido (data e hora) é gerado uma vez, ao abrir esta tela.
-  const comanda = useMemo(() => {
+  // Dados do pedido (tudo, menos o número) são montados uma vez, ao abrir esta tela.
+  const base = useMemo(() => {
     if (linhas.length === 0 || !entregaDesc || Object.keys(validarPedido(rascunho, total)).length > 0) return null;
     try {
       const dadosPedido = { ...paraDadosPedido(rascunho), entrega: entregaDesc };
@@ -37,18 +37,59 @@ export default function Finalizar() {
         extras: l.extras.map((e) => adicionais.find((a) => a.id === e)?.nome ?? ""),
         subtotal: l.subtotal,
       }));
-      // dadosPedido e itens ficam junto da comanda para serem reaproveitados
-      // ao gravar o mesmo pedido no Operatta (ver aoEnviar), em vez de montar
-      // os itens de novo com outra lógica.
-      return { ...montarComanda(dadosPedido, itens, { subtotal: totalPreco, entrega: taxa, total }, agora), dadosPedido, itens };
+      return { dadosPedido, itens };
     } catch {
       return null;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Número sequencial real, pedido ao Operatta uma única vez ao abrir a tela.
+  // Se não responder a tempo (ou falhar), fica null — e a comanda cai sozinha
+  // no esquema provisório, sem travar o cliente em nenhuma hipótese.
+  const [codigoReal, setCodigoReal] = useState<string | null>(null);
+  const [numeroResolvido, setNumeroResolvido] = useState(false);
+  useEffect(() => {
+    let cancelado = false;
+    proximoNumeroPedido().then((n) => {
+      if (cancelado) return;
+      if (n != null) setCodigoReal(`#${String(n).padStart(4, "0")}`);
+      setNumeroResolvido(true);
+    });
+    return () => {
+      cancelado = true;
+    };
+  }, []);
+
+  // dadosPedido e itens ficam junto da comanda para serem reaproveitados ao
+  // gravar o mesmo pedido no Operatta (ver aoEnviar), em vez de montar os
+  // itens de novo com outra lógica.
+  const comanda = useMemo(() => {
+    if (!base || !numeroResolvido) return null;
+    try {
+      return {
+        ...montarComanda(base.dadosPedido, base.itens, { subtotal: totalPreco, entrega: taxa, total }, agora, codigoReal ?? undefined),
+        ...base,
+      };
+    } catch {
+      return null;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [numeroResolvido, codigoReal]);
+
   // Sem itens ou com dados incompletos (ex.: abriu o endereço direto): volta ao carrinho.
-  if (!comanda) return <Navigate to="/pedido" replace />;
+  if (!base) return <Navigate to="/pedido" replace />;
+
+  // Dados válidos, só esperando o número do Operatta (normalmente é questão de instantes).
+  if (!comanda) {
+    return (
+      <div className="container">
+        <div className="pedido final">
+          <p className="t-corpo">Preparando sua comanda...</p>
+        </div>
+      </div>
+    );
+  }
 
   /**
    * O link abre o WhatsApp em outra aba. Aqui guardamos a comanda e levamos esta aba para o agradecimento

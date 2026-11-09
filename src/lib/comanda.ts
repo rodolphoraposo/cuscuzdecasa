@@ -114,10 +114,12 @@ export function montarComanda(
   itens: ItemComanda[],
   totais: TotaisPedido,
   agora: Date = new Date(),
+  /** Número sequencial real (ex.: "#0001"), vindo do contador do Operatta. Sem ele, cai no esquema provisório. */
+  codigoForcado?: string,
 ): { codigo: string; texto: string } {
   if (itens.length === 0) throw new RangeError("Pedido sem itens");
 
-  const codigo = numeroPedido(agora);
+  const codigo = codigoForcado ?? numeroPedido(agora);
 
   const rotulos = itens.map((i) => `${i.quantidade}x ${limpar(i.nome, 40)}`);
   const largura = Math.max(...rotulos.map((r) => r.length));

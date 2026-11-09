@@ -30,6 +30,39 @@ function idPedido(): string {
 }
 
 /**
+ * Pede ao Operatta o próximo número sequencial do pedido (via RPC
+ * `proximo_numero_pedido`, que incrementa a tabela order_counters de forma
+ * atômica — sem risco de dois clientes pegarem o mesmo número).
+ *
+ * Nunca trava o cliente: desiste sozinho depois de 3s e devolve null. Quem
+ * chamar deve cair no esquema provisório (numeroPedido) quando vier null.
+ */
+export async function proximoNumeroPedido(): Promise<number | null> {
+  const controller = new AbortController();
+  const limite = setTimeout(() => controller.abort(), 3000);
+  try {
+    const res = await fetch(`${OPERATTA_URL}/rest/v1/rpc/proximo_numero_pedido`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        apikey: OPERATTA_ANON_KEY,
+        Authorization: `Bearer ${OPERATTA_ANON_KEY}`,
+      },
+      body: JSON.stringify({ p_company_id: OPERATTA_COMPANY_ID }),
+      signal: controller.signal,
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const n = await res.json();
+    return typeof n === "number" && Number.isFinite(n) ? n : null;
+  } catch (err) {
+    console.warn("[Operatta] Falha ao buscar numero sequencial, usando esquema provisorio:", err instanceof Error ? err.message : err);
+    return null;
+  } finally {
+    clearTimeout(limite);
+  }
+}
+
+/**
  * Grava o pedido no Operatta via REST do Supabase (sem backend próprio).
  * Nunca lança erro para quem chama: falha de rede ou company_id inválido
  * só geram um aviso no console.
