@@ -8,6 +8,7 @@ import { adicionais, contato, taxaEntrega } from "../data/menu";
 import { linkWhatsApp, montarComanda } from "../lib/comanda";
 import { descricaoEntrega, diaDaEntrega } from "../lib/entrega";
 import { carregarRascunho, paraDadosPedido, validarPedido } from "../lib/formulario";
+import { salvarPedidoOperatta } from "../lib/operatta";
 import { salvarUltimoPedido } from "../lib/ultimoPedido";
 import { usePageTitle } from "../hooks/usePageTitle";
 import { useNoIndex } from "../hooks/useNoIndex";
@@ -28,18 +29,18 @@ export default function Finalizar() {
   const comanda = useMemo(() => {
     if (linhas.length === 0 || !entregaDesc || Object.keys(validarPedido(rascunho, total)).length > 0) return null;
     try {
-      return montarComanda(
-        { ...paraDadosPedido(rascunho), entrega: entregaDesc },
-        linhas.map((l) => ({
-          nome: l.produto.nome, // os nomes são únicos; sem a base, a linha cabe na tela do WhatsApp
-          quantidade: l.quantidade,
-          acompanhamento: l.acompanhamentoNome,
-          extras: l.extras.map((e) => adicionais.find((a) => a.id === e)?.nome ?? ""),
-          subtotal: l.subtotal,
-        })),
-        { subtotal: totalPreco, entrega: taxa, total },
-        agora,
-      );
+      const dadosPedido = { ...paraDadosPedido(rascunho), entrega: entregaDesc };
+      const itens = linhas.map((l) => ({
+        nome: l.produto.nome, // os nomes são únicos; sem a base, a linha cabe na tela do WhatsApp
+        quantidade: l.quantidade,
+        acompanhamento: l.acompanhamentoNome,
+        extras: l.extras.map((e) => adicionais.find((a) => a.id === e)?.nome ?? ""),
+        subtotal: l.subtotal,
+      }));
+      // dadosPedido e itens ficam junto da comanda para serem reaproveitados
+      // ao gravar o mesmo pedido no Operatta (ver aoEnviar), em vez de montar
+      // os itens de novo com outra lógica.
+      return { ...montarComanda(dadosPedido, itens, { subtotal: totalPreco, entrega: taxa, total }, agora), dadosPedido, itens };
     } catch {
       return null;
     }
@@ -54,6 +55,8 @@ export default function Finalizar() {
    * (replace: o "voltar" não retorna a esta tela). O pequeno atraso deixa o link abrir antes de trocar de tela.
    */
   const aoEnviar = () => {
+    // Fire-and-forget: nunca atrasa nem bloqueia o envio para o WhatsApp.
+    salvarPedidoOperatta(comanda.dadosPedido, comanda.itens, total);
     salvarUltimoPedido({ codigo: comanda.codigo, texto: comanda.texto, tipo: rascunho.tipo });
     limpar();
     window.setTimeout(() => navigate("/pedido/enviado", { replace: true }), 300);
