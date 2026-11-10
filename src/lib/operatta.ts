@@ -67,7 +67,15 @@ export async function proximoNumeroPedido(): Promise<number | null> {
  * Nunca lança erro para quem chama: falha de rede ou company_id inválido
  * só geram um aviso no console.
  */
-export function salvarPedidoOperatta(dados: DadosPedido, itens: ItemComanda[], total: number): void {
+export function salvarPedidoOperatta(
+  dados: DadosPedido,
+  itens: ItemComanda[],
+  total: number,
+  /** Mesmo número sequencial usado na comanda do WhatsApp (de proximoNumeroPedido).
+   *  Sem ele, o Operatta exibe um número local só daquele navegador — por
+   *  isso ele é o que faz o número bater entre o WhatsApp e o Painel. */
+  numero?: number | null,
+): void {
   try {
     const itensPedido = itens.map((i) => ({
       name: i.nome,
@@ -82,6 +90,7 @@ export function salvarPedidoOperatta(dados: DadosPedido, itens: ItemComanda[], t
     const payload = {
       id: idPedido(),
       company_id: OPERATTA_COMPANY_ID,
+      ...(numero != null ? { numero: String(numero) } : {}),
       status: "Novo",
       channel: retirada ? "Balcão" : "Delivery",
       origin: "cardapio-digital",

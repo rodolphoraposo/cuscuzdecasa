@@ -48,12 +48,18 @@ export default function Finalizar() {
   // Se não responder a tempo (ou falhar), fica null — e a comanda cai sozinha
   // no esquema provisório, sem travar o cliente em nenhuma hipótese.
   const [codigoReal, setCodigoReal] = useState<string | null>(null);
+  const [numeroReal, setNumeroReal] = useState<number | null>(null);
   const [numeroResolvido, setNumeroResolvido] = useState(false);
   useEffect(() => {
     let cancelado = false;
     proximoNumeroPedido().then((n) => {
       if (cancelado) return;
-      if (n != null) setCodigoReal(`#${String(n).padStart(4, "0")}`);
+      if (n != null) {
+        // mesmo número em ambos: o que vai na comanda do WhatsApp é só a
+        // versão formatada do que é gravado no pedido do Operatta.
+        setCodigoReal(`#${String(n).padStart(4, "0")}`);
+        setNumeroReal(n);
+      }
       setNumeroResolvido(true);
     });
     return () => {
@@ -97,7 +103,7 @@ export default function Finalizar() {
    */
   const aoEnviar = () => {
     // Fire-and-forget: nunca atrasa nem bloqueia o envio para o WhatsApp.
-    salvarPedidoOperatta(comanda.dadosPedido, comanda.itens, total);
+    salvarPedidoOperatta(comanda.dadosPedido, comanda.itens, total, numeroReal);
     salvarUltimoPedido({ codigo: comanda.codigo, texto: comanda.texto, tipo: rascunho.tipo });
     limpar();
     window.setTimeout(() => navigate("/pedido/enviado", { replace: true }), 300);
