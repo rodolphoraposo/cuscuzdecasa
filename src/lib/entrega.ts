@@ -5,7 +5,7 @@ import { FUSO, partes } from "./comanda";
  * de segunda a sexta, pedidos até as 16h, entregas e retiradas das 17h às 21h, em faixas de 1 hora.
  * Para mudar os horários ou os dias, altere só estas constantes.
  */
-export const LIMITE_PEDIDO_H = 23;
+export const LIMITE_PEDIDO_H = 16;
 export const ENTREGA_INICIO_H = 17;
 export const ENTREGA_FIM_H = 21;
 /** Dias em que a casa funciona (0 = domingo, 1 = segunda ... 6 = sábado). Para testar num fim de semana, inclua 0 e/ou 6. */
