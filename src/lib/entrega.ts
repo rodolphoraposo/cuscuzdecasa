@@ -18,7 +18,7 @@ export const TEXTO_DIAS = "segunda a sexta";
  *   "amanha"   = o pedido segue normalmente, com a entrega marcada para o próximo dia de funcionamento.
  * Troque somente o texto entre aspas na linha abaixo (não mexa nas funções mais adiante).
  */
-export const APOS_O_LIMITE: "bloquear" | "amanha" = "bloquear";
+export const APOS_O_LIMITE: "bloquear" | "amanha" = "amanha";
 
 export interface JanelaEntrega { id: string; rotulo: string }
 
