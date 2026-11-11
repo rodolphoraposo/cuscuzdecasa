@@ -23,12 +23,13 @@ describe("páginas legais e 404", () => {
   it("Política de Privacidade cita os terceiros que realmente recebem dados", () => {
     abrir("/privacidade");
     expect(screen.getByRole("heading", { level: 1, name: "Política de Privacidade" })).toBeTruthy();
-    for (const t of ["WhatsApp", "ViaCEP", "Vercel", "LGPD"]) expect(document.body.textContent).toContain(t);
+    for (const t of ["WhatsApp", "ViaCEP", "Vercel", "Google Analytics", "LGPD"]) expect(document.body.textContent).toContain(t);
+    expect(document.body.textContent).not.toContain("Não usamos cookies de rastreamento"); // a política não pode negar o que o site faz
   });
   it("endereço inexistente mostra 404 com saída, e o link de pular conteúdo existe", () => {
     abrir("/nao-existe");
     expect(screen.getByRole("heading", { name: "Página não encontrada" })).toBeTruthy();
-    expect(screen.getByRole("link", { name: "Ver cardápio" }).getAttribute("href")).toBe("/cardapio");
+    expect(screen.getByRole("link", { name: "Ver cardápio" }).getAttribute("href")).toBe("/#cardapio");
     expect(screen.getByRole("link", { name: "Ir para o início" }).getAttribute("href")).toBe("/");
     expect(screen.getByRole("link", { name: "Pular para o conteúdo" }).getAttribute("href")).toBe("#conteudo");
   });

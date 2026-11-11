@@ -5,6 +5,7 @@ import { PreviaComanda } from "../components/PreviaComanda";
 import { ButtonLink } from "../components/ui";
 import { useCart } from "../context/CartContext";
 import { adicionais, contato, taxaEntrega } from "../data/menu";
+import { MOEDA, itensDoCarrinho, registrarEvento } from "../lib/analytics";
 import { linkWhatsApp, montarComanda } from "../lib/comanda";
 import { descricaoEntrega, diaDaEntrega } from "../lib/entrega";
 import { carregarRascunho, paraDadosPedido, validarPedido } from "../lib/formulario";
@@ -103,6 +104,8 @@ export default function Finalizar() {
    */
   const aoEnviar = () => {
     // Fire-and-forget: nunca atrasa nem bloqueia o envio para o WhatsApp.
+    // Comanda enviada ao WhatsApp = conversão ("purchase" do GA4; não é pagamento confirmado). Sem dados pessoais.
+    registrarEvento("purchase", { transaction_id: comanda.codigo, currency: MOEDA, value: total, shipping: taxa, items: itensDoCarrinho(linhas) });
     salvarPedidoOperatta(comanda.dadosPedido, comanda.itens, total, numeroReal);
     salvarUltimoPedido({ codigo: comanda.codigo, texto: comanda.texto, tipo: rascunho.tipo });
     limpar();

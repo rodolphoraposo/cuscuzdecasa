@@ -4,6 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { CartProvider } from "../context/CartContext";
+import * as analytics from "../lib/analytics";
 import Finalizar from "./Finalizar";
 import Pedido from "./Pedido";
 import PedidoEnviado from "./PedidoEnviado";
@@ -41,8 +42,11 @@ afterEach(() => { cleanup(); vi.unstubAllGlobals(); vi.setSystemTime(new Date("2
 describe("fluxo Seu pedido → Falta só um passo", () => {
   it("conclui um pedido em dinheiro com troco e monta a comanda", async () => {
     const u = userEvent.setup();
+    const eventos = vi.spyOn(analytics, "registrarEvento").mockImplementation(() => {});
+    const de = (nome: string) => eventos.mock.calls.filter((c) => c[0] === nome).map((c) => c[1] as Record<string, any>);
     abrir();
     expect(screen.getAllByText(/22,99/).length).toBeGreaterThan(0);
+    expect(de("view_cart")).toEqual([expect.objectContaining({ currency: "BRL", value: 28.98 })]);
 
     await u.type(screen.getByLabelText("Nome*"), "Rodolpho");
     await u.type(screen.getByLabelText("Telefone / WhatsApp*"), "82994336126");
@@ -62,6 +66,8 @@ describe("fluxo Seu pedido → Falta só um passo", () => {
     await u.click(screen.getByRole("button", { name: /Finalizar pedido/ }));
 
     expect(await screen.findByRole("heading", { name: "Falta só um passo" })).toBeTruthy();
+    expect(de("begin_checkout")).toEqual([expect.objectContaining({ currency: "BRL", value: 28.98 })]);
+    expect(de("purchase")).toHaveLength(0); // só conta quando a comanda é enviada
     const link = screen.getByRole("link", { name: /Enviar comanda para o WhatsApp/ }) as HTMLAnchorElement;
     expect(link.href.startsWith("https://wa.me/5582991520132?text=")).toBe(true); // número oficial da casa
     expect(link.rel).toContain("noopener");
@@ -86,6 +92,14 @@ describe("fluxo Seu pedido → Falta só um passo", () => {
     // enviar: abre o WhatsApp (outra aba) e esta aba vai para o agradecimento, sem voltar ao carrinho
     await u.click(link);
     expect(await screen.findByRole("heading", { name: "Obrigado pelo seu pedido!" }, { timeout: 2000 })).toBeTruthy();
+    const compra = de("purchase");
+    expect(compra).toHaveLength(1);
+    expect(compra[0]).toMatchObject({ currency: "BRL", value: 28.98, shipping: 0 });
+    expect(compra[0].transaction_id).toMatch(/^#?\d+/);
+    expect(compra[0].items).toHaveLength(2);
+    // nada de dados pessoais no Analytics
+    const tudo = JSON.stringify(eventos.mock.calls);
+    for (const pii of ["Rodolpho", "82994336126", "Rua Exemplo", "57046000", "Bloco B"]) expect(tudo).not.toContain(pii);
     expect(screen.getByRole("link", { name: "Voltar para o início" }).getAttribute("href")).toBe("/");
     expect(screen.getByRole("link", { name: "Enviar a comanda de novo" })).toBeTruthy();
     expect(JSON.parse(localStorage.getItem("cuscuz-pedido-v3") ?? "[]")).toEqual([]); // carrinho esvaziado

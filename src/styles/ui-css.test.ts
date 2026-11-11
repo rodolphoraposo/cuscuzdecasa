@@ -2,6 +2,16 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
+describe("components.css", () => {
+  it("o cartão inteiro abre o Detalhe: o link do nome se estica sobre o cartão e Pedir/quantidade ficam por cima", () => {
+    // O jsdom não calcula layout, então o clique real é conferido no navegador; aqui protegemos a regra contra remoção acidental.
+    const css: string = readFileSync(new URL("./components.css", import.meta.url), "utf8");
+    expect(css).toMatch(/\.item, \.card \{[^}]*position: relative/);
+    expect(css).toMatch(/\.produto-link::after \{[^}]*position: absolute;[^}]*inset: 0/);
+    expect(css).toMatch(/\.item \.btn, \.item \.stepper, \.card \.btn, \.card \.stepper \{[^}]*z-index: 1/);
+  });
+});
+
 describe("ui.css", () => {
   it("o estado 'indeterminado' vale só para checkbox (radio sem seleção também é :indeterminate)", () => {
     const css: string = readFileSync(new URL("./ui.css", import.meta.url), "utf8");

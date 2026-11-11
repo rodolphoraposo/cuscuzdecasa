@@ -1,4 +1,5 @@
 import { ButtonLink, EmptyState } from "../components/ui";
+import { enderecoDoCardapio } from "../lib/navegacao";
 import { usePageTitle } from "../hooks/usePageTitle";
 import { useNoIndex } from "../hooks/useNoIndex";
 
@@ -13,7 +14,7 @@ export default function NotFound() {
         texto="Não encontramos essa página. Escolha para onde quer ir."
         acao={
           <div className="notfound__acoes">
-            <ButtonLink to="/cardapio">Ver cardápio</ButtonLink>
+            <ButtonLink to={enderecoDoCardapio()}>Ver cardápio</ButtonLink>
             <ButtonLink to="/" variante="outline">Ir para o início</ButtonLink>
           </div>
         }

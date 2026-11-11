@@ -1,10 +1,10 @@
-import { Link } from "react-router-dom";
 import hero from "../assets/home/hero-carne-de-sol-recheio.webp";
 import logo from "../assets/logo/logo-full.webp";
-import { AvisoEncerrado } from "../components/AvisoEncerrado";
+import { CartBar } from "../components/CartBar";
+import { Cardapio } from "../components/Cardapio";
+import { LinkCardapio } from "../components/LinkCardapio";
 import { Tag } from "../components/ui";
-import { ProductRow } from "../components/ProductItem";
-import { condominios, contato, destaquesHome, produtos } from "../data/menu";
+import { condominios, contato } from "../data/menu";
 
 const passos = [
   { titulo: "Escolha no cardápio", texto: "Veja os sabores e monte seu pedido em poucos toques." },
@@ -13,8 +13,6 @@ const passos = [
 ];
 
 export default function Home() {
-  const destaques = destaquesHome.map((id) => produtos.find((p) => p.id === id)!);
-
   return (
     <>
       <section className="container hero">
@@ -29,9 +27,8 @@ export default function Home() {
             {contato.diasFuncionamento.charAt(0).toUpperCase() + contato.diasFuncionamento.slice(1)} · Pedidos até as {contato.horarioPedidos} · entrega das {contato.horarioEntrega}
           </p>
           <p className="t-legenda">Delivery ou retirada na casa.</p>
-          <AvisoEncerrado />
           <div className="hero__acoes">
-            <Link to="/cardapio" className="btn btn--primary btn--lg">Peça agora!</Link>
+            <LinkCardapio origem="hero_peca_agora" className="btn btn--primary btn--lg">Peça agora!</LinkCardapio>
             <a href="#como-funciona" className="btn btn--soft btn--sm">Como funciona</a>
           </div>
         </div>
@@ -40,22 +37,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section container" id="cardapio" style={{ paddingTop: 0 }}>
-        <div className="section__intro">
-          <h2 className="t-secao">Cardápio</h2>
-          <p className="t-corpo">Escolha, adicione e peça em poucos toques.</p>
-        </div>
-        <ul className="lista">
-          {destaques.map((p) => (
-            <ProductRow key={p.id} produto={p} />
-          ))}
-        </ul>
-        <div className="section__acao">
-          <Link to="/cardapio" className="btn btn--primary btn--lg btn--block" style={{ maxWidth: 480 }}>
-            Ver cardápio completo e pedir
-          </Link>
-        </div>
-      </section>
+      <Cardapio />
 
       <section className="section como" id="como-funciona">
         <div className="container">
@@ -89,13 +71,15 @@ export default function Home() {
         </p>
       </section>
 
-      <section className="section container">
-        <div className="marca">
+      <section className="section secao-marca">
+        <div className="container marca">
           <img src={logo} alt="Cuscuz de Casa" width="600" height="600" loading="lazy" />
           <h2 className="t-secao">Uma marca que começa em casa</h2>
           <p className="t-corpo">Comida preparada com cuidado: quente, farta, próxima e fácil de pedir.</p>
         </div>
       </section>
+
+      <CartBar />
     </>
   );
 }

@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { aceitaAdicionais, acompanhamentos, adicionais, exigeAcompanhamento, produtos, type Produto } from "../data/menu";
+import { MOEDA, itemDoProduto, registrarEvento } from "../lib/analytics";
 
 export const MAX_QTD = 99;
 const STORAGE_KEY = "cuscuz-pedido-v3";
@@ -65,6 +66,12 @@ function carregar(): Salvo[] {
   }
 }
 
+/** Preço de uma unidade (produto + adicionais) e o acompanhamento, para os eventos do Analytics. */
+function detalheParaAnalytics(produto: Produto, extras: string[], acomp: string | null) {
+  const centavos = Math.round(produto.preco * 100) + extras.reduce((t, e) => t + Math.round((adicionais.find((a) => a.id === e)?.preco ?? 0) * 100), 0);
+  return { preco: centavos / 100, variante: acompanhamentos.find((a) => a.id === acomp)?.nome ?? null };
+}
+
 const CartContext = createContext<CartValue | null>(null);
 
 export function CartProvider({ children }: { children: ReactNode }) {
@@ -109,20 +116,31 @@ export function CartProvider({ children }: { children: ReactNode }) {
         if (ac === undefined) return;
         const lista = normalizarExtras(produto, extras);
         const chave = chaveDe(id, lista, ac);
+        const { preco, variante } = detalheParaAnalytics(produto, lista, ac);
+        const quantidade = Math.max(qtd, 1);
+        registrarEvento("add_to_cart", { currency: MOEDA, value: Math.round(preco * quantidade * 100) / 100, items: [itemDoProduto(produto, { quantidade, preco, variante })] });
         setSalvos((atual) =>
           atual.some((s) => chaveDe(s.id, s.extras, s.acomp) === chave)
             ? atual.map((s) => (chaveDe(s.id, s.extras, s.acomp) === chave ? { ...s, qtd: Math.min(s.qtd + qtd, MAX_QTD) } : s))
             : [...atual, { id, qtd: Math.min(Math.max(qtd, 1), MAX_QTD), extras: lista, acomp: ac }],
         );
       },
-      alterar: (chave, delta) =>
+      alterar: (chave, delta) => {
+        const linha = salvos.find((s) => chaveDe(s.id, s.extras, s.acomp) === chave);
+        const produto = linha && produtos.find((p) => p.id === linha.id);
+        if (linha && produto && delta !== 0) {
+          const { preco, variante } = detalheParaAnalytics(produto, linha.extras, linha.acomp);
+          const quantidade = Math.abs(delta);
+          registrarEvento(delta > 0 ? "add_to_cart" : "remove_from_cart", { currency: MOEDA, value: Math.round(preco * quantidade * 100) / 100, items: [itemDoProduto(produto, { quantidade, preco, variante })] });
+        }
         setSalvos((atual) =>
           atual.flatMap((s) => {
             if (chaveDe(s.id, s.extras, s.acomp) !== chave) return [s];
             const qtd = Math.min(s.qtd + delta, MAX_QTD);
             return qtd < 1 ? [] : [{ ...s, qtd }];
           }),
-        ),
+        );
+      },
       limpar: () => {
         setSalvos([]);
         try {

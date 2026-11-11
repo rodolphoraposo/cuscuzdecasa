@@ -35,6 +35,8 @@
 .hero__acoes { display: grid; gap: var(--esp-16); width: 100%; }
 .hero__imagem { border-radius: var(--raio-12); overflow: hidden; aspect-ratio: 4 / 3; }
 .hero__imagem img { width: 100%; height: 100%; object-fit: cover; }
+/* No celular o cardápio vem logo abaixo do CTA; a foto só aparece no computador. */
+@media (max-width: 899px) { .hero__imagem { display: none; } }
 @media (min-width: 900px) {
   .hero { grid-template-columns: 6fr 6fr; gap: var(--esp-64); padding-block: var(--esp-64) var(--esp-96); }
   .hero__acoes { display: flex; width: auto; }
@@ -103,7 +105,9 @@
 @media (min-width: 900px) { .cartbar .btn { max-width: 480px; margin-inline: auto; display: flex; } }
 
 /* ---------- Como funciona ---------- */
-.como { background: var(--destaque-fundo-suave); }
+.cardapio { background: var(--destaque-fundo-suave); } /* seções com fundos alternados: o cliente percebe onde uma termina e a outra começa */
+.como { background: var(--fundo-suave); }
+.secao-marca { background: var(--fundo-rebaixado); }
 .passos { display: grid; gap: var(--esp-24); margin-top: var(--esp-24); }
 .passo { display: grid; grid-template-columns: 40px 1fr; gap: var(--esp-16); align-items: start; }
 .passo__n { display: grid; place-items: center; width: 40px; height: 40px; border-radius: var(--raio-total); background: var(--destaque); color: var(--texto-sobre-destaque); font: 700 20px / 1 var(--fonte-titulo); }
@@ -142,6 +146,16 @@
 /* ---------- Detalhe do item ---------- */
 .produto-link { color: inherit; text-decoration: none; }
 .produto-link:hover { text-decoration: underline; }
+
+/* Cartão inteiro clicável (foto, nome, descrição e preço abrem o Detalhe).
+   O link do nome estica a área dele sobre o cartão com ::after; continua sendo UM só link para
+   leitor de tela e teclado. "Pedir" e o controle de quantidade ficam por cima (z-index) e seguem funcionando. */
+.item, .card { position: relative; cursor: pointer; }
+.produto-link::after { content: ""; position: absolute; inset: 0; border-radius: var(--raio-12); }
+.item .btn, .item .stepper, .card .btn, .card .stepper { position: relative; z-index: 1; cursor: auto; }
+.item .btn, .item .stepper button, .card .btn, .card .stepper button { cursor: pointer; }
+.produto-link:focus-visible { outline: none; }
+.produto-link:focus-visible::after { outline: 2px solid var(--anel-foco); outline-offset: -2px; }
 .detail-hero { position: relative; max-width: 640px; margin-inline: auto; aspect-ratio: 390 / 240; border-radius: 0 0 var(--raio-12) var(--raio-12); overflow: hidden; box-shadow: var(--sombra-md); background: var(--fundo-rebaixado); }
 .detail-hero img { width: 100%; height: 100%; object-fit: cover; }
 .detail-hero--contain img { object-fit: contain; background: var(--fundo-superficie); }
