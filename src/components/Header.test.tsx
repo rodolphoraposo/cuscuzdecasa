@@ -26,8 +26,18 @@ describe("cabeçalho no celular", () => {
     expect(menu.textContent).toContain("Onde entregamos");
 
     await u.click(within(menu).getByRole("link", { name: "Cardápio" })); // há outro "Cardápio" no menu de computador
-    expect(screen.getByTestId("local").textContent).toBe("/cardapio");
-    expect(screen.queryByRole("navigation", { name: "Menu" })).toBeNull(); // fechou ao navegar
+    // Já na Home: só rola até o cardápio e leva o foco ao título (o endereço não muda), e o menu fecha.
+    expect(document.activeElement?.id).toBe("cardapio-titulo");
+    expect(screen.queryByRole("navigation", { name: "Menu" })).toBeNull();
+  });
+
+  it("de outra página, 'Cardápio' do menu leva à seção #cardapio da Home e fecha o menu", async () => {
+    const u = userEvent.setup();
+    abrir("/termos");
+    await u.click(screen.getByRole("button", { name: "Abrir menu" }));
+    await u.click(within(screen.getByRole("navigation", { name: "Menu" })).getByRole("link", { name: "Cardápio" }));
+    expect(screen.getByTestId("local").textContent).toBe("/#cardapio");
+    expect(screen.queryByRole("navigation", { name: "Menu" })).toBeNull();
   });
 
   it("Esc fecha o menu", async () => {

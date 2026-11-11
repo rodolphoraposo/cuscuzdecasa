@@ -6,7 +6,7 @@ import { Button, ButtonLink, Checkbox, EmptyState, Radio } from "../components/u
 import { MAX_QTD, useCart } from "../context/CartContext";
 import { aceitaAdicionais, acompanhamentos, adicionais, exigeAcompanhamento, formatarPreco, produtos, type Produto } from "../data/menu";
 import { usePageTitle } from "../hooks/usePageTitle";
-import { origemSegura } from "../lib/navegacao";
+import { enderecoDoCardapio, origemSegura } from "../lib/navegacao";
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -20,7 +20,7 @@ export default function ProductDetail() {
           nivel={1}
           titulo="Item não encontrado"
           texto="Esse item não está mais no cardápio. Veja as opções disponíveis."
-          acao={<ButtonLink to="/cardapio">Ver cardápio</ButtonLink>}
+          acao={<ButtonLink to={enderecoDoCardapio()}>Ver cardápio</ButtonLink>}
         />
       </section>
     );
@@ -42,9 +42,9 @@ function Detalhe({ produto }: { produto: Produto }) {
   const opcoes = aceitaAdicionais(produto) ? adicionais : [];
   const unitario = produto.preco + extras.reduce((t, e) => t + (adicionais.find((a) => a.id === e)?.preco ?? 0), 0);
   const total = Math.round(unitario * 100) * qtd / 100;
-  const padrao = produto.prato ? `/cardapio?prato=${produto.prato}&categoria=${produto.categoria}` : "/cardapio?prato=bebidas";
+  const padrao = enderecoDoCardapio(produto.prato ? `?prato=${produto.prato}&categoria=${produto.categoria}` : "?prato=bebidas");
   const voltar = origem ?? padrao; // volta para onde o cliente estava (Início, lista ou grade)
-  const aposAdicionar = origem?.startsWith("/cardapio") ? origem : padrao; // depois de adicionar, mostra o cardápio com a barra do pedido
+  const aposAdicionar = origem?.endsWith("#cardapio") ? origem : padrao; // depois de adicionar, mostra o cardápio com a barra do pedido
 
   const alternar = (extraId: string) =>
     setExtras((atual) => (atual.includes(extraId) ? atual.filter((e) => e !== extraId) : [...atual, extraId]));
@@ -57,7 +57,7 @@ function Detalhe({ produto }: { produto: Produto }) {
     }
     adicionar(produto.id, extras, qtd, acomp);
     // Sequência do pedido: prato → capriche → bebida → dados. Depois de um prato, sugere a bebida.
-    if (produto.categoria !== "bebidas") navigate("/cardapio?prato=bebidas", { state: { sugerirBebida: true } });
+    if (produto.categoria !== "bebidas") navigate(enderecoDoCardapio("?prato=bebidas"), { state: { sugerirBebida: true } });
     else navigate(aposAdicionar);
   };
 

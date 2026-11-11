@@ -61,7 +61,7 @@ const catalogo: Produto[] = [
     dica: "Fica perfeito com adicional de requeijão tipo Catupiry, muçarela ou queijo coalho!",
   },
   {
-    id: "calabresa", prato: "cuscuz", categoria: "salgados", nome: "Arretado", descricao: "Calabresa fina defumada", preco: 15.99,
+    id: "calabresa", prato: "cuscuz", categoria: "salgados", nome: "Arretado", descricao: "Calabresa defumada ralada", preco: 15.99,
     descricaoLonga: "Para quem ama sabor marcante. Cuscuz de milho recheado com finas rodelas de calabresa defumada, salteadas até ficarem bem douradinhas.",
     dica: "Combina muito com ovo mexido ou uma fatia de muçarela.",
   },
@@ -71,7 +71,7 @@ const catalogo: Produto[] = [
     dica: "Combina muito com ovo cozido ou uma fatia de muçarela.",
   },
   {
-    id: "carne-de-sol", prato: "cuscuz", categoria: "salgados", nome: "Do Sertão", descricao: "Carne de sol desfiada acebolada", preco: 17.99,
+    id: "carne-de-sol", prato: "cuscuz", categoria: "salgados", nome: "Do Sertão", descricao: "Carne de sol desfiada refogada", preco: 17.99,
     descricaoLonga: "O legítimo sabor nordestino! Cuscuz fofinho recheado com carne de sol artesanal, desfiada e acebolada na medida certa.",
     dica: "Adicione queijo coalho ou requeijão tipo Catupiry e mude o seu dia!",
   },
@@ -82,11 +82,11 @@ const catalogo: Produto[] = [
   // },
   // ---------- Cuscuz · doces ----------
   {
-    id: "cartola", prato: "cuscuz", categoria: "doces", nome: "Cartola", descricao: "Banana frita com queijo coalho, açúcar e canela", preco: 17.99,
+    id: "cartola", prato: "cuscuz", categoria: "doces", nome: "Cartola", descricao: "Banana, coalho, açúcar e canela", preco: 17.99,
     descricaoLonga: "A sobremesa mais amada do Nordeste em forma de cuscuz! Camadas de banana frita na chapa, queijo coalho derretido, finalizadas com uma chuvinha de açúcar e canela. Conforto em cada garfada.",
   },
   {
-    id: "romeu-e-julieta", prato: "cuscuz", categoria: "doces", nome: "Romeu & Julieta", descricao: "Queijo coalho derretido com goiabada cascão", preco: 17.99,
+    id: "romeu-e-julieta", prato: "cuscuz", categoria: "doces", nome: "Romeu & Julieta", descricao: "Queijo coalho com goiabada", preco: 17.99,
     descricaoLonga: "A combinação perfeita do salgado com o doce. Cuscuz quentinho recheado com o sabor marcante do queijo coalho derretido e a suavidade da goiabada cascão cremosa.",
   },
 

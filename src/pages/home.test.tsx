@@ -15,6 +15,6 @@ describe("Home", () => {
     expect(hero.textContent).toContain("Faça seu pedido de dia e receba à noite!");
     expect(hero.textContent).toContain("Segunda a sexta · Pedidos até as 16h · entrega das 17h às 21h");
     expect(hero.textContent).toContain("Delivery ou retirada na casa.");
-    expect(within(hero).getByRole("link", { name: "Peça agora!" }).getAttribute("href")).toBe("/cardapio");
+    expect(within(hero).getByRole("link", { name: "Peça agora!" }).getAttribute("href")).toBe("/#cardapio");
   });
 });

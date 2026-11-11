@@ -11,7 +11,7 @@
       "headers": [
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' 'sha256-Ph9r4penB43EyK+RQrCApCDNqhpjdCMZTO+ezspfmeI='; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://viacep.com.br https://pzwcbbdtqbwmzszgymrd.supabase.co; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none'; upgrade-insecure-requests"
+          "value": "default-src 'self'; script-src 'self' 'sha256-Ph9r4penB43EyK+RQrCApCDNqhpjdCMZTO+ezspfmeI=' https://*.googletagmanager.com; style-src 'self'; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self'; connect-src 'self' https://viacep.com.br https://pzwcbbdtqbwmzszgymrd.supabase.co https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none'; upgrade-insecure-requests"
         },
         {
           "key": "X-Content-Type-Options",

@@ -1,5 +1,6 @@
 import { InstagramLogo } from "@phosphor-icons/react";
 import { Link } from "react-router-dom";
+import { LinkCardapio } from "./LinkCardapio";
 import { contato } from "../data/menu";
 import logoCreme from "../assets/logo/logo-creme.webp";
 import logoMarrom from "../assets/logo/logo-marrom.webp";
@@ -16,7 +17,7 @@ export function Footer() {
           </div>
 
           <nav aria-label="Rodapé">
-            <Link to="/cardapio">Cardápio</Link>
+            <LinkCardapio>Cardápio</LinkCardapio>
             <a href="/#como-funciona">Como funciona</a>
             <a href="/#onde-entregamos">Onde entregamos</a>
             <Link to="/privacidade">Política de Privacidade</Link>

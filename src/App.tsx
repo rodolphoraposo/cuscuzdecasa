@@ -1,18 +1,25 @@
-import { Route, Routes, useLocation } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { Footer } from "./components/Footer";
 import { Header } from "./components/Header";
 import { useFocoLivreDaBarra } from "./hooks/useFocoLivreDaBarra";
+import { RastreadorDePaginas } from "./components/RastreadorDePaginas";
 import { ScrollManager } from "./components/ScrollManager";
+import { enderecoDoCardapio } from "./lib/navegacao";
 import DesignSystem from "./pages/DesignSystem";
 import Home from "./pages/Home";
 import Finalizar from "./pages/Finalizar";
-import Menu from "./pages/Menu";
 import NotFound from "./pages/NotFound";
 import Pedido from "./pages/Pedido";
 import PedidoEnviado from "./pages/PedidoEnviado";
 import Privacidade from "./pages/Privacidade";
 import Termos from "./pages/Termos";
 import ProductDetail from "./pages/ProductDetail";
+
+/** O cardápio agora mora na Home: links antigos (/cardapio?...) levam à seção, mantendo prato, categoria e vista. */
+function CardapioAntigo() {
+  const { search } = useLocation();
+  return <Navigate to={enderecoDoCardapio(search)} replace />;
+}
 
 export default function App() {
   const { pathname } = useLocation();
@@ -24,11 +31,12 @@ export default function App() {
     <>
       <a className="skip-link" href="#conteudo">Pular para o conteúdo</a>
       <ScrollManager />
+      <RastreadorDePaginas />
       {!fluxoDePedido && <Header />}
       <main id="conteudo" tabIndex={-1}>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/cardapio" element={<Menu />} />
+          <Route path="/cardapio" element={<CardapioAntigo />} />
           <Route path="/cardapio/:id" element={<ProductDetail />} />
           <Route path="/pedido" element={<Pedido />} />
           <Route path="/pedido/finalizar" element={<Finalizar />} />

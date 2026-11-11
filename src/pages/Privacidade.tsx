@@ -52,19 +52,22 @@ export default function Privacidade() {
         <li>Sua escolha de tema claro ou escuro.</li>
       </ul>
       <p>
-        Não usamos cookies de rastreamento nem ferramentas de análise ou publicidade. As fontes do site são servidas por
-        nós, sem chamadas ao Google Fonts.
+        Usamos o Google Analytics para entender, de forma agregada, como o site é usado (páginas acessadas, tipo de aparelho e
+        cidade aproximada), e assim melhorar o cardápio. Ele grava cookies de medição no seu navegador. Não usamos
+        esses dados para publicidade nem para remarketing. As fontes do site são servidas por nós, sem chamadas ao Google
+        Fonts.
       </p>
 
       <h2>6. Com quem os dados são compartilhados</h2>
       <ul>
         <li><strong>WhatsApp (Meta):</strong> recebe a comanda que você envia e a trata conforme a política própria do aplicativo.</li>
         <li><strong>ViaCEP (viacep.com.br):</strong> recebe somente o CEP que você digita, para preencher o endereço.</li>
+        <li><strong>Google Analytics (Google):</strong> recebe dados de uso do site (páginas visitadas, aparelho, navegador e localização aproximada) para estatísticas. Não enviamos nome, telefone nem endereço do pedido.</li>
         <li><strong>Vercel:</strong> hospeda o site e mantém registros técnicos de acesso.</li>
         <li><strong>Nossa equipe:</strong> quem prepara e entrega o pedido vê apenas o necessário para isso.</li>
       </ul>
       <p>
-        WhatsApp e Vercel podem tratar dados fora do Brasil (por exemplo, nos Estados Unidos), seguindo as salvaguardas
+        WhatsApp, Google e Vercel podem tratar dados fora do Brasil (por exemplo, nos Estados Unidos), seguindo as salvaguardas
         previstas no art. 33 da LGPD.
       </p>
 
