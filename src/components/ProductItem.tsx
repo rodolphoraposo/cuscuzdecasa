@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { formatarPreco, type Produto } from "../data/menu";
+import { enderecoDoCardapio } from "../lib/navegacao";
 import { FotoProduto } from "./FotoProduto";
 import { OrderControl } from "./OrderControl";
 
@@ -39,11 +40,11 @@ export function ProductCard({ produto }: { produto: Produto }) {
   );
 }
 
-/** Nome do produto como link para o Detalhe, lembrando de onde o cliente veio (lista, grade, categoria). */
+/** Nome do produto como link para o Detalhe, lembrando de onde o cliente veio (cardápio da Home: lista, grade, categoria). */
 function ProdutoLink({ produto }: { produto: Produto }) {
   const local = useLocation();
   return (
-    <Link className="produto-link" to={`/cardapio/${produto.id}`} state={{ voltar: local.pathname + local.search }}>
+    <Link className="produto-link" to={`/cardapio/${produto.id}`} state={{ voltar: enderecoDoCardapio(local.search) }}>
       {produto.nome}
     </Link>
   );

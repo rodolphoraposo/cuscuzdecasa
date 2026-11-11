@@ -22,7 +22,7 @@ afterEach(() => { cleanup(); localStorage.clear(); });
 describe("teclado nas abas do cardápio", () => {
   it("só a aba atual entra no Tab; setas, Home e End trocam de aba e levam o foco", async () => {
     const u = userEvent.setup();
-    abrir("/cardapio");
+    abrir("/");
     const abas = () => screen.getAllByRole("tab");
     expect(abas().map((a) => a.getAttribute("tabindex"))).toEqual(["0", "-1", "-1"]);
 
@@ -53,8 +53,8 @@ describe("estrutura das páginas", () => {
   });
 
   it("cada página tem um título próprio", () => {
-    abrir("/cardapio");
-    expect(document.title).toBe("Cardápio · Cuscuz de Casa");
+    abrir("/cardapio/carne-de-sol");
+    expect(document.title).toBe("Do Sertão · Cuscuz de Casa");
   });
 
   it("páginas de pedido e 404 pedem aos buscadores para não indexar; a Home não", () => {

@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" />
 import { defineConfig, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 
@@ -25,4 +26,9 @@ const preCarregarFontes = (): Plugin => ({
 
 export default defineConfig({
   plugins: [react(), preCarregarFontes()],
+  test: {
+    setupFiles: ["./src/test/setup.ts"],
+    // Os testes de tela simulam digitação e cliques de verdade; em computadores mais lentos 5 s (padrão) não bastam.
+    testTimeout: 20000,
+  },
 });
