@@ -8,6 +8,7 @@ import { useCart, type LinhaPedido } from "../context/CartContext";
 import { empresa } from "../data/empresa";
 import { SEM_ACOMPANHAMENTO, adicionais, contato, formatarPreco, nomeCompleto, taxaEntrega } from "../data/menu";
 import { buscarCep } from "../lib/cep";
+import { enderecoDoCardapio } from "../lib/navegacao";
 import { janelasEntrega } from "../lib/entrega";
 import { useEntrega } from "../hooks/useEntrega";
 import {
@@ -148,7 +149,7 @@ export default function Pedido() {
           nivel={1}
           titulo="Seu pedido está vazio"
           texto="Escolha seus itens no cardápio para começar."
-          acao={<ButtonLink to="/cardapio">Ver cardápio</ButtonLink>}
+          acao={<ButtonLink to={enderecoDoCardapio()}>Ver cardápio</ButtonLink>}
         />
       </section>
     );
@@ -161,7 +162,7 @@ export default function Pedido() {
       <div className="container">
         <div className="pedido">
           <div className="pedido-topo">
-            <Link className="icon-btn icon-btn--destaque" to="/cardapio" aria-label="Voltar ao cardápio">
+            <Link className="icon-btn icon-btn--destaque" to={enderecoDoCardapio()} aria-label="Voltar ao cardápio">
               <CaretLeft size={20} />
             </Link>
             <h1 className="t-secao">Seu pedido</h1>
@@ -206,7 +207,7 @@ export default function Pedido() {
               ))}
             </ul>
             {avisoRemovido}
-            <Link className="pedido__mais" to="/cardapio">Adicionar mais itens</Link>
+            <Link className="pedido__mais" to={enderecoDoCardapio()}>Adicionar mais itens</Link>
           </section>
 
           <form id="form-pedido" className="form pedido__form" ref={formRef} onSubmit={enviar} noValidate>

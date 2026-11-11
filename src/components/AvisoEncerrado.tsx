@@ -2,7 +2,7 @@ import { useEntrega } from "../hooks/useEntrega";
 import { contato } from "../data/menu";
 import { Banner } from "./ui";
 
-/** Avisa cedo (início, cardápio e pedido) que hoje não dá para pedir: dia sem atendimento ou depois do limite. */
+/** Avisa cedo (cardápio e pedido) que hoje não dá para pedir: dia sem atendimento ou depois do limite. */
 export function AvisoEncerrado() {
   const { dia, motivo } = useEntrega();
   if (dia !== null) return null;

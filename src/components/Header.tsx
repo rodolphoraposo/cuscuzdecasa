@@ -1,6 +1,7 @@
 import { Handbag, List, Moon, Sun, X } from "@phosphor-icons/react";
 import { useEffect, useRef, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
+import { LinkCardapio } from "./LinkCardapio";
 import icone from "../assets/logo/logo-icon.webp";
 import wordmark from "../assets/logo/wordmark.webp";
 import { useCart } from "../context/CartContext";
@@ -37,13 +38,13 @@ export function Header() {
 
         <nav className="header__nav t-corpo" aria-label="Principal">
           <NavLink to="/" end>Início</NavLink>
-          <NavLink to="/cardapio">Cardápio</NavLink>
+          <LinkCardapio>Cardápio</LinkCardapio>
           <a href="/#como-funciona">Como funciona</a>
           <a href="/#onde-entregamos">Onde entregamos</a>
         </nav>
 
         <div className="header__actions">
-          <Link to="/cardapio" className="btn btn--primary btn--md header__cta">Peça agora!</Link>
+          <LinkCardapio className="btn btn--primary btn--md header__cta">Peça agora!</LinkCardapio>
           {totalItens > 0 && (
             <Link to="/pedido" className="icon-btn header__sacola" aria-label={`Ver pedido, ${totalItens} ${totalItens === 1 ? "item" : "itens"}`}>
               <Handbag size={24} />
@@ -69,7 +70,7 @@ export function Header() {
       <nav id="menu-mobile" className="header__painel" aria-label="Menu" hidden={!aberto}>
         <div className="container">
           <Link to="/">Início</Link>
-          <Link to="/cardapio">Cardápio</Link>
+          <LinkCardapio onClick={() => setAberto(false)}>Cardápio</LinkCardapio>
           <Link to="/#como-funciona">Como funciona</Link>
           <Link to="/#onde-entregamos">Onde entregamos</Link>
           <a

@@ -28,7 +28,7 @@ describe("páginas legais e 404", () => {
   it("endereço inexistente mostra 404 com saída, e o link de pular conteúdo existe", () => {
     abrir("/nao-existe");
     expect(screen.getByRole("heading", { name: "Página não encontrada" })).toBeTruthy();
-    expect(screen.getByRole("link", { name: "Ver cardápio" }).getAttribute("href")).toBe("/cardapio");
+    expect(screen.getByRole("link", { name: "Ver cardápio" }).getAttribute("href")).toBe("/#cardapio");
     expect(screen.getByRole("link", { name: "Ir para o início" }).getAttribute("href")).toBe("/");
     expect(screen.getByRole("link", { name: "Pular para o conteúdo" }).getAttribute("href")).toBe("#conteudo");
   });

@@ -35,6 +35,8 @@
 .hero__acoes { display: grid; gap: var(--esp-16); width: 100%; }
 .hero__imagem { border-radius: var(--raio-12); overflow: hidden; aspect-ratio: 4 / 3; }
 .hero__imagem img { width: 100%; height: 100%; object-fit: cover; }
+/* No celular o cardápio vem logo abaixo do CTA; a foto só aparece no computador. */
+@media (max-width: 899px) { .hero__imagem { display: none; } }
 @media (min-width: 900px) {
   .hero { grid-template-columns: 6fr 6fr; gap: var(--esp-64); padding-block: var(--esp-64) var(--esp-96); }
   .hero__acoes { display: flex; width: auto; }
@@ -103,7 +105,9 @@
 @media (min-width: 900px) { .cartbar .btn { max-width: 480px; margin-inline: auto; display: flex; } }
 
 /* ---------- Como funciona ---------- */
-.como { background: var(--destaque-fundo-suave); }
+.cardapio { background: var(--destaque-fundo-suave); } /* seções com fundos alternados: o cliente percebe onde uma termina e a outra começa */
+.como { background: var(--fundo-suave); }
+.secao-marca { background: var(--fundo-rebaixado); }
 .passos { display: grid; gap: var(--esp-24); margin-top: var(--esp-24); }
 .passo { display: grid; grid-template-columns: 40px 1fr; gap: var(--esp-16); align-items: start; }
 .passo__n { display: grid; place-items: center; width: 40px; height: 40px; border-radius: var(--raio-total); background: var(--destaque); color: var(--texto-sobre-destaque); font: 700 20px / 1 var(--fonte-titulo); }
