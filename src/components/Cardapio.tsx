@@ -1,11 +1,18 @@
 import { ListDashes, SquaresFour } from "@phosphor-icons/react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+<<<<<<< HEAD
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
+=======
+import type { KeyboardEvent } from "react";
+>>>>>>> 5fa7d297b0c640f24cbe3bbc959e18c4cf59712c
 import { AvisoEncerrado } from "./AvisoEncerrado";
 import { Banner, ButtonLink } from "./ui";
 import { ProductCard, ProductRow } from "./ProductItem";
 import { abas, produtos, secoes, type AbaId, type SecaoId } from "../data/menu";
+<<<<<<< HEAD
 import { itemDoProduto, registrarEvento } from "../lib/analytics";
+=======
+>>>>>>> 5fa7d297b0c640f24cbe3bbc959e18c4cf59712c
 
 type Vista = "lista" | "grade";
 
@@ -50,6 +57,7 @@ export function Cardapio() {
     ? produtos.filter((p) => p.categoria === "bebidas")
     : produtos.filter((p) => p.prato === secao && (aba === "todos" || p.categoria === aba));
 
+<<<<<<< HEAD
   // Analytics: "view_item_list" quando o cardápio aparece na tela e a cada nova lista vista (prato/aba) depois disso.
   const secaoRef = useRef<HTMLElement>(null);
   const [visto, setVisto] = useState(false);
@@ -72,6 +80,10 @@ export function Cardapio() {
 
   return (
     <section className="section cardapio" id="cardapio" aria-labelledby="cardapio-titulo" ref={secaoRef}>
+=======
+  return (
+    <section className="section cardapio" id="cardapio" aria-labelledby="cardapio-titulo">
+>>>>>>> 5fa7d297b0c640f24cbe3bbc959e18c4cf59712c
       <div className="container">
         <h2 className="t-secao" id="cardapio-titulo" tabIndex={-1}>Cardápio</h2>
 

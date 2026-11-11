@@ -1,6 +1,9 @@
 import { Link, useLocation } from "react-router-dom";
 import { formatarPreco, type Produto } from "../data/menu";
+<<<<<<< HEAD
 import { itemDoProduto, registrarEvento } from "../lib/analytics";
+=======
+>>>>>>> 5fa7d297b0c640f24cbe3bbc959e18c4cf59712c
 import { enderecoDoCardapio } from "../lib/navegacao";
 import { FotoProduto } from "./FotoProduto";
 import { OrderControl } from "./OrderControl";
@@ -45,12 +48,16 @@ export function ProductCard({ produto }: { produto: Produto }) {
 function ProdutoLink({ produto }: { produto: Produto }) {
   const local = useLocation();
   return (
+<<<<<<< HEAD
     <Link
       className="produto-link"
       to={`/cardapio/${produto.id}`}
       state={{ voltar: enderecoDoCardapio(local.search) }}
       onClick={() => registrarEvento("select_item", { item_list_id: "cardapio_home", item_list_name: "Cardápio", items: [itemDoProduto(produto)] })}
     >
+=======
+    <Link className="produto-link" to={`/cardapio/${produto.id}`} state={{ voltar: enderecoDoCardapio(local.search) }}>
+>>>>>>> 5fa7d297b0c640f24cbe3bbc959e18c4cf59712c
       {produto.nome}
     </Link>
   );

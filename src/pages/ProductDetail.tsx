@@ -6,7 +6,10 @@ import { Button, ButtonLink, Checkbox, EmptyState, Radio } from "../components/u
 import { MAX_QTD, useCart } from "../context/CartContext";
 import { aceitaAdicionais, acompanhamentos, adicionais, exigeAcompanhamento, formatarPreco, produtos, type Produto } from "../data/menu";
 import { usePageTitle } from "../hooks/usePageTitle";
+<<<<<<< HEAD
 import { MOEDA, itemDoProduto, registrarEvento } from "../lib/analytics";
+=======
+>>>>>>> 5fa7d297b0c640f24cbe3bbc959e18c4cf59712c
 import { enderecoDoCardapio, origemSegura } from "../lib/navegacao";
 
 export default function ProductDetail() {
