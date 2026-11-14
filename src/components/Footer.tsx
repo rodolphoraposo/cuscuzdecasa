@@ -17,11 +17,7 @@ export function Footer() {
           </div>
 
           <nav aria-label="Rodapé">
-<<<<<<< HEAD
             <LinkCardapio origem="rodape">Cardápio</LinkCardapio>
-=======
-            <LinkCardapio>Cardápio</LinkCardapio>
->>>>>>> 5fa7d297b0c640f24cbe3bbc959e18c4cf59712c
             <a href="/#como-funciona">Como funciona</a>
             <a href="/#onde-entregamos">Onde entregamos</a>
             <Link to="/privacidade">Política de Privacidade</Link>

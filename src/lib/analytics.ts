@@ -7,16 +7,12 @@
  *   (CSP) do vercel.json só aceita scripts do próprio site e dos endereços do Google listados lá.
  * - Como o site troca de tela sem recarregar a página, as visualizações de página são enviadas à mão
  *   (RastreadorDePaginas), uma por tela, e o envio automático do gtag fica desligado (send_page_view: false).
-<<<<<<< HEAD
  * - Funil do pedido: usa os eventos padrão de e-commerce do GA4 (view_item_list, select_item, view_item, add_to_cart,
  *   remove_from_cart, view_cart, begin_checkout, purchase), que alimentam os relatórios de monetização.
  *   "purchase" = comanda ENVIADA ao WhatsApp (o pagamento é combinado por lá, então não é venda confirmada).
  * - Nenhum dado pessoal (nome, telefone, endereço) vai para o Analytics: só produtos, quantidades e valores.
  */
 import type { Produto } from "../data/menu";
-=======
- */
->>>>>>> 5fa7d297b0c640f24cbe3bbc959e18c4cf59712c
 
 declare global {
   interface Window {
@@ -61,7 +57,6 @@ export function registrarPagina(): void {
     page_title: document.title,
   });
 }
-<<<<<<< HEAD
 
 /** Envia um evento do GA4 (no-op fora do site publicado). */
 export function registrarEvento(nome: string, parametros: Record<string, unknown> = {}): void {
@@ -88,5 +83,3 @@ export function itensDoCarrinho(linhas: { produto: Produto; quantidade: number; 
 }
 
 export const MOEDA = "BRL";
-=======
->>>>>>> 5fa7d297b0c640f24cbe3bbc959e18c4cf59712c

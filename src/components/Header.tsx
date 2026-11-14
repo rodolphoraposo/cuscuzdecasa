@@ -38,21 +38,13 @@ export function Header() {
 
         <nav className="header__nav t-corpo" aria-label="Principal">
           <NavLink to="/" end>Início</NavLink>
-<<<<<<< HEAD
           <LinkCardapio origem="menu_cabecalho">Cardápio</LinkCardapio>
-=======
-          <LinkCardapio>Cardápio</LinkCardapio>
->>>>>>> 5fa7d297b0c640f24cbe3bbc959e18c4cf59712c
           <a href="/#como-funciona">Como funciona</a>
           <a href="/#onde-entregamos">Onde entregamos</a>
         </nav>
 
         <div className="header__actions">
-<<<<<<< HEAD
           <LinkCardapio origem="cabecalho_peca_agora" className="btn btn--primary btn--md header__cta">Peça agora!</LinkCardapio>
-=======
-          <LinkCardapio className="btn btn--primary btn--md header__cta">Peça agora!</LinkCardapio>
->>>>>>> 5fa7d297b0c640f24cbe3bbc959e18c4cf59712c
           {totalItens > 0 && (
             <Link to="/pedido" className="icon-btn header__sacola" aria-label={`Ver pedido, ${totalItens} ${totalItens === 1 ? "item" : "itens"}`}>
               <Handbag size={24} />
@@ -78,11 +70,7 @@ export function Header() {
       <nav id="menu-mobile" className="header__painel" aria-label="Menu" hidden={!aberto}>
         <div className="container">
           <Link to="/">Início</Link>
-<<<<<<< HEAD
           <LinkCardapio origem="menu_celular" onClick={() => setAberto(false)}>Cardápio</LinkCardapio>
-=======
-          <LinkCardapio onClick={() => setAberto(false)}>Cardápio</LinkCardapio>
->>>>>>> 5fa7d297b0c640f24cbe3bbc959e18c4cf59712c
           <Link to="/#como-funciona">Como funciona</Link>
           <Link to="/#onde-entregamos">Onde entregamos</Link>
           <a

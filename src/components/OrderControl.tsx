@@ -2,10 +2,7 @@ import { Minus, Plus } from "@phosphor-icons/react";
 import { Link, useLocation } from "react-router-dom";
 import { chaveDe, useCart } from "../context/CartContext";
 import { exigeAcompanhamento, nomeCompleto, type Produto } from "../data/menu";
-<<<<<<< HEAD
 import { itemDoProduto, registrarEvento } from "../lib/analytics";
-=======
->>>>>>> 5fa7d297b0c640f24cbe3bbc959e18c4cf59712c
 import { enderecoDoCardapio } from "../lib/navegacao";
 
 /**

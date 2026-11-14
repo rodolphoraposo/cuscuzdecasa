@@ -28,11 +28,7 @@ export default function Home() {
           </p>
           <p className="t-legenda">Delivery ou retirada na casa.</p>
           <div className="hero__acoes">
-<<<<<<< HEAD
             <LinkCardapio origem="hero_peca_agora" className="btn btn--primary btn--lg">Peça agora!</LinkCardapio>
-=======
-            <LinkCardapio className="btn btn--primary btn--lg">Peça agora!</LinkCardapio>
->>>>>>> 5fa7d297b0c640f24cbe3bbc959e18c4cf59712c
             <a href="#como-funciona" className="btn btn--soft btn--sm">Como funciona</a>
           </div>
         </div>
