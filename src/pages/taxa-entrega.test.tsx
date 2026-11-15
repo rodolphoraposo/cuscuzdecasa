@@ -8,7 +8,7 @@ import { limparCacheDeCoordenadas } from "../lib/geocep";
 import Finalizar from "./Finalizar";
 import Pedido from "./Pedido";
 
-// BrasilAPI simulada: a origem (57046256) é fixa e o cliente fica a `distanciaDoCliente` km ao norte. null = serviço fora do ar.
+// BrasilAPI simulada: a origem (57046350) é fixa e o cliente fica a `distanciaDoCliente` km ao norte. null = serviço fora do ar.
 const ORIGEM = { lat: -9.58, lng: -35.76 };
 const aoNorte = (km: number) => ORIGEM.lat + km / 111.19;
 let distanciaDoCliente: number | null = 0.8;
@@ -16,7 +16,7 @@ const servicos = vi.fn(async (url: RequestInfo | URL) => {
   const u = String(url);
   if (u.includes("viacep.com.br")) return { ok: true, json: async () => ({ logradouro: "Rua Exemplo", bairro: "Serraria", localidade: "Maceió", uf: "AL" }) };
   if (distanciaDoCliente === null) throw new Error("rede");
-  const lat = u.endsWith("/57046256") ? ORIGEM.lat : aoNorte(distanciaDoCliente);
+  const lat = u.endsWith("/57046350") ? ORIGEM.lat : aoNorte(distanciaDoCliente);
   return { ok: true, status: 200, json: async () => ({ location: { coordinates: { latitude: String(lat), longitude: String(ORIGEM.lng) } } }) };
 });
 

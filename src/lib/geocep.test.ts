@@ -4,13 +4,13 @@ import { buscarCoordenadas, calcularCobertura, calcularCoberturaPorLocalizacao, 
 const resposta = (corpo: unknown, status = 200) => ({ ok: status >= 200 && status < 300, status, json: async () => corpo }) as Response;
 const coordenadas = (latitude: unknown, longitude: unknown) => ({ cep: "x", location: { type: "Point", coordinates: { latitude, longitude } } });
 
-// Origem (57046256) ≈ ponto de referência; destinos a ~0,3 / ~0,8 / ~1,3 / ~2,2 km ao norte.
+// Origem (57046350) ≈ ponto de referência; destinos a ~0,3 / ~0,8 / ~1,3 / ~2,2 km ao norte.
 const ORIGEM = { lat: -9.5800, lng: -35.7600 };
 const aoNorte = (km: number) => ({ lat: ORIGEM.lat + km / 111.19, lng: ORIGEM.lng });
 function servico(destinos: Record<string, unknown>) {
   return vi.fn(async (url: RequestInfo | URL) => {
     const cep = String(url).split("/").pop()!;
-    if (cep === "57046256") return resposta(coordenadas(String(ORIGEM.lat), String(ORIGEM.lng)));
+    if (cep === "57046350") return resposta(coordenadas(String(ORIGEM.lat), String(ORIGEM.lng)));
     return destinos[cep] === undefined ? resposta({}, 404) : resposta(destinos[cep]);
   }) as unknown as typeof fetch & ReturnType<typeof vi.fn>;
 }
@@ -71,7 +71,7 @@ describe("calcularCobertura", () => {
     const f = servico({ "57010100": ponto(0.3), "57010200": ponto(0.8) });
     await calcularCobertura("57010100", undefined, f);
     await calcularCobertura("57010200", undefined, f);
-    expect(f.mock.calls.filter((c) => String(c[0]).endsWith("57046256"))).toHaveLength(1);
+    expect(f.mock.calls.filter((c) => String(c[0]).endsWith("57046350"))).toHaveLength(1);
 
     limparCacheDeCoordenadas();
     let falhar = true;

@@ -16,25 +16,27 @@ const passos = [
 export default function Home() {
   return (
     <>
-      <section className="container hero">
-        <div className="hero__texto">
-          <span className="badge badge--marca">Entrega num raio de {RAIO_MAXIMO_KM.toLocaleString("pt-BR")} km</span>
-          <h1 className="t-display hero__titulo">Cuscuz é sempre uma boa ideia!</h1>
-          <p className="t-corpo hero__lead">
-            Cuscuz recheado, quentinho e preparado com cuidado. Peça pelo cardápio digital e receba em casa.
-          </p>
-          <p className="hero__cta">Faça seu pedido de dia e receba à noite!</p>
-          <p className="t-legenda">
-            {contato.diasFuncionamento.charAt(0).toUpperCase() + contato.diasFuncionamento.slice(1)} · Pedidos até as {contato.horarioPedidos} · entrega das {contato.horarioEntrega}
-          </p>
-          <p className="t-legenda">Delivery ou retirada na casa.</p>
-          <div className="hero__acoes">
-            <LinkCardapio origem="hero_peca_agora" className="btn btn--primary btn--lg">Peça agora!</LinkCardapio>
-            <a href="#como-funciona" className="btn btn--soft btn--sm">Como funciona</a>
+      <section className="container hero-secao">
+        <div className="hero">
+          <div className="hero__imagem">
+            <img src={hero} alt="Cuscuz recheado com carne de sol em prato laranja" />
           </div>
-        </div>
-        <div className="hero__imagem">
-          <img src={hero} alt="Cuscuz recheado com carne de sol em prato laranja" />
+          <div className="hero__texto">
+            <span className="badge badge--marca">Entrega num raio de {RAIO_MAXIMO_KM.toLocaleString("pt-BR")} km</span>
+            <h1 className="t-display hero__titulo">Cuscuz é sempre uma <span>boa ideia!</span></h1>
+            <p className="t-corpo hero__lead">
+              Cuscuz recheado, quentinho e preparado com cuidado. Peça pelo cardápio digital e receba em casa.
+            </p>
+            <p className="hero__cta">Faça seu pedido de dia e receba à noite!</p>
+            <p className="t-legenda">
+              {contato.diasFuncionamento.charAt(0).toUpperCase() + contato.diasFuncionamento.slice(1)} · Pedidos até as {contato.horarioPedidos} · entrega das {contato.horarioEntrega}
+            </p>
+            <p className="t-legenda">Delivery ou retirada na casa.</p>
+            <div className="hero__acoes">
+              <LinkCardapio origem="hero_peca_agora" className="btn btn--primary btn--lg">Peça agora!</LinkCardapio>
+              <a href="#como-funciona" className="btn btn--soft btn--sm">Como funciona</a>
+            </div>
+          </div>
         </div>
       </section>
 

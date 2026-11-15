@@ -5,6 +5,10 @@ import { AvisoEncerrado } from "./AvisoEncerrado";
 import { Banner, ButtonLink } from "./ui";
 import { ProductCard, ProductRow } from "./ProductItem";
 import { abas, produtos, secoes, type AbaId, type SecaoId } from "../data/menu";
+
+/** Produto cuja foto representa cada categoria nos botões de topo. */
+const CAPA: Record<SecaoId, string> = { cuscuz: "frango-desfiado", macaxeira: "macaxeira-carne-de-sol", bebidas: "coca-cola" };
+const capaDe = (id: SecaoId) => produtos.find((p) => p.id === CAPA[id])?.imagem;
 import { itemDoProduto, registrarEvento } from "../lib/analytics";
 
 type Vista = "lista" | "grade";
@@ -79,8 +83,9 @@ export function Cardapio() {
 
         <div className="pratos" role="group" aria-label="Escolha o que pedir">
           {secoes.map((s) => (
-            <button key={s.id} type="button" className="prato-btn" aria-pressed={s.id === secao} onClick={() => atualizar("prato", s.id)}>
-              {s.nome}
+            <button key={s.id} type="button" className={`prato-btn${s.id === "bebidas" ? " prato-btn--bebida" : ""}`} aria-pressed={s.id === secao} onClick={() => atualizar("prato", s.id)}>
+              {capaDe(s.id) && <img src={capaDe(s.id)} alt="" loading="lazy" />}
+              <span>{s.nome}</span>
             </button>
           ))}
         </div>

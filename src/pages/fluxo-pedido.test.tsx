@@ -22,7 +22,7 @@ const servicos = vi.fn(async (url: RequestInfo | URL) => {
   }
   if (u.includes("brasilapi.com.br")) {
     if (distanciaDoCliente === null) throw new Error("rede");
-    const origem = u.endsWith("/57046256");
+    const origem = u.endsWith("/57046350");
     const lat = origem ? ORIGEM.lat : ORIGEM.lat + distanciaDoCliente / 111.19;
     return { ok: true, status: 200, json: async () => ({ location: { coordinates: { latitude: String(lat), longitude: String(ORIGEM.lng) } } }) };
   }

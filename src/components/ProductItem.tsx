@@ -5,10 +5,13 @@ import { enderecoDoCardapio } from "../lib/navegacao";
 import { FotoProduto } from "./FotoProduto";
 import { OrderControl } from "./OrderControl";
 
+/** Fotos de latas e garrafas (fundo branco) usam o ajuste "contain" para o fundo combinar com a cor do cartão. */
+const semRecorte = (p: Produto) => p.ajuste === "contain" || p.categoria === "bebidas";
+
 export function ProductRow({ produto }: { produto: Produto }) {
   return (
     <li className="item">
-      <div className={`item__foto${produto.ajuste === "contain" ? " item__foto--contain" : ""}`}>
+      <div className={`item__foto${semRecorte(produto) ? " item__foto--contain" : ""}`}>
         <FotoProduto produto={produto} />
       </div>
       <div className="item__corpo">
@@ -26,7 +29,7 @@ export function ProductRow({ produto }: { produto: Produto }) {
 export function ProductCard({ produto }: { produto: Produto }) {
   return (
     <li className="card">
-      <div className={`card__foto${produto.ajuste === "contain" ? " card__foto--contain" : ""}`}>
+      <div className={`card__foto${semRecorte(produto) ? " card__foto--contain" : ""}`}>
         <FotoProduto produto={produto} />
       </div>
       <div className="card__corpo">

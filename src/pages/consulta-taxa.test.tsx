@@ -12,7 +12,7 @@ const ORIGEM = { lat: -9.58, lng: -35.76 };
 let distancia: number | null = 0.8;
 const servicos = vi.fn(async (url: RequestInfo | URL) => {
   if (distancia === null) throw new Error("rede");
-  const lat = String(url).endsWith("/57046256") ? ORIGEM.lat : ORIGEM.lat + distancia / 111.19;
+  const lat = String(url).endsWith("/57046350") ? ORIGEM.lat : ORIGEM.lat + distancia / 111.19;
   return { ok: true, status: 200, json: async () => ({ location: { coordinates: { latitude: String(lat), longitude: String(ORIGEM.lng) } } }) };
 });
 const abrir = () => render(<MemoryRouter><CartProvider><App /></CartProvider></MemoryRouter>);

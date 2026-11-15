@@ -7,7 +7,7 @@
  */
 
 /** CEP do ponto de partida da entrega (a rua, sem o número: o endereço exato não fica no código). */
-export const CEP_DE_ORIGEM = "57046256";
+export const CEP_DE_ORIGEM = "57046350";
 
 /** Cada faixa vale "até X km" (inclusive). Em ordem crescente. */
 export const FAIXAS_DE_ENTREGA: readonly { ateKm: number; taxa: number }[] = [

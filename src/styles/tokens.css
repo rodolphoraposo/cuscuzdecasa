@@ -111,6 +111,7 @@
   --sombra-sm: 0 2px 4px rgb(67 39 25 / 0.1);
   --sombra-md: 0 6px 14px rgb(67 39 25 / 0.18);
   --sombra-lg: 0 12px 28px rgb(67 39 25 / 0.25);
+  --sombra-foto: 0 10px 22px -6px rgb(67 39 25 / 0.35);
 
   /* ---------- Escalas ---------- */
   --esp-4: 4px;
@@ -128,6 +129,9 @@
   --raio-4: 4px;
   --raio-8: 8px;
   --raio-12: 12px;
+  --raio-18: 18px;
+  --raio-24: 24px;
+  --raio-32: 32px;
   --raio-total: 9999px;
 
   /* Ícones */
