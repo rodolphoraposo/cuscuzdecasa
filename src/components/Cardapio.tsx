@@ -26,7 +26,8 @@ export function Cardapio() {
   const secao = (params.get("categoria") === "bebidas" ? "bebidas" : (secoes.find((s) => s.id === params.get("prato"))?.id ?? "cuscuz")) as SecaoId;
   const aba = (abas.find((x) => x.id === params.get("categoria"))?.id ?? "todos") as AbaId;
   const comAbas = secao !== "bebidas";
-  const vista: Vista = params.get("vista") === "grade" ? "grade" : "lista";
+  // Grade (fotos grandes) é o padrão; a lista continua disponível pelo botão e pelo link ?vista=lista.
+  const vista: Vista = params.get("vista") === "lista" ? "lista" : "grade";
   // Depois de adicionar um prato, o Detalhe leva às bebidas com este aviso (some ao trocar de seção).
   const sugerirBebida = (local.state as { sugerirBebida?: boolean } | null)?.sugerirBebida === true && secao === "bebidas";
 

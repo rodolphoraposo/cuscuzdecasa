@@ -43,6 +43,19 @@ describe("navegação do cardápio (seção #cardapio da Home)", () => {
     expect(local()).toBe("/?vista=grade&categoria=doces");
   });
 
+  it("a grade (fotos grandes) é o padrão e a lista continua disponível", async () => {
+    const u = userEvent.setup();
+    abrir("/");
+    expect(screen.getByRole("button", { name: "Ver em grade" }).getAttribute("aria-pressed")).toBe("true");
+    expect(document.querySelector(".cards")).toBeTruthy();
+    expect(document.querySelector(".lista")).toBeNull();
+
+    await u.click(screen.getByRole("button", { name: "Ver em lista" }));
+    expect(local()).toBe("/?vista=lista");
+    expect(document.querySelector(".lista")).toBeTruthy();
+    expect(document.querySelector(".cards")).toBeNull();
+  });
+
   it("trocar de aba mantém a âncora e não rola a página para o topo", async () => {
     const u = userEvent.setup();
     abrir("/#cardapio");
