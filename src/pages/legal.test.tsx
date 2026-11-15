@@ -16,7 +16,10 @@ describe("páginas legais e 404", () => {
     expect(screen.getByRole("heading", { level: 1, name: "Termos de Uso" })).toBeTruthy();
     expect(document.body.textContent).toContain("até as 16h");
     expect(document.body.textContent).toContain("17h às 21h");
-    expect(document.body.textContent).toContain("Sierra Park");
+    expect(document.body.textContent).toContain("raio de até 1,5 km");
+    expect(document.body.textContent).toMatch(/Até 500 m: grátis/);
+    expect(document.body.textContent).toMatch(/De 500 m até 1,0 km: R\$\s4,00/);
+    expect(document.body.textContent).toMatch(/De 1,0 km até 1,5 km: R\$\s6,00/);
     expect(document.body.textContent).toContain("queijo coalho, requeijão, muçarela");
     expect(document.body.textContent).not.toContain("Conteúdo em preparação");
   });

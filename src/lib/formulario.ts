@@ -1,3 +1,4 @@
+import { RAIO_MAXIMO_KM, TAXAS_VALIDAS } from "./area";
 import { janelasEntrega } from "./entrega";
 import { brl, limpar, type DadosPedido, type FormaPagamento, type TipoPedido } from "./comanda";
 
@@ -19,12 +20,18 @@ export interface Rascunho {
   trocoTexto: string;
   semTroco: boolean;
   observacoes: string;
+  /** Resultado do cálculo de entrega pelo CEP ("" = ainda não calculado). */
+  entregaStatus: "" | "dentro" | "fora" | "indisponivel";
+  /** Taxa em R$ (só quando entregaStatus = "dentro") e distância em linha reta em km. */
+  taxaEntrega: number | null;
+  distanciaKm: number | null;
 }
 
 export const rascunhoVazio: Rascunho = {
   tipo: "entrega",
   nome: "", telefone: "", cep: "", rua: "", numero: "", complemento: "", bairro: "", cidade: "", uf: "",
   horario: "", referencia: "", pagamento: "", trocoTexto: "", semTroco: false, observacoes: "",
+  entregaStatus: "", taxaEntrega: null, distanciaKm: null,
 };
 
 export type Campo =
@@ -78,6 +85,10 @@ export function validarPedido(r: Rascunho, total: number): Erros {
   if (limpar(r.bairro, 60).length < 2) e.bairro = "Informe o bairro.";
   if (limpar(r.cidade, 60).length < 2) e.cidade = "Informe a cidade.";
   if (!UFS.has(r.uf.trim().toUpperCase())) e.uf = "Use a sigla, como AL.";
+  if (!e.cep) {
+    if (r.entregaStatus === "fora") e.cep = `Esse CEP fica fora da área de entrega (até ${RAIO_MAXIMO_KM.toLocaleString("pt-BR")} km). Escolha retirada ou fale no WhatsApp.`;
+    else if (!r.entregaStatus) e.cep = "Aguarde o cálculo da taxa de entrega.";
+  }
   }
   if (!janelasEntrega.some((j) => j.id === r.horario)) e.horario = r.tipo === "retirada" ? "Escolha o horário de retirada." : "Escolha o horário de entrega.";
   if (!r.pagamento) e.pagamento = "Escolha a forma de pagamento.";
@@ -96,6 +107,17 @@ export function paraDadosPedido(r: Rascunho): DadosPedido {
   return { ...r, pagamento: r.pagamento as FormaPagamento, trocoPara };
 }
 
+/** Resultado do cálculo de entrega vindo do sessionStorage: só valores e taxas conhecidos. */
+function sanearEntrega(o: Record<string, unknown>): Pick<Rascunho, "entregaStatus" | "taxaEntrega" | "distanciaKm"> {
+  const distancia = typeof o.distanciaKm === "number" && Number.isFinite(o.distanciaKm) && o.distanciaKm >= 0 && o.distanciaKm < 1000 ? o.distanciaKm : null;
+  if (o.entregaStatus === "dentro" && typeof o.taxaEntrega === "number" && TAXAS_VALIDAS.includes(o.taxaEntrega)) {
+    return { entregaStatus: "dentro", taxaEntrega: o.taxaEntrega, distanciaKm: distancia };
+  }
+  if (o.entregaStatus === "fora") return { entregaStatus: "fora", taxaEntrega: null, distanciaKm: distancia };
+  if (o.entregaStatus === "indisponivel") return { entregaStatus: "indisponivel", taxaEntrega: null, distanciaKm: null };
+  return { entregaStatus: "", taxaEntrega: null, distanciaKm: null };
+}
+
 /** Rascunho vem do sessionStorage (entrada não confiável): aceita só o formato esperado. */
 export function sanearRascunho(bruto: unknown): Rascunho {
   if (typeof bruto !== "object" || bruto === null) return { ...rascunhoVazio };
@@ -109,6 +131,7 @@ export function sanearRascunho(bruto: unknown): Rascunho {
     tipo: o.tipo === "retirada" ? "retirada" : "entrega",
     horario: janelasEntrega.some((j) => j.id === o.horario) ? (o.horario as string) : "",
     pagamento: FORMAS.includes(o.pagamento as string) ? (o.pagamento as FormaPagamento) : "",
+    ...sanearEntrega(o),
   };
 }
 

@@ -4,7 +4,7 @@ import { Link, Navigate, useNavigate } from "react-router-dom";
 import { PreviaComanda } from "../components/PreviaComanda";
 import { ButtonLink } from "../components/ui";
 import { useCart } from "../context/CartContext";
-import { adicionais, contato, taxaEntrega } from "../data/menu";
+import { adicionais, contato } from "../data/menu";
 import { MOEDA, itensDoCarrinho, registrarEvento } from "../lib/analytics";
 import { linkWhatsApp, montarComanda } from "../lib/comanda";
 import { descricaoEntrega, diaDaEntrega } from "../lib/entrega";
@@ -20,7 +20,9 @@ export default function Finalizar() {
   const navigate = useNavigate();
   const { linhas, totalPreco, limpar } = useCart();
   const rascunho = useMemo(carregarRascunho, []);
-  const taxa = rascunho.tipo === "retirada" ? 0 : taxaEntrega;
+  const retirada = rascunho.tipo === "retirada";
+  const aConfirmar = !retirada && rascunho.entregaStatus === "indisponivel";
+  const taxa = retirada || rascunho.entregaStatus !== "dentro" ? 0 : (rascunho.taxaEntrega ?? 0);
   const total = Math.round((totalPreco + taxa) * 100) / 100;
   const agora = useMemo(() => new Date(), []);
   const dia = diaDaEntrega(agora);
@@ -75,7 +77,7 @@ export default function Finalizar() {
     if (!base || !numeroResolvido) return null;
     try {
       return {
-        ...montarComanda(base.dadosPedido, base.itens, { subtotal: totalPreco, entrega: taxa, total }, agora, codigoReal ?? undefined),
+        ...montarComanda(base.dadosPedido, base.itens, { subtotal: totalPreco, entrega: taxa, total, entregaAConfirmar: aConfirmar, distanciaKm: retirada ? null : rascunho.distanciaKm }, agora, codigoReal ?? undefined),
         ...base,
       };
     } catch {

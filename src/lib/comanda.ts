@@ -2,6 +2,7 @@
  * Gera a comanda de WhatsApp (formato definido pelo Rodolpho).
  * Módulo puro: não importa imagens nem React, então roda em testes.
  */
+import { formatarDistancia } from "./area";
 
 /** Delivery ("entrega") ou retirada na casa. */
 export type TipoPedido = "entrega" | "retirada";
@@ -44,12 +45,18 @@ export interface DadosPedido {
   entrega?: string;
   /** Padrão: delivery. Na retirada, não há endereço nem linha de entrega. */
   tipo?: TipoPedido;
+  /** Cálculo de entrega pelo CEP (só informativo; o valor que vale está em TotaisPedido). */
+  entregaStatus?: "" | "dentro" | "fora" | "indisponivel";
 }
 
 export interface TotaisPedido {
   subtotal: number;
   entrega: number;
   total: number;
+  /** A taxa não pôde ser calculada: o total NÃO inclui a entrega e ela é combinada no WhatsApp. */
+  entregaAConfirmar?: boolean;
+  /** Distância em linha reta até o cliente, só para a cozinha saber. */
+  distanciaKm?: number | null;
 }
 
 export const FUSO = "America/Maceio";
@@ -167,7 +174,9 @@ export function montarComanda(
     `*ITENS*\n\`\`\`${linhasItens.join("\n")}\`\`\``,
     retirada
       ? `*Subtotal:* ${brl(totais.subtotal)}\n*TOTAL:* ${brl(totais.total)}`
-      : `*Subtotal:* ${brl(totais.subtotal)}\n*Entrega:* ${brl(totais.entrega)}\n*TOTAL:* ${brl(totais.total)}`,
+      : totais.entregaAConfirmar
+        ? `*Subtotal:* ${brl(totais.subtotal)}\n*Entrega:* a confirmar\n*TOTAL (sem a entrega):* ${brl(totais.total)}`
+        : `*Subtotal:* ${brl(totais.subtotal)}\n*Entrega:* ${brl(totais.entrega)}${totais.distanciaKm != null ? ` (cerca de ${formatarDistancia(totais.distanciaKm)})` : ""}\n*TOTAL:* ${brl(totais.total)}`,
     pagamento,
     ...(observacoes ? [`*OBS:* ${observacoes}`] : []),
   ];

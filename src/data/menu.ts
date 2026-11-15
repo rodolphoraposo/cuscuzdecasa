@@ -165,19 +165,6 @@ export const produtos: Produto[] = catalogo.map((p) => ({ ...p, imagem: foto(arq
 /** Produtos que aparecem na prévia da Home */
 export const destaquesHome = ["carne-de-sol", "macaxeira-frango", "macaxeira-carne-suina", "salsicha-ao-molho"];
 
-export const condominios = [
-  "Horto Jardins Serraria",
-  "Vila Bella",
-  "Santa Ana",
-  "Bethaville",
-  "Rui Palmeira",
-  "Residencial Serraria",
-  "Jardim Aristídes",
-  "José Tenório",
-  "Eco Vilares I e II",
-  "Sierra Park",
-];
-
 export const contato = {
   /** WhatsApp no formato internacional, só dígitos */
   whatsapp: "5582991520132",
@@ -189,9 +176,6 @@ export const contato = {
   horarioPedidos: `${LIMITE_PEDIDO_H}h`,
   horarioEntrega: `${ENTREGA_INICIO_H}h às ${ENTREGA_FIM_H}h`,
 };
-
-/** Entrega sem taxa (Figma: R$ 0,00). */
-export const taxaEntrega = 0;
 
 export const formatarPreco = (valor: number) =>
   valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });

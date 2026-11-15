@@ -59,9 +59,14 @@ export default function Privacidade() {
       </p>
 
       <h2>6. Com quem os dados são compartilhados</h2>
+      <p>
+        Se você tocar em “Estou no endereço: usar minha localização”, o seu aparelho pede permissão e a posição é usada só no seu navegador, para
+        calcular a distância. Ela não é enviada nem guardada por nós.
+      </p>
       <ul>
         <li><strong>WhatsApp (Meta):</strong> recebe a comanda que você envia e a trata conforme a política própria do aplicativo.</li>
         <li><strong>ViaCEP (viacep.com.br):</strong> recebe somente o CEP que você digita, para preencher o endereço.</li>
+        <li><strong>BrasilAPI (brasilapi.com.br):</strong> recebe somente o CEP que você digita, para descobrir a localização aproximada do CEP e calcular a taxa de entrega pela distância. O CEP do nosso ponto de partida também é consultado.</li>
         <li><strong>Google Analytics (Google):</strong> recebe dados de uso do site (páginas visitadas, aparelho, navegador e localização aproximada) para estatísticas. Não enviamos nome, telefone nem endereço do pedido.</li>
         <li><strong>Vercel:</strong> hospeda o site e mantém registros técnicos de acesso.</li>
         <li><strong>Nossa equipe:</strong> quem prepara e entrega o pedido vê apenas o necessário para isso.</li>

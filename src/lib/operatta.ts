@@ -100,7 +100,7 @@ export function salvarPedidoOperatta(
       items: JSON.stringify(itensPedido),
       total,
       payment: dados.pagamento || "dinheiro",
-      obs: dados.observacoes || "",
+      obs: [!retirada && dados.entregaStatus === "indisponivel" ? "Taxa de entrega a confirmar (não calculada)." : "", dados.observacoes || ""].filter(Boolean).join(" "),
       created_at: new Date().toISOString(),
     };
 

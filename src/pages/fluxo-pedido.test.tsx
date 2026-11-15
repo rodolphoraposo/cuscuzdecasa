@@ -5,14 +5,30 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { CartProvider } from "../context/CartContext";
 import * as analytics from "../lib/analytics";
+import { limparCacheDeCoordenadas } from "../lib/geocep";
 import Finalizar from "./Finalizar";
 import Pedido from "./Pedido";
 import PedidoEnviado from "./PedidoEnviado";
 
-const viaCep = vi.fn(async () => ({
-  ok: true,
-  json: async () => ({ logradouro: "Rua Exemplo", bairro: "Serraria", localidade: "Maceió", uf: "AL" }),
-}));
+// Serviços externos simulados: ViaCEP (endereço) e BrasilAPI (coordenadas do CEP). Os testes escolhem a distância do cliente.
+const ORIGEM = { lat: -9.58, lng: -35.76 };
+let distanciaDoCliente: number | null = 0.8; // km ao norte da origem; null = BrasilAPI fora do ar
+let viaCepFalha = false;
+const servicos = vi.fn(async (url: RequestInfo | URL) => {
+  const u = String(url);
+  if (u.includes("viacep.com.br")) {
+    if (viaCepFalha) throw new Error("rede");
+    return { ok: true, json: async () => ({ logradouro: "Rua Exemplo", bairro: "Serraria", localidade: "Maceió", uf: "AL" }) };
+  }
+  if (u.includes("brasilapi.com.br")) {
+    if (distanciaDoCliente === null) throw new Error("rede");
+    const origem = u.endsWith("/57046256");
+    const lat = origem ? ORIGEM.lat : ORIGEM.lat + distanciaDoCliente / 111.19;
+    return { ok: true, status: 200, json: async () => ({ location: { coordinates: { latitude: String(lat), longitude: String(ORIGEM.lng) } } }) };
+  }
+  throw new Error(`endereço inesperado nos testes: ${u}`);
+});
+const chamadasA = (parte: string) => servicos.mock.calls.filter((c) => String(c[0]).includes(parte)).length;
 
 function abrir() {
   localStorage.setItem("cuscuz-pedido-v3", JSON.stringify([
@@ -36,7 +52,11 @@ function abrir() {
 // Relógio fixo: 15:00 em Maceió (antes do limite de 16h), para os testes não dependerem da hora em que rodam.
 beforeAll(() => { vi.useFakeTimers({ toFake: ["Date"] }); vi.setSystemTime(new Date("2026-11-03T18:00:00Z")); });
 
-beforeEach(() => { localStorage.clear(); sessionStorage.clear(); vi.stubGlobal("fetch", viaCep); viaCep.mockClear(); });
+beforeEach(() => {
+  localStorage.clear(); sessionStorage.clear(); limparCacheDeCoordenadas();
+  distanciaDoCliente = 0.8; viaCepFalha = false;
+  vi.stubGlobal("fetch", servicos); servicos.mockClear();
+});
 afterEach(() => { cleanup(); vi.unstubAllGlobals(); vi.setSystemTime(new Date("2026-11-03T18:00:00Z")); });
 
 describe("fluxo Seu pedido → Falta só um passo", () => {
@@ -53,7 +73,8 @@ describe("fluxo Seu pedido → Falta só um passo", () => {
     await u.type(screen.getByLabelText("CEP*"), "57046000"); // busca sozinho ao completar 8 dígitos
 
     await waitFor(() => expect(screen.getByLabelText("Rua / Condomínio / Residencial*")).toHaveProperty("value", "Rua Exemplo"));
-    expect(viaCep).toHaveBeenCalledTimes(1);
+    expect(chamadasA("viacep")).toBe(1);
+    expect(await screen.findByText(/Taxa de entrega:/)).toBeTruthy(); // a taxa é calculada junto com o endereço
     expect(screen.getByLabelText("Bairro*")).toHaveProperty("value", "Serraria");
     expect(screen.getByLabelText("UF*")).toHaveProperty("value", "AL");
     expect(document.activeElement).toBe(screen.getByLabelText("Número*")); // foco vai direto ao número
@@ -66,7 +87,7 @@ describe("fluxo Seu pedido → Falta só um passo", () => {
     await u.click(screen.getByRole("button", { name: /Finalizar pedido/ }));
 
     expect(await screen.findByRole("heading", { name: "Falta só um passo" })).toBeTruthy();
-    expect(de("begin_checkout")).toEqual([expect.objectContaining({ currency: "BRL", value: 28.98 })]);
+    expect(de("begin_checkout")).toEqual([expect.objectContaining({ currency: "BRL", value: 32.98, shipping: 4 })]);
     expect(de("purchase")).toHaveLength(0); // só conta quando a comanda é enviada
     const link = screen.getByRole("link", { name: /Enviar comanda para o WhatsApp/ }) as HTMLAnchorElement;
     expect(link.href.startsWith("https://wa.me/5582991520132?text=")).toBe(true); // número oficial da casa
@@ -76,15 +97,16 @@ describe("fluxo Seu pedido → Falta só um passo", () => {
     expect(texto).toContain("```1x Do Sertão ..");
     expect(texto).toContain("*ENTREGA*\nHorário: hoje, 18h às 19h");
     expect(texto).toContain("   Acomp.: Vinagrete da casa\n   + Queijo coalho");
-    expect(texto).toContain("*TOTAL:* R$ 28,98");
-    expect(texto).toContain("Troco para: R$ 50,00 (levar R$ 21,02)");
+    expect(texto).toContain("*Entrega:* R$ 4,00 (cerca de 800 m)");
+    expect(texto).toContain("*TOTAL:* R$ 32,98");
+    expect(texto).toContain("Troco para: R$ 50,00 (levar R$ 17,02)");
     expect(texto).toMatch(/Pedido #\d{4} · /);
 
     // sem bloco de resumo separado: só a comanda, com os títulos em negrito
     expect(screen.queryByText("Prévia da comanda")).toBeNull();
     expect(screen.queryByText("Endereço")).toBeNull();
     const previa = screen.getByRole("group", { name: "Resumo" });
-    expect(previa.textContent).toContain("Troco para: R$ 50,00 (levar R$ 21,02)");
+    expect(previa.textContent).toContain("Troco para: R$ 50,00 (levar R$ 17,02)");
     expect(previa.querySelector("strong")?.textContent).toBe("COMANDA · CUSCUZ DE CASA");
     expect(previa.querySelector(".previa__mono")?.textContent).toContain("Acomp.: Vinagrete da casa"); // itens em bloco monoespaçado
     expect(previa.textContent).not.toContain("```"); // as crases não aparecem na prévia
@@ -94,7 +116,7 @@ describe("fluxo Seu pedido → Falta só um passo", () => {
     expect(await screen.findByRole("heading", { name: "Obrigado pelo seu pedido!" }, { timeout: 2000 })).toBeTruthy();
     const compra = de("purchase");
     expect(compra).toHaveLength(1);
-    expect(compra[0]).toMatchObject({ currency: "BRL", value: 28.98, shipping: 0 });
+    expect(compra[0]).toMatchObject({ currency: "BRL", value: 32.98, shipping: 4 });
     expect(compra[0].transaction_id).toMatch(/^#?\d+/);
     expect(compra[0].items).toHaveLength(2);
     // nada de dados pessoais no Analytics
@@ -164,7 +186,7 @@ describe("fluxo Seu pedido → Falta só um passo", () => {
   });
 
   it("CEP que falha não trava: avisa e deixa preencher à mão", async () => {
-    viaCep.mockRejectedValueOnce(new Error("rede"));
+    viaCepFalha = true;
     const u = userEvent.setup();
     abrir();
     await u.type(screen.getByLabelText("CEP*"), "57046000");

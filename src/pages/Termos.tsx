@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import { adicionais, condominios, contato, taxaEntrega } from "../data/menu";
+import { adicionais, contato, formatarPreco } from "../data/menu";
+import { RAIO_MAXIMO_KM, descreverFaixas } from "../lib/area";
 import { empresa } from "../data/empresa";
 import { Legal } from "./Legal";
 
@@ -26,9 +27,15 @@ export default function Termos() {
 
       <h2>3. Horários e área de entrega</h2>
       <p>
-        Funcionamos de {contato.diasFuncionamento}. Recebemos pedidos até as {contato.horarioPedidos} e entregamos das {contato.horarioEntrega}. Entregamos nos
-        condomínios da Serraria: {condominios.join(", ")}. Se o seu não está na lista, chame no WhatsApp {zap}.{" "}
-        {taxaEntrega === 0 ? "No momento, a entrega não tem taxa." : null}
+        Funcionamos de {contato.diasFuncionamento}. Recebemos pedidos até as {contato.horarioPedidos} e entregamos das {contato.horarioEntrega}.
+        Entregamos num raio de até {RAIO_MAXIMO_KM.toLocaleString("pt-BR")} km do nosso ponto de partida, e a taxa de entrega depende da distância (em linha reta),
+        calculada pelo CEP:
+      </p>
+      <ul>
+        {descreverFaixas(formatarPreco).map((f) => <li key={f}>{f}.</li>)}
+      </ul>
+      <p>
+        Se o seu endereço estiver fora do raio, ou se não conseguirmos calcular a taxa, combinamos pelo WhatsApp {zap}. A retirada na casa não tem taxa.
       </p>
       <p>
         Ao finalizar, você escolhe entre delivery e retirada na casa, e a faixa de horário (de 1 hora). {empresa.retiradaInstrucao}{" "}

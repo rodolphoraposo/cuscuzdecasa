@@ -6,6 +6,7 @@ const valido: Rascunho = {
   nome: "Rodolpho", telefone: "(82) 99433-6126", cep: "57046-000", rua: "Rua Exemplo", numero: "120",
   complemento: "Bloco B, apto 302", bairro: "Serraria", cidade: "Maceió", uf: "AL", horario: "18-19", referencia: "",
   pagamento: "dinheiro", trocoTexto: "50,00", semTroco: false, observacoes: "",
+  entregaStatus: "dentro", taxaEntrega: 0, distanciaKm: 0.3,
 };
 
 describe("máscaras", () => {
@@ -86,3 +87,27 @@ describe("delivery e retirada", () => {
   });
 });
 
+
+describe("taxa de entrega no rascunho", () => {
+  it("fora da área bloqueia o delivery, com a mensagem no CEP; na retirada não importa", () => {
+    expect(validarPedido({ ...valido, entregaStatus: "fora", taxaEntrega: null, distanciaKm: 2.2 }, 20).cep).toMatch(/fora da área de entrega \(até 1,5 km\)/);
+    expect(validarPedido({ ...valido, tipo: "retirada", entregaStatus: "fora", taxaEntrega: null }, 20).cep).toBeUndefined();
+  });
+
+  it("taxa ainda não calculada pede para aguardar; 'indisponivel' (a confirmar) deixa seguir", () => {
+    expect(validarPedido({ ...valido, entregaStatus: "", taxaEntrega: null, distanciaKm: null }, 20).cep).toMatch(/Aguarde o cálculo/);
+    expect(validarPedido({ ...valido, entregaStatus: "indisponivel", taxaEntrega: null, distanciaKm: null }, 20).cep).toBeUndefined();
+    expect(validarPedido({ ...valido, entregaStatus: "dentro", taxaEntrega: 4, distanciaKm: 0.8 }, 20).cep).toBeUndefined();
+  });
+
+  it("sanearRascunho só aceita as taxas e os status conhecidos (o sessionStorage não é confiável)", () => {
+    expect(sanearRascunho({ entregaStatus: "dentro", taxaEntrega: 4, distanciaKm: 0.8 })).toMatchObject({ entregaStatus: "dentro", taxaEntrega: 4, distanciaKm: 0.8 });
+    expect(sanearRascunho({ entregaStatus: "dentro", taxaEntrega: 0, distanciaKm: 0.1 })).toMatchObject({ entregaStatus: "dentro", taxaEntrega: 0 });
+    // taxa adulterada, status inventado ou tipo errado voltam a "não calculado"
+    for (const ruim of [{ entregaStatus: "dentro", taxaEntrega: 1 }, { entregaStatus: "dentro", taxaEntrega: "4" }, { entregaStatus: "dentro" }, { entregaStatus: "gratis", taxaEntrega: 0 }]) {
+      expect(sanearRascunho(ruim)).toMatchObject({ entregaStatus: "", taxaEntrega: null, distanciaKm: null });
+    }
+    expect(sanearRascunho({ entregaStatus: "fora", distanciaKm: 2.2 })).toMatchObject({ entregaStatus: "fora", taxaEntrega: null, distanciaKm: 2.2 });
+    expect(sanearRascunho({ entregaStatus: "fora", distanciaKm: -5 }).distanciaKm).toBeNull();
+  });
+});

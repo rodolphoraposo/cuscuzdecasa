@@ -3,13 +3,14 @@ import logo from "../assets/logo/logo-full.webp";
 import { CartBar } from "../components/CartBar";
 import { Cardapio } from "../components/Cardapio";
 import { LinkCardapio } from "../components/LinkCardapio";
-import { Tag } from "../components/ui";
-import { condominios, contato } from "../data/menu";
+import { ConsultaTaxa } from "../components/ConsultaTaxa";
+import { contato, formatarPreco } from "../data/menu";
+import { RAIO_MAXIMO_KM, descreverFaixas } from "../lib/area";
 
 const passos = [
   { titulo: "Escolha no cardápio", texto: "Veja os sabores e monte seu pedido em poucos toques." },
   { titulo: `Finalize até as ${contato.horarioPedidos}`, texto: "Envie a comanda pelo WhatsApp para confirmar." },
-  { titulo: "Receba no condomínio", texto: `Entregamos quentinho, das ${contato.horarioEntrega}.` },
+  { titulo: "Receba em casa", texto: `Entregamos quentinho, das ${contato.horarioEntrega}.` },
 ];
 
 export default function Home() {
@@ -17,10 +18,10 @@ export default function Home() {
     <>
       <section className="container hero">
         <div className="hero__texto">
-          <span className="badge badge--marca">Entrega nos condomínios da Serraria</span>
+          <span className="badge badge--marca">Entrega num raio de {RAIO_MAXIMO_KM.toLocaleString("pt-BR")} km</span>
           <h1 className="t-display hero__titulo">Cuscuz é sempre uma boa ideia!</h1>
           <p className="t-corpo hero__lead">
-            Cuscuz recheado, quentinho e preparado com cuidado. Peça pelo cardápio digital e receba no seu condomínio.
+            Cuscuz recheado, quentinho e preparado com cuidado. Peça pelo cardápio digital e receba em casa.
           </p>
           <p className="hero__cta">Faça seu pedido de dia e receba à noite!</p>
           <p className="t-legenda">
@@ -59,15 +60,14 @@ export default function Home() {
       <section className="section container" id="onde-entregamos">
         <h2 className="t-secao">Onde entregamos</h2>
         <p className="t-corpo" style={{ marginTop: "var(--esp-8)", color: "var(--texto-secundario)" }}>
-          Entregamos nos condomínios da Serraria. Também aceitamos pedidos para retirada na casa.
+          Entregamos num raio de {RAIO_MAXIMO_KM.toLocaleString("pt-BR")} km. A taxa depende da distância; digite seu CEP e veja. Também aceitamos pedidos para retirada na casa.
         </p>
-        <ul className="chips">
-          {condominios.map((c) => (
-            <li key={c}><Tag variante="outline">{c}</Tag></li>
-          ))}
+        <ul className="faixas-entrega">
+          {descreverFaixas(formatarPreco).map((f) => <li key={f}>{f}</li>)}
         </ul>
+        <ConsultaTaxa />
         <p className="t-corpo">
-          Não achou o seu? <a href={`https://wa.me/${contato.whatsapp}`}>Chame no WhatsApp.</a>
+          Mora mais longe? <a href={`https://wa.me/${contato.whatsapp}`}>Chame no WhatsApp.</a>
         </p>
       </section>
 

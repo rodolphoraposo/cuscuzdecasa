@@ -186,6 +186,14 @@
 .cep-linha .btn { margin-top: calc(14px * 1.4 + var(--esp-8)); } /* alinha com o campo, abaixo do rótulo */
 .cep-status { min-height: 1.5em; margin-top: calc(var(--esp-8) * -1); font-size: 14px; color: var(--texto-secundario); }
 .cep-status--erro, .erro-msg { color: var(--texto-erro); }
+
+/* Resultado do cálculo de entrega (Home e Seu pedido) */
+.entrega-resultado { display: grid; gap: var(--esp-12); }
+.entrega-resultado__acoes { display: flex; flex-wrap: wrap; gap: var(--esp-12); }
+.entrega-resultado__acoes .btn { text-align: center; text-decoration: none; }
+.consulta-taxa { display: grid; gap: var(--esp-16); max-width: 520px; margin-block: var(--esp-16); }
+.faixas-entrega { display: grid; gap: var(--esp-8); margin-block: var(--esp-16); padding: 0; list-style: none; font-weight: 600; }
+.faixas-entrega li::before { content: "•"; margin-right: var(--esp-8); color: var(--cor-primaria, currentColor); }
 .erro-msg { font-size: 12px; line-height: 1.5; }
 
 .pedido-itens { display: grid; }

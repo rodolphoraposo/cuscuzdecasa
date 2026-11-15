@@ -167,3 +167,23 @@ describe("acompanhamento 'Sem acompanhamento'", () => {
     expect(texto).toContain("   Acomp.: Sem acompanhamento");
   });
 });
+
+describe("linha de entrega na comanda", () => {
+  it("com taxa e distância: mostra o valor e a distância aproximada para a cozinha", () => {
+    const { texto } = montarComanda(pedido, itens, { subtotal: 22.98, entrega: 4, total: 26.98, distanciaKm: 0.8 }, agora);
+    expect(texto).toContain("*Entrega:* R$ 4,00 (cerca de 800 m)");
+    expect(texto).toContain("*TOTAL:* R$ 26,98");
+  });
+
+  it("taxa não calculada: 'a confirmar' e o total deixa claro que não inclui a entrega", () => {
+    const { texto } = montarComanda(pedido, itens, { subtotal: 22.98, entrega: 0, total: 22.98, entregaAConfirmar: true }, agora);
+    expect(texto).toContain("*Entrega:* a confirmar");
+    expect(texto).toContain("*TOTAL (sem a entrega):* R$ 22,98");
+    expect(texto).not.toContain("*TOTAL:*");
+  });
+
+  it("retirada não tem linha de entrega, mesmo com os dados de taxa", () => {
+    const { texto } = montarComanda({ ...pedido, tipo: "retirada" }, itens, { subtotal: 22.98, entrega: 0, total: 22.98, entregaAConfirmar: true }, agora);
+    expect(texto).not.toContain("Entrega:");
+  });
+});

@@ -1,14 +1,17 @@
-import { CaretLeft, Check, CreditCard, MagnifyingGlass, Minus, Money, Motorcycle, PixLogo, Plus, Storefront } from "@phosphor-icons/react";
+import { CaretLeft, Check, CreditCard, MagnifyingGlass, MapPin, Minus, Money, Motorcycle, PixLogo, Plus, Storefront } from "@phosphor-icons/react";
 import { useEffect, useMemo, useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AvisoEncerrado } from "../components/AvisoEncerrado";
 import { FotoProduto } from "../components/FotoProduto";
+import { ResultadoEntrega, type EstadoEntrega } from "../components/ResultadoEntrega";
 import { Banner, Button, ButtonLink, Checkbox, EmptyState, Input, Textarea } from "../components/ui";
 import { useCart, type LinhaPedido } from "../context/CartContext";
 import { MOEDA, itensDoCarrinho, registrarEvento } from "../lib/analytics";
 import { empresa } from "../data/empresa";
-import { SEM_ACOMPANHAMENTO, adicionais, contato, formatarPreco, nomeCompleto, taxaEntrega } from "../data/menu";
+import { SEM_ACOMPANHAMENTO, adicionais, contato, formatarPreco, nomeCompleto } from "../data/menu";
+import { RAIO_MAXIMO_KM, type Cobertura } from "../lib/area";
 import { buscarCep } from "../lib/cep";
+import { calcularCobertura, calcularCoberturaPorLocalizacao } from "../lib/geocep";
 import { enderecoDoCardapio } from "../lib/navegacao";
 import { janelasEntrega } from "../lib/entrega";
 import { useEntrega } from "../hooks/useEntrega";
@@ -31,7 +34,7 @@ const MENSAGEM_CEP: Record<StatusCep, string> = {
 
 /** Delivery sempre primeiro (e já marcado); retirada na casa depois. */
 const TIPOS = [
-  { id: "entrega", nome: "Delivery", detalhe: "Entrega no seu condomínio", Icone: Motorcycle },
+  { id: "entrega", nome: "Delivery", detalhe: `Entrega num raio de ${RAIO_MAXIMO_KM.toLocaleString("pt-BR")} km`, Icone: Motorcycle },
   { id: "retirada", nome: "Retirada na casa", detalhe: "Sem taxa de entrega", Icone: Storefront },
 ] as const;
 
@@ -53,18 +56,23 @@ export default function Pedido() {
 
   const [r, setR] = useState<Rascunho>(carregarRascunho);
   const retirada = r.tipo === "retirada";
-  const taxa = retirada ? 0 : taxaEntrega; // retirada na casa não tem taxa
+  // Taxa vem do cálculo por CEP (distância em linha reta). Retirada na casa não tem taxa.
+  const taxa = retirada || r.entregaStatus !== "dentro" ? 0 : (r.taxaEntrega ?? 0);
+  const taxaAConfirmar = !retirada && r.entregaStatus === "indisponivel";
   const total = Math.round((totalPreco + taxa) * 100) / 100;
   const [tentou, setTentou] = useState(false);
   const [tocados, setTocados] = useState<Partial<Record<Campo, boolean>>>({});
   const [statusCep, setStatusCep] = useState<StatusCep>("ocioso");
+  const [calculandoTaxa, setCalculandoTaxa] = useState(false);
+  const [avisoLocal, setAvisoLocal] = useState("");
   const [removido, setRemovido] = useState<{ id: string; extras: string[]; acomp: string | null; nome: string } | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const busca = useRef<AbortController | null>(null);
   const ultimoCep = useRef("");
+  const buscaTaxa = useRef<AbortController | null>(null);
 
   useEffect(() => salvarRascunho(r), [r]);
-  useEffect(() => () => busca.current?.abort(), []);
+  useEffect(() => () => { busca.current?.abort(); buscaTaxa.current?.abort(); }, []);
   // O cliente abriu o carrinho com itens (uma vez por visita à tela).
   useEffect(() => {
     if (linhas.length > 0) registrarEvento("view_cart", { currency: MOEDA, value: totalPreco, items: itensDoCarrinho(linhas) });
@@ -93,6 +101,13 @@ export default function Pedido() {
     </div>
   );
 
+  const estadoEntrega: EstadoEntrega | null = retirada ? null
+    : calculandoTaxa ? { tipo: "calculando" }
+    : r.entregaStatus === "dentro" ? { tipo: "dentro", distanciaKm: r.distanciaKm, taxa: r.taxaEntrega ?? 0 }
+    : r.entregaStatus === "fora" ? { tipo: "fora", distanciaKm: r.distanciaKm }
+    : r.entregaStatus === "indisponivel" ? { tipo: "indisponivel" }
+    : null;
+
   const erros = useMemo(() => validarPedido(r, total), [r, total]);
   const erro = (c: Campo) => (tentou || tocados[c] ? erros[c] : undefined);
   const mudar = (c: keyof Rascunho, v: string | boolean) => setR((a) => ({ ...a, [c]: v }));
@@ -107,6 +122,49 @@ export default function Pedido() {
     legenda: erro(c),
   });
 
+  /** Guarda o resultado do cálculo de entrega no rascunho (a taxa vira parte do total). */
+  function aplicarCobertura(c: Cobertura, origem: "pedido" | "pedido_localizacao") {
+    setR((a) => ({
+      ...a,
+      entregaStatus: c.situacao,
+      taxaEntrega: c.situacao === "dentro" ? c.taxa : null,
+      distanciaKm: c.situacao === "indisponivel" ? null : Math.round(c.distanciaKm * 100) / 100,
+    }));
+    registrarEvento("consulta_entrega", { origem, resultado: c.situacao, ...(c.situacao === "dentro" ? { taxa: c.taxa } : {}) });
+  }
+
+  async function calcularTaxa(cep: string) {
+    buscaTaxa.current?.abort();
+    const controle = new AbortController();
+    buscaTaxa.current = controle;
+    setAvisoLocal("");
+    setCalculandoTaxa(true);
+    const cobertura = await calcularCobertura(cep, controle.signal);
+    if (controle.signal.aborted) return;
+    setCalculandoTaxa(false);
+    aplicarCobertura(cobertura, "pedido");
+  }
+
+  async function usarLocalizacao() {
+    buscaTaxa.current?.abort();
+    setAvisoLocal("");
+    setCalculandoTaxa(true);
+    const res = await calcularCoberturaPorLocalizacao();
+    setCalculandoTaxa(false);
+    if (!res.ok) {
+      setAvisoLocal(res.motivo === "negado" ? "Sem a permissão de localização não dá para calcular. Confira o CEP ou fale no WhatsApp." : "Não foi possível usar a localização agora. Confira o CEP ou fale no WhatsApp.");
+      return;
+    }
+    aplicarCobertura(res.cobertura, "pedido_localizacao");
+  }
+
+  // Delivery com CEP completo e taxa ainda não calculada (rascunho restaurado ou troca de retirada para delivery).
+  useEffect(() => {
+    const d = soDigitos(r.cep);
+    if (!retirada && d.length === 8 && r.entregaStatus === "") void calcularTaxa(d);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [retirada]);
+
   async function buscar(cep: string) {
     if (cep.length !== 8) {
       setTocados((t) => ({ ...t, cep: true }));
@@ -118,6 +176,7 @@ export default function Pedido() {
     busca.current = controle;
     ultimoCep.current = cep;
     setStatusCep("buscando");
+    void calcularTaxa(cep); // endereço e taxa são consultados ao mesmo tempo
     const res = await buscarCep(cep, controle.signal);
     if (controle.signal.aborted) return;
     if (res.status === "ok") {
@@ -131,8 +190,16 @@ export default function Pedido() {
 
   function aoMudarCep(e: ChangeEvent<HTMLInputElement>) {
     const valor = mascararCep(e.target.value);
-    mudar("cep", valor);
     const d = soDigitos(valor);
+    if (d !== soDigitos(r.cep)) {
+      // CEP diferente: a taxa calculada para o anterior deixa de valer.
+      buscaTaxa.current?.abort();
+      setCalculandoTaxa(false);
+      setAvisoLocal("");
+      setR((a) => ({ ...a, cep: valor, entregaStatus: "", taxaEntrega: null, distanciaKm: null }));
+    } else {
+      mudar("cep", valor);
+    }
     if (d.length === 8 && d !== ultimoCep.current) void buscar(d); // busca sozinho ao completar
     else if (d.length < 8) setStatusCep("ocioso");
   }
@@ -144,7 +211,7 @@ export default function Pedido() {
     const primeiro = Object.keys(erros)[0];
     if (primeiro) return focar(primeiro);
     salvarRascunho(r);
-    registrarEvento("begin_checkout", { currency: MOEDA, value: total, items: itensDoCarrinho(linhas) });
+    registrarEvento("begin_checkout", { currency: MOEDA, value: total, shipping: taxa, items: itensDoCarrinho(linhas) });
     navigate("/pedido/finalizar");
   }
 
@@ -261,6 +328,24 @@ export default function Pedido() {
               <p className={`cep-status${statusCep === "nao-encontrado" || statusCep === "falha" ? " cep-status--erro" : ""}`} role="status">
                 {MENSAGEM_CEP[statusCep]}
               </p>
+              {estadoEntrega && (
+                <ResultadoEntrega
+                  estado={estadoEntrega}
+                  acoes={(estadoEntrega.tipo === "fora" || estadoEntrega.tipo === "indisponivel") && (
+                    <>
+                      <Button type="button" variante="outline" onClick={() => void usarLocalizacao()}>
+                        <MapPin className="icon" aria-hidden="true" />
+                        Estou no endereço: usar minha localização
+                      </Button>
+                      {estadoEntrega.tipo === "fora" && (
+                        <Button type="button" variante="outline" onClick={() => mudar("tipo", "retirada")}>Prefiro retirar na casa</Button>
+                      )}
+                      <a className="btn btn--outline btn--md" href={`https://wa.me/${contato.whatsapp}`} target="_blank" rel="noopener noreferrer">Falar no WhatsApp</a>
+                    </>
+                  )}
+                />
+              )}
+              {avisoLocal && <p className="cep-status cep-status--erro" role="status">{avisoLocal}</p>}
               <Input rotulo="Rua / Condomínio / Residencial*" placeholder="Digite aqui" autoComplete="address-line1" required maxLength={80} {...campo("rua")} />
               <div className="linha linha--numero">
                 <Input rotulo="Número*" placeholder="Digite aqui" required maxLength={10} {...campo("numero")} />
@@ -345,7 +430,7 @@ export default function Pedido() {
             <h2 className="t-subtitulo" id="titulo-resumo">Resumo</h2>
             <dl className="resumo">
               <div><dt>Subtotal</dt><dd>{formatarPreco(totalPreco)}</dd></div>
-              {!retirada && <div><dt>Entrega</dt><dd>{formatarPreco(taxa)}</dd></div>}
+              {!retirada && <div><dt>Entrega</dt><dd>{taxaAConfirmar ? "A confirmar" : r.entregaStatus === "" ? "A calcular" : taxa === 0 ? "Grátis" : formatarPreco(taxa)}</dd></div>}
               <div className="resumo__total"><dt>Total</dt><dd>{formatarPreco(total)}</dd></div>
             </dl>
           </section>
