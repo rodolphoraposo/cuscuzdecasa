@@ -50,6 +50,36 @@ describe("sequência do pedido: prato → capriche → bebida", () => {
     expect(screen.queryByText(/Quer uma bebida/)).toBeNull();
   });
 
+  it("'Leve junto': a bebida escolhida entra no pedido com o prato, soma no botão e pula a sugestão", async () => {
+    const u = userEvent.setup();
+    abrir("/cardapio/carne-de-sol");
+    await u.click(screen.getByRole("radio", { name: "Refogado especial da casa" }));
+    const antes = screen.getByRole("button", { name: /Adicionar · / }).textContent ?? "";
+    await u.click(screen.getByRole("checkbox", { name: /Coca-Cola 350 ml/ }));
+    const depois = screen.getByRole("button", { name: /Adicionar · / }).textContent ?? "";
+    expect(depois).not.toBe(antes); // R$ 5,99 a mais no total
+    await u.click(screen.getByRole("button", { name: /Adicionar · / }));
+
+    const itens = JSON.parse(localStorage.getItem("cuscuz-pedido-v3") ?? "[]");
+    expect(itens.map((i: { id: string }) => i.id).sort()).toEqual(["carne-de-sol", "coca-cola"]);
+    expect(screen.queryByText(/Quer uma bebida para acompanhar/)).toBeNull(); // não pergunta de novo
+    expect(local()).toBe("/?prato=cuscuz&categoria=salgados");
+    expect(screen.getByRole("link", { name: /Ver pedido · 2 itens/ })).toBeTruthy();
+  });
+
+  it("bebida não oferece 'Leve junto'; sem escolher bebida, a sugestão continua aparecendo", async () => {
+    const u = userEvent.setup();
+    abrir("/cardapio/coca-cola");
+    expect(screen.queryByText("Leve junto")).toBeNull();
+    cleanup();
+
+    abrir("/cardapio/carne-de-sol");
+    expect(screen.getByText("Leve junto")).toBeTruthy();
+    await u.click(screen.getByRole("radio", { name: "Refogado especial da casa" }));
+    await u.click(screen.getByRole("button", { name: /Adicionar · / }));
+    expect(screen.getByText(/Quer uma bebida para acompanhar/)).toBeTruthy();
+  });
+
   it("doce não pede acompanhamento: 'Pedir' adiciona direto", async () => {
     const u = userEvent.setup();
     abrir("/?categoria=doces");

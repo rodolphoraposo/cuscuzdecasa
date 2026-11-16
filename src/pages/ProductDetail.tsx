@@ -46,13 +46,20 @@ function Detalhe({ produto }: { produto: Produto }) {
 
   const opcoes = aceitaAdicionais(produto) ? adicionais : [];
   const unitario = produto.preco + extras.reduce((t, e) => t + (adicionais.find((a) => a.id === e)?.preco ?? 0), 0);
-  const total = Math.round(unitario * 100) * qtd / 100;
+  // "Leve junto": bebidas escolhidas na própria tela (1 de cada), para o cliente não precisar de mais uma etapa.
+  const bebidas = produto.categoria === "bebidas" ? [] : produtos.filter((p) => p.categoria === "bebidas");
+  const [bebidasSel, setBebidasSel] = useState<string[]>([]);
+  const centavosBebidas = bebidasSel.reduce((t, id) => t + Math.round((produtos.find((p) => p.id === id)?.preco ?? 0) * 100), 0);
+  const total = (Math.round(unitario * 100) * qtd + centavosBebidas) / 100;
   const padrao = enderecoDoCardapio(produto.prato ? `?prato=${produto.prato}&categoria=${produto.categoria}` : "?prato=bebidas");
   const voltar = origem ?? padrao; // volta para onde o cliente estava (Início, lista ou grade)
   const aposAdicionar = origem?.endsWith("#cardapio") ? origem : padrao; // depois de adicionar, mostra o cardápio com a barra do pedido
 
   const alternar = (extraId: string) =>
     setExtras((atual) => (atual.includes(extraId) ? atual.filter((e) => e !== extraId) : [...atual, extraId]));
+
+  const alternarBebida = (id: string) =>
+    setBebidasSel((atual) => (atual.includes(id) ? atual.filter((b) => b !== id) : [...atual, id]));
 
   const confirmar = () => {
     if (exige && !acomp) {
@@ -61,25 +68,29 @@ function Detalhe({ produto }: { produto: Produto }) {
       return;
     }
     adicionar(produto.id, extras, qtd, acomp);
-    // Sequência do pedido: prato → capriche → bebida → dados. Depois de um prato, sugere a bebida.
-    if (produto.categoria !== "bebidas") navigate(enderecoDoCardapio("?prato=bebidas"), { state: { sugerirBebida: true } });
+    for (const id of bebidasSel) adicionar(id, [], 1, null);
+    // Sequência do pedido: prato → capriche → bebida → dados. Se o cliente já escolheu bebida aqui, não sugere de novo.
+    if (produto.categoria !== "bebidas" && bebidasSel.length === 0) navigate(enderecoDoCardapio("?prato=bebidas"), { state: { sugerirBebida: true } });
     else navigate(aposAdicionar);
   };
 
   return (
-    <>
-      <div className={`detail-hero${produto.ajuste === "contain" ? " detail-hero--contain" : ""}`}>
+    <div className="detail-pagina">
+      <div className={`detail-hero${produto.ajuste === "contain" || produto.categoria === "bebidas" ? " detail-hero--contain" : ""}`}>
         <Link className="icon-btn icon-btn--destaque detail-hero__voltar" to={voltar} aria-label="Voltar ao cardápio">
           <CaretLeft size={20} />
         </Link>
         <FotoProduto produto={produto} lazy={false} />
       </div>
 
+      <div className="detail-folha">
       <div className="container">
         <div className="detail">
           <div className="detail__topo">
-            <h1 className="t-secao">{produto.nome}</h1>
-            <p className="preco">{formatarPreco(produto.preco)}</p>
+            <div className="detail__titulo">
+              <h1 className="t-secao">{produto.nome}</h1>
+              <p className="preco">{formatarPreco(produto.preco)}</p>
+            </div>
             <p className="detail__desc">{produto.descricaoLonga ?? produto.descricao}</p>
             {produto.dica && <p className="detail__dica"><strong>Dica da casa:</strong> {produto.dica}</p>}
           </div>
@@ -115,7 +126,24 @@ function Detalhe({ produto }: { produto: Produto }) {
               })}
             </fieldset>
           )}
+
+          {bebidas.length > 0 && (
+            <fieldset className="detail__adicionais">
+              <legend className="t-subtitulo">Leve junto <span className="detail__obrig">(opcional)</span></legend>
+              {bebidas.map((b) => {
+                const campo = `bebida-${b.id}`;
+                return (
+                  <div className="adicional adicional--foto" key={b.id}>
+                    <span className="adicional__foto"><img src={b.imagem} alt="" loading="lazy" /></span>
+                    <Checkbox id={campo} rotulo={b.nome} checked={bebidasSel.includes(b.id)} onChange={() => alternarBebida(b.id)} />
+                    <label htmlFor={campo}>+ {formatarPreco(b.preco)}</label>
+                  </div>
+                );
+              })}
+            </fieldset>
+          )}
         </div>
+      </div>
       </div>
 
       <div className="detail-bar">
@@ -135,6 +163,6 @@ function Detalhe({ produto }: { produto: Produto }) {
           </Button>
         </div>
       </div>
-    </>
+    </div>
   );
 }

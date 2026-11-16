@@ -14,6 +14,7 @@ const aoNorte = (km: number) => ORIGEM.lat + km / 111.19;
 let distanciaDoCliente: number | null = 0.8;
 const servicos = vi.fn(async (url: RequestInfo | URL) => {
   const u = String(url);
+  if (u.includes("supabase.co")) return { ok: true, status: 201, json: async () => null }; // Operatta simulado
   if (u.includes("viacep.com.br")) return { ok: true, json: async () => ({ logradouro: "Rua Exemplo", bairro: "Serraria", localidade: "Maceió", uf: "AL" }) };
   if (distanciaDoCliente === null) throw new Error("rede");
   const lat = u.endsWith("/57046350") ? ORIGEM.lat : aoNorte(distanciaDoCliente);

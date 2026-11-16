@@ -16,6 +16,7 @@ let distanciaDoCliente: number | null = 0.8; // km ao norte da origem; null = Br
 let viaCepFalha = false;
 const servicos = vi.fn(async (url: RequestInfo | URL) => {
   const u = String(url);
+  if (u.includes("supabase.co")) return { ok: true, status: 201, json: async () => null }; // Operatta: número provisório, sem ruído
   if (u.includes("viacep.com.br")) {
     if (viaCepFalha) throw new Error("rede");
     return { ok: true, json: async () => ({ logradouro: "Rua Exemplo", bairro: "Serraria", localidade: "Maceió", uf: "AL" }) };
@@ -124,8 +125,9 @@ describe("fluxo Seu pedido → Falta só um passo", () => {
     for (const pii of ["Rodolpho", "82994336126", "Rua Exemplo", "57046000", "Bloco B"]) expect(tudo).not.toContain(pii);
     expect(screen.getByRole("link", { name: "Voltar para o início" }).getAttribute("href")).toBe("/");
     expect(screen.getByRole("link", { name: "Enviar a comanda de novo" })).toBeTruthy();
-    expect(JSON.parse(localStorage.getItem("cuscuz-pedido-v3") ?? "[]")).toEqual([]); // carrinho esvaziado
-    expect(sessionStorage.getItem("cuscuz-rascunho-v1")).toBeNull();
+    // Carrinho e dados digitados são apagados por um efeito da tela "Obrigado", que roda logo depois de renderizar: espera, em vez de supor.
+    await waitFor(() => expect(JSON.parse(localStorage.getItem("cuscuz-pedido-v3") ?? "[]")).toEqual([]));
+    await waitFor(() => expect(sessionStorage.getItem("cuscuz-rascunho-v1")).toBeNull());
   });
 
   it("não avança com campos em branco e mostra os erros", async () => {
