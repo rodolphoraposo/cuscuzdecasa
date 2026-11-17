@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import { AvisoEncerrado } from "./AvisoEncerrado";
 import { Banner, ButtonLink } from "./ui";
 import { ProductCard, ProductRow } from "./ProductItem";
-import { abas, produtos, secoes, type AbaId, type SecaoId } from "../data/menu";
+import { ADICIONAL_INCLUSO, abas, produtos, secoes, type AbaId, type SecaoId } from "../data/menu";
 
 /** Produto cuja foto representa cada categoria nos botões de topo. */
 const CAPA: Record<SecaoId, string> = { cuscuz: "frango-desfiado", macaxeira: "macaxeira-carne-de-sol", bebidas: "coca-cola" };
@@ -79,6 +79,7 @@ export function Cardapio() {
     <section className="section cardapio" id="cardapio" aria-labelledby="cardapio-titulo" ref={secaoRef}>
       <div className="container">
         <h2 className="t-secao" id="cardapio-titulo" tabIndex={-1}>Cardápio</h2>
+        {ADICIONAL_INCLUSO && <p className="cardapio__nota">Todo prato já inclui 1 adicional à sua escolha (ou nenhum).</p>}
 
         <AvisoEncerrado />
 

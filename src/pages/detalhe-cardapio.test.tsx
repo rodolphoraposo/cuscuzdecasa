@@ -38,7 +38,7 @@ describe("sequência do pedido: prato → capriche → bebida", () => {
     expect(local()).toBe("/cardapio/carne-de-sol");
 
     await u.click(screen.getByRole("radio", { name: "Refogado especial da casa" }));
-    await u.click(screen.getByRole("checkbox", { name: /Queijo coalho/ }));
+    await u.click(screen.getByRole("radio", { name: "Queijo coalho" })); // adicional incluso: 1 ou nenhum
     await u.click(screen.getByRole("button", { name: /Adicionar · / }));
 
     expect(local()).toBe("/?prato=bebidas");
@@ -170,5 +170,53 @@ describe("sequência do pedido: prato → capriche → bebida", () => {
     abrir("/pedido");
     expect(screen.getByText("Sem acompanhamento")).toBeTruthy();
     expect(screen.queryByText(/^Acompanhamento:/)).toBeNull();
+  });
+});
+
+describe("adicional incluso no preço", () => {
+  const botao = () => screen.getByRole("button", { name: /Adicionar · / }).textContent ?? "";
+
+  it("todo prato oferece 1 adicional (ou nenhum) e o preço não muda ao escolher", async () => {
+    const u = userEvent.setup();
+    abrir("/cardapio/carne-de-sol");
+    await u.click(screen.getByRole("radio", { name: "Refogado especial da casa" }));
+    const sem = botao();
+    expect(sem).toMatch(/21,99/);
+    expect(screen.getByText(/já está incluso no preço do prato/)).toBeTruthy();
+    expect(screen.getByRole("radio", { name: "Sem adicional" })).toBeTruthy();
+    expect(screen.queryAllByRole("checkbox", { name: /Queijo|Requeijão|Muçarela|Ovo|Banana/ })).toHaveLength(0);
+
+    await u.click(screen.getByRole("radio", { name: "Muçarela" }));
+    expect(botao()).toBe(sem); // sem custo à parte
+
+    await u.click(screen.getByRole("radio", { name: "Ovo mexido" })); // só 1: troca em vez de somar
+    expect((screen.getByRole("radio", { name: "Muçarela" }) as HTMLInputElement).checked).toBe(false);
+    expect(botao()).toBe(sem);
+  });
+
+  it("os doces também têm adicional incluso; bebidas não", () => {
+    abrir("/cardapio/cartola");
+    expect(screen.getByRole("radio", { name: "Sem adicional" })).toBeTruthy();
+    expect(botao()).toMatch(/21,99/);
+    cleanup();
+    abrir("/cardapio/coca-cola");
+    expect(screen.queryByRole("radio", { name: "Sem adicional" })).toBeNull();
+  });
+
+  it("o adicional escolhido entra no pedido sem somar no total", async () => {
+    const u = userEvent.setup();
+    abrir("/cardapio/carne-de-sol");
+    await u.click(screen.getByRole("radio", { name: "Refogado especial da casa" }));
+    await u.click(screen.getByRole("radio", { name: "Queijo coalho" }));
+    await u.click(screen.getByRole("button", { name: /Adicionar · / }));
+    const itens = JSON.parse(localStorage.getItem("cuscuz-pedido-v3") ?? "[]");
+    expect(itens).toEqual([{ id: "carne-de-sol", qtd: 1, extras: ["queijo-coalho"], acomp: expect.any(String) }]);
+    expect(screen.getByRole("link", { name: /Ver pedido · 1 item · R\$\s21,99/ })).toBeTruthy();
+  });
+
+  it("um carrinho antigo com vários adicionais é reduzido a 1 e não cobra adicional", () => {
+    localStorage.setItem("cuscuz-pedido-v3", JSON.stringify([{ id: "carne-de-sol", qtd: 1, extras: ["queijo-coalho", "requeijao", "ovo-cozido"], acomp: "vinagrete" }]));
+    abrir("/");
+    expect(screen.getByRole("link", { name: /Ver pedido · 1 item · R\$\s21,99/ })).toBeTruthy();
   });
 });

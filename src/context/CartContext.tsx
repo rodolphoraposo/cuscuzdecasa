@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { aceitaAdicionais, acompanhamentos, adicionais, exigeAcompanhamento, produtos, type Produto } from "../data/menu";
+import { MAX_ADICIONAIS, aceitaAdicionais, acompanhamentos, adicionais, exigeAcompanhamento, produtos, valorDoAdicional, type Produto } from "../data/menu";
 import { MOEDA, itemDoProduto, registrarEvento } from "../lib/analytics";
 
 export const MAX_QTD = 99;
@@ -33,7 +33,7 @@ export const chaveDe = (id: string, extras: string[], acomp: string | null = nul
 /** Mantém só adicionais que existem no catálogo e que o produto aceita, sem repetição e em ordem fixa. */
 function normalizarExtras(produto: Produto, extras: unknown[]): string[] {
   if (!aceitaAdicionais(produto)) return [];
-  return adicionais.filter((a) => extras.includes(a.id)).map((a) => a.id);
+  return adicionais.filter((a) => extras.includes(a.id)).map((a) => a.id).slice(0, MAX_ADICIONAIS);
 }
 
 /** Produto que exige acompanhamento sem um válido → undefined (a linha é recusada). */
@@ -66,9 +66,11 @@ function carregar(): Salvo[] {
   }
 }
 
+const valorDoAdicionalPorId = (id: string) => { const a = adicionais.find((x) => x.id === id); return a ? valorDoAdicional(a) : 0; };
+
 /** Preço de uma unidade (produto + adicionais) e o acompanhamento, para os eventos do Analytics. */
 function detalheParaAnalytics(produto: Produto, extras: string[], acomp: string | null) {
-  const centavos = Math.round(produto.preco * 100) + extras.reduce((t, e) => t + Math.round((adicionais.find((a) => a.id === e)?.preco ?? 0) * 100), 0);
+  const centavos = Math.round(produto.preco * 100) + extras.reduce((t, e) => t + Math.round((valorDoAdicionalPorId(e)) * 100), 0);
   return { preco: centavos / 100, variante: acompanhamentos.find((a) => a.id === acomp)?.nome ?? null };
 }
 
@@ -89,7 +91,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     const linhas = salvos.flatMap((s): LinhaPedido[] => {
       const produto = produtos.find((p) => p.id === s.id);
       if (!produto) return [];
-      const centavos = Math.round(produto.preco * 100) + s.extras.reduce((t, e) => t + Math.round((adicionais.find((a) => a.id === e)?.preco ?? 0) * 100), 0);
+      const centavos = Math.round(produto.preco * 100) + s.extras.reduce((t, e) => t + Math.round(valorDoAdicionalPorId(e) * 100), 0);
       return [{
         chave: chaveDe(s.id, s.extras, s.acomp),
         produto,

@@ -44,6 +44,7 @@ export default function Termos() {
 
       <h2>4. Preços e pagamento</h2>
       <ul>
+        <li>Cada prato já inclui, no preço, 1 adicional à sua escolha (ou nenhum). Não há cobrança à parte pelo adicional.</li>
         <li>Os preços são em reais e valem os mostrados no momento do pedido. Eles podem mudar, sem afetar pedidos já enviados.</li>
         <li>Formas de pagamento: Pix, dinheiro ou cartão de crédito ou débito, na entrega (levamos a maquineta) ou na retirada. O pagamento é feito na entrega ou na retirada, na forma escolhida, salvo combinação diferente pelo WhatsApp.</li>
         <li>Se pagar em dinheiro e precisar de troco, informe o valor da nota, que deve ser igual ou maior que o total.</li>

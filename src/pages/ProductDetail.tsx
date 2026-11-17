@@ -4,7 +4,7 @@ import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { FotoProduto } from "../components/FotoProduto";
 import { Button, ButtonLink, Checkbox, EmptyState, Radio } from "../components/ui";
 import { MAX_QTD, useCart } from "../context/CartContext";
-import { aceitaAdicionais, acompanhamentos, adicionais, exigeAcompanhamento, formatarPreco, produtos, type Produto } from "../data/menu";
+import { ADICIONAL_INCLUSO, aceitaAdicionais, acompanhamentos, adicionais, exigeAcompanhamento, formatarPreco, produtos, valorDoAdicional, type Produto } from "../data/menu";
 import { usePageTitle } from "../hooks/usePageTitle";
 import { MOEDA, itemDoProduto, registrarEvento } from "../lib/analytics";
 import { enderecoDoCardapio, origemSegura } from "../lib/navegacao";
@@ -45,7 +45,7 @@ function Detalhe({ produto }: { produto: Produto }) {
   const exige = exigeAcompanhamento(produto);
 
   const opcoes = aceitaAdicionais(produto) ? adicionais : [];
-  const unitario = produto.preco + extras.reduce((t, e) => t + (adicionais.find((a) => a.id === e)?.preco ?? 0), 0);
+  const unitario = produto.preco + extras.reduce((t, e) => t + (() => { const a = adicionais.find((x) => x.id === e); return a ? valorDoAdicional(a) : 0; })(), 0);
   // "Leve junto": bebidas escolhidas na própria tela (1 de cada), para o cliente não precisar de mais uma etapa.
   const bebidas = produto.categoria === "bebidas" ? [] : produtos.filter((p) => p.categoria === "bebidas");
   const [bebidasSel, setBebidasSel] = useState<string[]>([]);
@@ -112,7 +112,22 @@ function Detalhe({ produto }: { produto: Produto }) {
             </fieldset>
           )}
 
-          {opcoes.length > 0 && (
+          {opcoes.length > 0 && ADICIONAL_INCLUSO && (
+            <fieldset className="detail__adicionais">
+              <legend className="t-subtitulo">Adicional incluso <span className="detail__obrig">(escolha 1 ou nenhum)</span></legend>
+              <p className="detail__nota">O valor do adicional já está incluso no preço do prato.</p>
+              <div className="acomp">
+                <Radio rotulo="Sem adicional" name="adicional" checked={extras.length === 0} onChange={() => setExtras([])} />
+              </div>
+              {opcoes.map((a) => (
+                <div className="acomp" key={a.id}>
+                  <Radio rotulo={a.nome} name="adicional" checked={extras[0] === a.id} onChange={() => setExtras([a.id])} />
+                </div>
+              ))}
+            </fieldset>
+          )}
+
+          {opcoes.length > 0 && !ADICIONAL_INCLUSO && (
             <fieldset className="detail__adicionais">
               <legend className="t-subtitulo">Capriche seu prato <span className="detail__obrig">(opcional)</span></legend>
               {opcoes.map((a) => {

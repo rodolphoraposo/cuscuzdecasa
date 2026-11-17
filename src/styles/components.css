@@ -344,3 +344,5 @@
 .encomenda-chamada .t-corpo { color: rgb(255 243 220 / 0.86); max-width: 52ch; }
 .pedido__tipos { display: grid; gap: var(--esp-12); }
 .linha--ocasiao { grid-template-columns: 1fr 120px; }
+.cardapio__nota { margin: calc(var(--esp-8) * -1) 0 var(--esp-16); color: var(--texto-secundario); font-weight: 700; }
+.detail__nota { margin: 0; color: var(--texto-secundario); font-size: 14px; }

@@ -25,7 +25,7 @@ function abrir() {
   localStorage.setItem("cuscuz-pedido-v3", JSON.stringify([
     { id: "carne-de-sol", qtd: 1, extras: ["queijo-coalho"], acomp: "vinagrete" },
     { id: "coca-cola", qtd: 1, extras: [], acomp: null },
-  ])); // subtotal R$ 28,98
+  ])); // subtotal R$ 27,98
   render(
     <MemoryRouter initialEntries={["/pedido"]}>
       <CartProvider>
@@ -69,7 +69,7 @@ describe("taxa de entrega por CEP no Seu pedido", () => {
     expect(await screen.findByText(/Entregamos aí!/)).toBeTruthy();
     expect(document.body.textContent).toMatch(/Taxa de entrega: grátis/);
     expect(entrega()).toBe("Grátis");
-    expect(screen.getByRole("button", { name: /Finalizar pedido/ }).textContent).toMatch(/28,98/);
+    expect(screen.getByRole("button", { name: /Finalizar pedido/ }).textContent).toMatch(/27,98/);
   });
 
   it("de 1 a 1,5 km a taxa é R$ 6,00 e entra no total", async () => {
@@ -79,7 +79,7 @@ describe("taxa de entrega por CEP no Seu pedido", () => {
     await digitarCep(u, "57046000");
     await screen.findByText(/Entregamos aí!/);
     expect(entrega()).toMatch(/R\$\s6,00/);
-    expect(screen.getByRole("button", { name: /Finalizar pedido/ }).textContent).toMatch(/34,98/);
+    expect(screen.getByRole("button", { name: /Finalizar pedido/ }).textContent).toMatch(/33,98/);
   });
 
   it("trocar o CEP descarta a taxa anterior e calcula a nova", async () => {
@@ -141,7 +141,7 @@ describe("taxa de entrega por CEP no Seu pedido", () => {
     const link = screen.getByRole("link", { name: /Enviar comanda para o WhatsApp/ }) as HTMLAnchorElement;
     const texto = decodeURIComponent(link.href.split("text=")[1]);
     expect(texto).toContain("*Entrega:* a confirmar");
-    expect(texto).toContain("*TOTAL (sem a entrega):* R$ 28,98");
+    expect(texto).toContain("*TOTAL (sem a entrega):* R$ 27,98");
   });
 
   it("um rascunho antigo (CEP completo, taxa não calculada) é calculado ao abrir a tela", async () => {

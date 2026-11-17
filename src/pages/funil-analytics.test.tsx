@@ -45,7 +45,7 @@ describe("funil do pedido no Google Analytics", () => {
     abrir("/?categoria=doces");
     await u.click(screen.getByRole("button", { name: "Pedir Cartola (cuscuz)" }));
     expect(chamadas("add_to_cart")).toEqual([
-      expect.objectContaining({ currency: "BRL", value: 17.99, items: [expect.objectContaining({ item_id: "cartola", item_category: "cuscuz", item_category2: "doces", price: 17.99, quantity: 1 })] }),
+      expect.objectContaining({ currency: "BRL", value: 21.99, items: [expect.objectContaining({ item_id: "cartola", item_category: "cuscuz", item_category2: "doces", price: 21.99, quantity: 1 })] }),
     ]);
     await u.click(screen.getByRole("button", { name: /Remover um/ }));
     expect(chamadas("remove_from_cart")).toHaveLength(1);

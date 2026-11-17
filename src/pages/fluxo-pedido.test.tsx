@@ -66,8 +66,8 @@ describe("fluxo Seu pedido → Falta só um passo", () => {
     const eventos = vi.spyOn(analytics, "registrarEvento").mockImplementation(() => {});
     const de = (nome: string) => eventos.mock.calls.filter((c) => c[0] === nome).map((c) => c[1] as Record<string, any>);
     abrir();
-    expect(screen.getAllByText(/22,99/).length).toBeGreaterThan(0);
-    expect(de("view_cart")).toEqual([expect.objectContaining({ currency: "BRL", value: 28.98 })]);
+    expect(screen.getAllByText(/21,99/).length).toBeGreaterThan(0);
+    expect(de("view_cart")).toEqual([expect.objectContaining({ currency: "BRL", value: 27.98 })]);
 
     await u.type(screen.getByLabelText("Nome*"), "Rodolpho");
     await u.type(screen.getByLabelText("Telefone / WhatsApp*"), "82994336126");
@@ -88,7 +88,7 @@ describe("fluxo Seu pedido → Falta só um passo", () => {
     await u.click(screen.getByRole("button", { name: /Finalizar pedido/ }));
 
     expect(await screen.findByRole("heading", { name: "Falta só um passo" })).toBeTruthy();
-    expect(de("begin_checkout")).toEqual([expect.objectContaining({ currency: "BRL", value: 32.98, shipping: 4 })]);
+    expect(de("begin_checkout")).toEqual([expect.objectContaining({ currency: "BRL", value: 31.98, shipping: 4 })]);
     expect(de("purchase")).toHaveLength(0); // só conta quando a comanda é enviada
     const link = screen.getByRole("link", { name: /Enviar comanda para o WhatsApp/ }) as HTMLAnchorElement;
     expect(link.href.startsWith("https://wa.me/5582991520132?text=")).toBe(true); // número oficial da casa
@@ -99,15 +99,15 @@ describe("fluxo Seu pedido → Falta só um passo", () => {
     expect(texto).toContain("*ENTREGA*\nHorário: hoje, 18h às 19h");
     expect(texto).toContain("   Acomp.: Vinagrete da casa\n   + Queijo coalho");
     expect(texto).toContain("*Entrega:* R$ 4,00 (cerca de 800 m)");
-    expect(texto).toContain("*TOTAL:* R$ 32,98");
-    expect(texto).toContain("Troco para: R$ 50,00 (levar R$ 17,02)");
+    expect(texto).toContain("*TOTAL:* R$ 31,98");
+    expect(texto).toContain("Troco para: R$ 50,00 (levar R$ 18,02)");
     expect(texto).toMatch(/Pedido #\d{4} · /);
 
     // sem bloco de resumo separado: só a comanda, com os títulos em negrito
     expect(screen.queryByText("Prévia da comanda")).toBeNull();
     expect(screen.queryByText("Endereço")).toBeNull();
     const previa = screen.getByRole("group", { name: "Resumo" });
-    expect(previa.textContent).toContain("Troco para: R$ 50,00 (levar R$ 17,02)");
+    expect(previa.textContent).toContain("Troco para: R$ 50,00 (levar R$ 18,02)");
     expect(previa.querySelector("strong")?.textContent).toBe("COMANDA · CUSCUZ DE CASA");
     expect(previa.querySelector(".previa__mono")?.textContent).toContain("Acomp.: Vinagrete da casa"); // itens em bloco monoespaçado
     expect(previa.textContent).not.toContain("```"); // as crases não aparecem na prévia
@@ -117,7 +117,7 @@ describe("fluxo Seu pedido → Falta só um passo", () => {
     expect(await screen.findByRole("heading", { name: "Obrigado pelo seu pedido!" }, { timeout: 2000 })).toBeTruthy();
     const compra = de("purchase");
     expect(compra).toHaveLength(1);
-    expect(compra[0]).toMatchObject({ currency: "BRL", value: 32.98, shipping: 4 });
+    expect(compra[0]).toMatchObject({ currency: "BRL", value: 31.98, shipping: 4 });
     expect(compra[0].transaction_id).toMatch(/^#?\d+/);
     expect(compra[0].items).toHaveLength(2);
     // nada de dados pessoais no Analytics
@@ -181,7 +181,7 @@ describe("fluxo Seu pedido → Falta só um passo", () => {
     expect(previa.textContent).toContain("Horário: hoje, 18h às 19h");
     expect(previa.textContent).not.toContain("CEP");
     expect(previa.textContent).not.toContain("Entrega:");
-    expect(previa.textContent).toContain("TOTAL: R$ 28,98");
+    expect(previa.textContent).toContain("TOTAL: R$ 27,98");
 
     await u.click(screen.getByRole("link", { name: /Enviar comanda para o WhatsApp/ }));
     expect(await screen.findByText(/Retirada na casa das 17h às 21h/, {}, { timeout: 2000 })).toBeTruthy();
