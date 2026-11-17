@@ -3,6 +3,7 @@ import logo from "../assets/logo/logo-full.webp";
 import { CartBar } from "../components/CartBar";
 import { Cardapio } from "../components/Cardapio";
 import { LinkCardapio } from "../components/LinkCardapio";
+import { ButtonLink } from "../components/ui";
 import { ConsultaTaxa } from "../components/ConsultaTaxa";
 import { contato, formatarPreco } from "../data/menu";
 import { RAIO_MAXIMO_KM, descreverFaixas } from "../lib/area";
@@ -71,6 +72,14 @@ export default function Home() {
         <p className="t-corpo">
           Mora mais longe? <a href={`https://wa.me/${contato.whatsapp}`}>Chame no WhatsApp.</a>
         </p>
+      </section>
+
+      <section className="section container" id="encomendas">
+        <div className="encomenda-chamada">
+          <h2 className="t-secao">Encomendas para festas e eventos</h2>
+          <p className="t-corpo">Quantidade grande? Conte o que precisa, escolha a data e envie pelo WhatsApp: a gente calcula o valor e combina tudo com você.</p>
+          <ButtonLink to="/encomenda" variante="primary">Fazer uma encomenda</ButtonLink>
+        </div>
       </section>
 
       <section className="section secao-marca">

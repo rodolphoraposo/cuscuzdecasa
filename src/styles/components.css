@@ -332,3 +332,15 @@
 .footer__contato { display: grid; gap: var(--esp-8); justify-items: start; }
 .footer__contato a { display: inline-flex; align-items: center; gap: var(--esp-8); min-height: 32px; }
 @media (min-width: 900px) { .pratos { max-width: 560px; } }
+
+/* ---------- Encomenda ---------- */
+.encomenda-item { display: grid; grid-template-columns: 1fr auto; gap: var(--esp-12); align-items: end; padding: var(--esp-12); background: var(--fundo-superficie); border-radius: var(--raio-18); box-shadow: var(--sombra-sm); }
+.encomenda-item > :first-child { grid-column: 1 / -1; }
+.encomenda-item__qtd { max-width: 140px; }
+.pedido__acoes { display: grid; gap: var(--esp-12); margin-top: var(--esp-16); }
+.pedido__acoes .btn { justify-content: center; text-decoration: none; }
+.encomenda-chamada { display: grid; gap: var(--esp-16); justify-items: start; padding: var(--esp-32) var(--esp-24); border-radius: var(--raio-32); background: var(--neutro-950); color: var(--neutro-0); }
+.encomenda-chamada .t-secao { color: var(--neutro-0); }
+.encomenda-chamada .t-corpo { color: rgb(255 243 220 / 0.86); max-width: 52ch; }
+.pedido__tipos { display: grid; gap: var(--esp-12); }
+.linha--ocasiao { grid-template-columns: 1fr 120px; }

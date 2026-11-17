@@ -58,6 +58,11 @@ export default function Privacidade() {
         Fonts.
       </p>
 
+      <p>
+        Na página de Encomendas, o que você digita (nome, telefone, endereço e itens) vira uma mensagem de WhatsApp que é você quem envia. O site
+        não guarda esse conteúdo.
+      </p>
+
       <h2>6. Com quem os dados são compartilhados</h2>
       <p>
         Se você tocar em “Estou no endereço: usar minha localização”, o seu aparelho pede permissão e a posição é usada só no seu navegador, para

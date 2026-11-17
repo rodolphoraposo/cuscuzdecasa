@@ -20,6 +20,7 @@ export function Footer() {
             <LinkCardapio origem="rodape">Cardápio</LinkCardapio>
             <a href="/#como-funciona">Como funciona</a>
             <a href="/#onde-entregamos">Onde entregamos</a>
+            <Link to="/encomenda">Encomendas</Link>
             <Link to="/privacidade">Política de Privacidade</Link>
             <Link to="/termos">Termos de Uso</Link>
           </nav>

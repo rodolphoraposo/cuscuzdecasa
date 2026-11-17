@@ -41,6 +41,7 @@ export function Header() {
           <LinkCardapio origem="menu_cabecalho">Cardápio</LinkCardapio>
           <a href="/#como-funciona">Como funciona</a>
           <a href="/#onde-entregamos">Onde entregamos</a>
+          <NavLink to="/encomenda">Encomendas</NavLink>
         </nav>
 
         <div className="header__actions">
@@ -73,6 +74,7 @@ export function Header() {
           <LinkCardapio origem="menu_celular" onClick={() => setAberto(false)}>Cardápio</LinkCardapio>
           <Link to="/#como-funciona">Como funciona</Link>
           <Link to="/#onde-entregamos">Onde entregamos</Link>
+          <Link to="/encomenda">Encomendas</Link>
           <a
             className="header__painel-sec" href={`https://www.instagram.com/${contato.instagram}/`} target="_blank" rel="noopener noreferrer"
             aria-label="Instagram (abre em nova aba)"

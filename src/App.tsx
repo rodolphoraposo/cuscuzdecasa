@@ -9,6 +9,7 @@ import DesignSystem from "./pages/DesignSystem";
 import Home from "./pages/Home";
 import Finalizar from "./pages/Finalizar";
 import NotFound from "./pages/NotFound";
+import Encomenda from "./pages/Encomenda";
 import Pedido from "./pages/Pedido";
 import PedidoEnviado from "./pages/PedidoEnviado";
 import Privacidade from "./pages/Privacidade";
@@ -38,6 +39,7 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/cardapio" element={<CardapioAntigo />} />
           <Route path="/cardapio/:id" element={<ProductDetail />} />
+          <Route path="/encomenda" element={<Encomenda />} />
           <Route path="/pedido" element={<Pedido />} />
           <Route path="/pedido/finalizar" element={<Finalizar />} />
           <Route path="/pedido/enviado" element={<PedidoEnviado />} />
