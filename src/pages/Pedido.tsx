@@ -11,6 +11,7 @@ import { empresa } from "../data/empresa";
 import { SEM_ACOMPANHAMENTO, adicionais, contato, formatarPreco, nomeCompleto } from "../data/menu";
 import { RAIO_MAXIMO_KM, type Cobertura } from "../lib/area";
 import { buscarCep } from "../lib/cep";
+import { linkWhatsAppContato } from "../lib/whatsapp";
 import { calcularCobertura, calcularCoberturaPorLocalizacao } from "../lib/geocep";
 import { enderecoDoCardapio } from "../lib/navegacao";
 import { janelasEntrega } from "../lib/entrega";
@@ -340,7 +341,7 @@ export default function Pedido() {
                       {estadoEntrega.tipo === "fora" && (
                         <Button type="button" variante="outline" onClick={() => mudar("tipo", "retirada")}>Prefiro retirar na casa</Button>
                       )}
-                      <a className="btn btn--outline btn--md" href={`https://wa.me/${contato.whatsapp}`} target="_blank" rel="noopener noreferrer">Falar no WhatsApp</a>
+                      <a className="btn btn--outline btn--md" href={linkWhatsAppContato(contato.whatsapp, "area")} target="_blank" rel="noopener noreferrer">Falar no WhatsApp</a>
                     </>
                   )}
                 />

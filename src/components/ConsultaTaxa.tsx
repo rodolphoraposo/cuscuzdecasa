@@ -4,6 +4,7 @@ import { contato } from "../data/menu";
 import { registrarEvento } from "../lib/analytics";
 import { calcularCobertura, calcularCoberturaPorLocalizacao } from "../lib/geocep";
 import { mascararCep } from "../lib/formulario";
+import { linkWhatsAppContato } from "../lib/whatsapp";
 import type { Cobertura } from "../lib/area";
 import { ResultadoEntrega, type EstadoEntrega } from "./ResultadoEntrega";
 import { Button, Input } from "./ui";
@@ -83,7 +84,7 @@ export function ConsultaTaxa() {
                 <MapPin className="icon" aria-hidden="true" />
                 Estou no endereço: usar minha localização
               </Button>
-              <a className="btn btn--outline btn--md" href={`https://wa.me/${contato.whatsapp}`} target="_blank" rel="noopener noreferrer">Falar no WhatsApp</a>
+              <a className="btn btn--outline btn--md" href={linkWhatsAppContato(contato.whatsapp, "area")} target="_blank" rel="noopener noreferrer">Falar no WhatsApp</a>
             </>
           )}
         />

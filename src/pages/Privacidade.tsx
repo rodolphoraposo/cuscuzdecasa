@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { contato } from "../data/menu";
 import { empresa } from "../data/empresa";
 import { Legal } from "./Legal";
+import { linkWhatsAppContato } from "../lib/whatsapp";
 
 export default function Privacidade() {
   return (
@@ -15,7 +16,7 @@ export default function Privacidade() {
       <p>
         {empresa.nome}, em {empresa.cidade}
         {empresa.documento ? `, inscrita sob o nº ${empresa.documento}` : ""}. Fale com a gente pelo WhatsApp{" "}
-        <a href={`https://wa.me/${contato.whatsapp}`}>{contato.telefoneExibicao}</a>
+        <a href={linkWhatsAppContato(contato.whatsapp)}>{contato.telefoneExibicao}</a>
         {empresa.email ? ` ou pelo e-mail ${empresa.email}` : ""}.
       </p>
 

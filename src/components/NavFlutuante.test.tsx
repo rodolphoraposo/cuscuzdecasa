@@ -22,7 +22,7 @@ describe("navegação flutuante", () => {
     expect(links.map((l) => l.textContent?.replace(/\(abre em outra aba\)/, "").trim())).toEqual(["Início", "Cardápio", "", "Encomendas", "WhatsApp"]);
     expect(within(nav()).getByRole("link", { name: "Encomendas" }).getAttribute("href")).toBe("/encomenda");
     expect(within(nav()).getByRole("link", { name: "Início" }).getAttribute("href")).toBe("/");
-    expect(within(nav()).getByRole("link", { name: /WhatsApp/ }).getAttribute("href")).toMatch(/^https:\/\/wa\.me\/55829\d+$/);
+    expect(within(nav()).getByRole("link", { name: /WhatsApp/ }).getAttribute("href")).toMatch(/^https:\/\/wa\.me\/55829\d+\?text=Ol%C3%A1/); // abre com mensagem pronta
     expect(within(nav()).getByRole("link", { name: /WhatsApp/ }).getAttribute("target")).toBe("_blank");
   });
 

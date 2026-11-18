@@ -7,6 +7,7 @@ import { ButtonLink } from "../components/ui";
 import { ConsultaTaxa } from "../components/ConsultaTaxa";
 import { contato, formatarPreco } from "../data/menu";
 import { RAIO_MAXIMO_KM, descreverFaixas } from "../lib/area";
+import { linkWhatsAppContato } from "../lib/whatsapp";
 
 const passos = [
   { titulo: "Escolha no cardápio", texto: "Veja os sabores e monte seu pedido em poucos toques." },
@@ -70,7 +71,7 @@ export default function Home() {
         </ul>
         <ConsultaTaxa />
         <p className="t-corpo">
-          Mora mais longe? <a href={`https://wa.me/${contato.whatsapp}`}>Chame no WhatsApp.</a>
+          Mora mais longe? <a href={linkWhatsAppContato(contato.whatsapp, "area")}>Chame no WhatsApp.</a>
         </p>
       </section>
 

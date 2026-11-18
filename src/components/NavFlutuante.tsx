@@ -4,6 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { contato, formatarPreco } from "../data/menu";
 import { registrarEvento } from "../lib/analytics";
+import { linkWhatsAppContato } from "../lib/whatsapp";
 import { LinkCardapio } from "./LinkCardapio";
 
 /**
@@ -45,7 +46,7 @@ export function NavFlutuante() {
         <Confetti size={24} weight={pathname === "/encomenda" ? "fill" : "regular"} aria-hidden="true" />
         <span>Encomendas</span>
       </Link>
-      <a href={`https://wa.me/${contato.whatsapp}`} target="_blank" rel="noopener noreferrer" onClick={marcar("whatsapp")}>
+      <a href={linkWhatsAppContato(contato.whatsapp)} target="_blank" rel="noopener noreferrer" onClick={marcar("whatsapp")}>
         <WhatsappLogo size={24} aria-hidden="true" />
         <span>WhatsApp<span className="sr-only"> (abre em outra aba)</span></span>
       </a>

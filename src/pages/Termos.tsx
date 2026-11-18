@@ -1,11 +1,12 @@
 import { Link } from "react-router-dom";
 import { adicionais, contato, formatarPreco } from "../data/menu";
 import { RAIO_MAXIMO_KM, descreverFaixas } from "../lib/area";
+import { linkWhatsAppContato } from "../lib/whatsapp";
 import { empresa } from "../data/empresa";
 import { Legal } from "./Legal";
 
 export default function Termos() {
-  const zap = <a href={`https://wa.me/${contato.whatsapp}`}>{contato.telefoneExibicao}</a>;
+  const zap = <a href={linkWhatsAppContato(contato.whatsapp)}>{contato.telefoneExibicao}</a>;
   return (
     <Legal titulo="Termos de Uso">
       <p>

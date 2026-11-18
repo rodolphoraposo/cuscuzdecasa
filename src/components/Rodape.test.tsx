@@ -14,7 +14,12 @@ describe("Contato oficial no rodapé", () => {
   it("mostra o número oficial, os dias de funcionamento e o Instagram", () => {
     abrir();
     const rodape = within(screen.getByRole("contentinfo"));
-    expect(rodape.getByRole("link", { name: "(82) 99152-0132" }).getAttribute("href")).toBe("https://wa.me/5582991520132");
+    const zap = rodape.getByRole("link", { name: "(82) 99152-0132" }) as HTMLAnchorElement;
+    expect(zap.getAttribute("href")).toMatch(/^https:\/\/wa\.me\/5582991520132\?text=/);
+    expect(decodeURIComponent(zap.href.split("text=")[1])).toMatch(/^Olá! Vim pelo cardápio digital/); // abre com mensagem pronta
+    expect(zap.querySelector("svg")).toBeTruthy(); // ícone do WhatsApp
+    expect(rodape.getByRole("link", { name: /@cuscuzdecasaoficial/ }).querySelector("svg")).toBeTruthy(); // ícone do Instagram
+    expect(rodape.getAllByRole("heading", { level: 2 }).map((h) => h.textContent)).toEqual(["Navegue", "Fale com a gente"]); // duas colunas
     expect(rodape.getByText("Funcionamos de segunda a sexta")).toBeTruthy();
   });
 });
