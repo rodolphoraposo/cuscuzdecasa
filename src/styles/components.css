@@ -356,7 +356,7 @@
 /* ---------- Navegação flutuante (celular) ---------- */
 .nav-flutuante { position: fixed; left: var(--esp-12); right: var(--esp-12); bottom: calc(var(--esp-12) + env(safe-area-inset-bottom, 0px)); z-index: 30; display: grid; grid-template-columns: 1fr 1fr 84px 1fr 1fr; align-items: center; height: 68px; padding-inline: var(--esp-8); border-radius: 34px; background: var(--neutro-950); border: 1px solid rgb(255 243 220 / 0.14); box-shadow: var(--sombra-lg); }
 .nav-flutuante a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 56px; color: rgb(255 243 220 / 0.8); font: 700 11px / 1.1 var(--fonte-texto); text-decoration: none; }
-.nav-flutuante a:hover { color: var(--neutro-0); }
+.nav-flutuante a:hover { color: var(--destaque); }
 .nav-flutuante a[aria-current="page"] { color: var(--milho-500); }
 .nav-flutuante a:focus-visible { outline: 3px solid var(--milho-500); outline-offset: -3px; border-radius: 28px; }
 .nav-flutuante .nav-flutuante__pedido { position: relative; justify-self: center; width: 66px; height: 66px; min-height: 0; margin-top: -30px; border-radius: 50%; background: var(--acao-primaria); color: #fff; border: 5px solid var(--fundo-pagina); box-shadow: var(--sombra-md); transition: transform 0.15s; }

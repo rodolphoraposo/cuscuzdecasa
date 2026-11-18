@@ -57,6 +57,23 @@ describe("navegação flutuante", () => {
     }
   });
 
+  it("destaca Cardápio ao selecioná-lo e volta a destacar Início ao selecioná-lo", async () => {
+    const u = userEvent.setup();
+    abrir("/");
+    const navAtual = within(nav());
+    const inicio = navAtual.getByRole("link", { name: "Início" });
+    const cardapio = navAtual.getByRole("link", { name: "Cardápio" });
+
+    expect(inicio.getAttribute("aria-current")).toBe("page");
+    await u.click(cardapio);
+    expect(cardapio.getAttribute("aria-current")).toBe("page");
+    expect(inicio.getAttribute("aria-current")).toBeNull();
+
+    await u.click(inicio);
+    expect(inicio.getAttribute("aria-current")).toBe("page");
+    expect(cardapio.getAttribute("aria-current")).toBeNull();
+  });
+
   it("os toques são registrados no Analytics sem dados pessoais; 'Cardápio' informa a origem", async () => {
     const eventos = vi.spyOn(analytics, "registrarEvento").mockImplementation(() => {});
     const u = userEvent.setup();
