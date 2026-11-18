@@ -3,6 +3,7 @@ import { Footer } from "./components/Footer";
 import { Header } from "./components/Header";
 import { useFocoLivreDaBarra } from "./hooks/useFocoLivreDaBarra";
 import { RastreadorDePaginas } from "./components/RastreadorDePaginas";
+import { NavFlutuante } from "./components/NavFlutuante";
 import { ScrollManager } from "./components/ScrollManager";
 import { enderecoDoCardapio } from "./lib/navegacao";
 import DesignSystem from "./pages/DesignSystem";
@@ -50,6 +51,7 @@ export default function App() {
         </Routes>
       </main>
       {!fluxoDePedido && <Footer />}
+      {!fluxoDePedido && <NavFlutuante />}
     </>
   );
 }

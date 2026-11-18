@@ -346,3 +346,20 @@
 .linha--ocasiao { grid-template-columns: 1fr 120px; }
 .cardapio__nota { margin: calc(var(--esp-8) * -1) 0 var(--esp-16); color: var(--texto-secundario); font-weight: 700; }
 .detail__nota { margin: 0; color: var(--texto-secundario); font-size: 14px; }
+
+/* ---------- Navegação flutuante (celular) ---------- */
+.nav-flutuante { position: fixed; left: var(--esp-12); right: var(--esp-12); bottom: calc(var(--esp-12) + env(safe-area-inset-bottom, 0px)); z-index: 30; display: grid; grid-template-columns: 1fr 1fr 84px 1fr 1fr; align-items: center; height: 68px; padding-inline: var(--esp-8); border-radius: 34px; background: var(--neutro-950); border: 1px solid rgb(255 243 220 / 0.14); box-shadow: var(--sombra-lg); }
+.nav-flutuante a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 56px; color: rgb(255 243 220 / 0.8); font: 700 11px / 1.1 var(--fonte-texto); text-decoration: none; }
+.nav-flutuante a:hover { color: var(--neutro-0); }
+.nav-flutuante a[aria-current="page"] { color: var(--milho-500); }
+.nav-flutuante a:focus-visible { outline: 3px solid var(--milho-500); outline-offset: -3px; border-radius: 28px; }
+.nav-flutuante .nav-flutuante__pedido { position: relative; justify-self: center; width: 66px; height: 66px; min-height: 0; margin-top: -30px; border-radius: 50%; background: var(--acao-primaria); color: #fff; border: 5px solid var(--fundo-pagina); box-shadow: var(--sombra-md); transition: transform 0.15s; }
+.nav-flutuante .nav-flutuante__pedido:hover { color: #fff; transform: translateY(-2px); }
+.nav-flutuante__qtd { position: absolute; top: -6px; right: -6px; min-width: 24px; height: 24px; padding-inline: 6px; border-radius: 12px; background: var(--milho-500); color: var(--neutro-950); font: 800 13px / 24px var(--fonte-texto); text-align: center; border: 2px solid var(--fundo-pagina); }
+.nav-flutuante__total { position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%); padding: 3px 10px; border-radius: 999px; background: var(--milho-500); color: var(--neutro-950); font: 800 13px / 1.3 var(--fonte-texto); white-space: nowrap; box-shadow: var(--sombra-sm); }
+@media (min-width: 900px) { .nav-flutuante { display: none; } }
+@media (max-width: 899px) {
+  body:has(.nav-flutuante) { padding-bottom: 100px; } /* o rodapé não fica escondido atrás da navegação */
+  .cartbar { display: none; } /* o botão de pedido da navegação faz esse papel no celular */
+  .header__sacola { display: none; } /* idem: o carrinho fica no centro da navegação */
+}
