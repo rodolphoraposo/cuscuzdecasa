@@ -4,10 +4,10 @@ import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import { AvisoEncerrado } from "./AvisoEncerrado";
 import { Banner, ButtonLink } from "./ui";
 import { ProductCard, ProductRow } from "./ProductItem";
-import { ADICIONAL_INCLUSO, abas, produtos, secoes, type AbaId, type SecaoId } from "../data/menu";
+import { ADICIONAL_INCLUSO, abas, produtos, produtosDaSecao, secoes, type AbaId, type SecaoId } from "../data/menu";
 
 /** Produto cuja foto representa cada categoria nos botões de topo. */
-const CAPA: Record<SecaoId, string> = { cuscuz: "frango-desfiado", macaxeira: "macaxeira-carne-de-sol", bebidas: "coca-cola" };
+const CAPA: Record<SecaoId, string> = { cuscuz: "frango-desfiado", macaxeira: "macaxeira-carne-de-sol", combos: "frango-desfiado", bebidas: "coca-cola" };
 const capaDe = (id: SecaoId) => produtos.find((p) => p.id === CAPA[id])?.imagem;
 import { itemDoProduto, registrarEvento } from "../lib/analytics";
 
@@ -25,7 +25,7 @@ export function Cardapio() {
 
   const secao = (params.get("categoria") === "bebidas" ? "bebidas" : (secoes.find((s) => s.id === params.get("prato"))?.id ?? "cuscuz")) as SecaoId;
   const aba = (abas.find((x) => x.id === params.get("categoria"))?.id ?? "todos") as AbaId;
-  const comAbas = secao !== "bebidas";
+  const comAbas = secao === "cuscuz" || secao === "macaxeira";
   // Grade (fotos grandes) é o padrão; a lista continua disponível pelo botão e pelo link ?vista=lista.
   const vista: Vista = params.get("vista") === "lista" ? "lista" : "grade";
   // Depois de adicionar um prato, o Detalhe leva às bebidas com este aviso (some ao trocar de seção).
@@ -51,9 +51,7 @@ export function Cardapio() {
   };
 
   // Bebidas: todas, sem abas. Cuscuz e Macaxeira: filtram pelo prato e pela aba (Todos = salgados e doces).
-  const itens = secao === "bebidas"
-    ? produtos.filter((p) => p.categoria === "bebidas")
-    : produtos.filter((p) => p.prato === secao && (aba === "todos" || p.categoria === aba));
+  const itens = produtosDaSecao(secao, aba);
 
   // Analytics: "view_item_list" quando o cardápio aparece na tela e a cada nova lista vista (prato/aba) depois disso.
   const secaoRef = useRef<HTMLElement>(null);
@@ -130,7 +128,7 @@ export function Cardapio() {
           </div>
         </div>
 
-        <div role={comAbas ? "tabpanel" : "region"} id="painel-cardapio" aria-labelledby={comAbas ? `aba-${aba}` : undefined} aria-label={comAbas ? undefined : "Bebidas"} style={{ minHeight: "40vh" }}>
+        <div role={comAbas ? "tabpanel" : "region"} id="painel-cardapio" aria-labelledby={comAbas ? `aba-${aba}` : undefined} aria-label={comAbas ? undefined : secoes.find((s) => s.id === secao)?.nome} style={{ minHeight: "40vh" }}>
           {vista === "lista" ? (
             <ul className="lista">
               {itens.map((p) => <ProductRow key={p.id} produto={p} />)}

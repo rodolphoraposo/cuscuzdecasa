@@ -14,7 +14,7 @@ describe("páginas legais e 404", () => {
   it("Termos de Uso mostra horários, área de entrega e alergias a partir dos dados reais", () => {
     abrir("/termos");
     expect(screen.getByRole("heading", { level: 1, name: "Termos de Uso" })).toBeTruthy();
-    expect(document.body.textContent).toContain("até as 16h");
+    expect(document.body.textContent).toContain("às 16h do próprio dia");
     expect(document.body.textContent).toContain("17h às 21h");
     expect(document.body.textContent).toContain("raio de até 1,5 km");
     expect(document.body.textContent).toMatch(/Até 500 m: grátis/);

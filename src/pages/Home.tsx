@@ -11,7 +11,7 @@ import { linkWhatsAppContato } from "../lib/whatsapp";
 
 const passos = [
   { titulo: "Escolha no cardápio", texto: "Veja os sabores e monte seu pedido em poucos toques." },
-  { titulo: `Finalize até as ${contato.horarioPedidos}`, texto: "Envie a comanda pelo WhatsApp para confirmar." },
+  { titulo: "Escolha uma faixa disponível", texto: "Entregamos pela manhã, das 8h às 10h, ou à noite, das 17h às 21h." },
   { titulo: "Receba em casa", texto: `Entregamos quentinho, das ${contato.horarioEntrega}.` },
 ];
 
@@ -29,9 +29,9 @@ export default function Home() {
             <p className="t-corpo hero__lead">
               Cuscuz recheado, quentinho e preparado com cuidado. Peça pelo cardápio digital e receba em casa.
             </p>
-            <p className="hero__cta">Faça seu pedido de dia e receba à noite!</p>
+            <p className="hero__cta">Escolha a faixa de entrega que funciona para você!</p>
             <p className="t-legenda">
-              {contato.diasFuncionamento.charAt(0).toUpperCase() + contato.diasFuncionamento.slice(1)} · Pedidos até as {contato.horarioPedidos} · entrega das {contato.horarioEntrega}
+              {contato.diasFuncionamento.charAt(0).toUpperCase() + contato.diasFuncionamento.slice(1)} · manhã {contato.horarioManha} · noite {contato.horarioEntrega}
             </p>
             <p className="t-legenda">Delivery ou retirada na casa.</p>
             <div className="hero__acoes">

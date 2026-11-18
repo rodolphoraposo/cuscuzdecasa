@@ -3,7 +3,7 @@ import { useMemo, useRef, useState, type ChangeEvent, type FormEvent } from "rea
 import { Link } from "react-router-dom";
 import { PreviaComanda } from "../components/PreviaComanda";
 import { Banner, Button, Input, Radio, Select, Textarea } from "../components/ui";
-import { contato, nomeCompleto, produtos, secoes } from "../data/menu";
+import { contato, nomeCompleto, produtos, produtosDaSecao, secoes } from "../data/menu";
 import { registrarEvento } from "../lib/analytics";
 import { buscarCep } from "../lib/cep";
 import { linkWhatsApp } from "../lib/comanda";
@@ -135,7 +135,7 @@ export default function Encomenda() {
                   <option value="">Escolha um item</option>
                   {secoes.map((s) => (
                     <optgroup label={s.nome} key={s.id}>
-                      {produtos.filter((p) => (s.id === "bebidas" ? p.categoria === "bebidas" : p.prato === s.id)).map((p) => <option value={p.id} key={p.id}>{nomeCompleto(p)}</option>)}
+                      {produtosDaSecao(s.id).map((p) => <option value={p.id} key={p.id}>{nomeCompleto(p)}</option>)}
                     </optgroup>
                   ))}
                 </Select>

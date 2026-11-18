@@ -1,17 +1,25 @@
 import { useEntrega } from "../hooks/useEntrega";
-import { contato } from "../data/menu";
+import { proximoDiaUtil } from "../lib/entrega";
 import { Banner } from "./ui";
 
-/** Avisa cedo (cardápio e pedido) que hoje não dá para pedir: dia sem atendimento ou depois do limite. */
+/** Informa os dias sem entrega e quando cada bloco de horários fica indisponível. */
 export function AvisoEncerrado() {
-  const { dia, motivo } = useEntrega();
-  if (dia !== null) return null;
+  const { agora, feriados, motivo, calendarioCarregando, erroCalendario } = useEntrega();
+  if (calendarioCarregando) {
+    return <div className="aviso-encerrado"><Banner tipo="aviso">Consultando o calendário de feriados para mostrar os horários disponíveis...</Banner></div>;
+  }
+  if (erroCalendario) {
+    return <div className="aviso-encerrado"><Banner tipo="erro">Não foi possível consultar os feriados. Tente novamente mais tarde para confirmar os horários de entrega.</Banner></div>;
+  }
+  if (!motivo) return null;
+
+  const proximo = proximoDiaUtil(agora, feriados);
   return (
     <div className="aviso-encerrado">
       <Banner tipo="aviso">
-        {motivo === "dia-sem-atendimento"
-          ? `Hoje a casa não funciona. Atendemos de ${contato.diasFuncionamento}, com pedidos até as ${contato.horarioPedidos}. Você pode ver o cardápio e voltar no próximo dia de funcionamento!`
-          : `Os pedidos de hoje encerraram às ${contato.horarioPedidos}. Você pode ver o cardápio e voltar amanhã!`}
+        {motivo === "feriado" || motivo === "dia-sem-atendimento"
+          ? `Hoje não há entregas${motivo === "feriado" ? " por causa do feriado" : " no fim de semana"}. Voltamos ${proximo === "amanhã" ? "amanhã" : `na ${proximo}`}.`
+          : `Nenhum horário está disponível agora. A manhã abre das 10h às 21h para o próximo dia útil; a noite, das 22h do dia anterior às 16h do próprio dia.`}
       </Banner>
     </div>
   );

@@ -1,4 +1,4 @@
-import { StrictMode } from "react";
+import { StrictMode, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
@@ -11,8 +11,19 @@ import "./styles/components.css";
 
 iniciarAnalytics();
 
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
+function AppInicial() {
+  useEffect(() => {
+    document.getElementById("startup-loader")?.remove();
+  }, []);
+
+  useEffect(() => {
+    if (!import.meta.env.PROD || !("serviceWorker" in navigator)) return;
+    void navigator.serviceWorker.register("/sw.js").catch((erro: unknown) => {
+      console.error("Não foi possível registrar o service worker do aplicativo.", erro);
+    });
+  }, []);
+
+  return (
     <ErroGeral>
       <BrowserRouter>
         <CartProvider>
@@ -20,5 +31,11 @@ createRoot(document.getElementById("root")!).render(
         </CartProvider>
       </BrowserRouter>
     </ErroGeral>
+  );
+}
+
+createRoot(document.getElementById("root")!).render(
+  <StrictMode>
+    <AppInicial />
   </StrictMode>,
 );

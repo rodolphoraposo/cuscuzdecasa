@@ -14,6 +14,7 @@ const aoNorte = (km: number) => ORIGEM.lat + km / 111.19;
 let distanciaDoCliente: number | null = 0.8;
 const servicos = vi.fn(async (url: RequestInfo | URL) => {
   const u = String(url);
+  if (u.includes("/api/feriados")) return { ok: true, json: async () => ({ feriados: [] }) };
   if (u.includes("supabase.co")) return { ok: true, status: 201, json: async () => null }; // Operatta simulado
   if (u.includes("viacep.com.br")) return { ok: true, json: async () => ({ logradouro: "Rua Exemplo", bairro: "Serraria", localidade: "Maceió", uf: "AL" }) };
   if (distanciaDoCliente === null) throw new Error("rede");
@@ -56,7 +57,7 @@ async function preencherTudoMenosCep(u: ReturnType<typeof userEvent.setup>) {
 async function completar(u: ReturnType<typeof userEvent.setup>) {
   await u.type(screen.getByLabelText("Número*"), "120");
   await u.type(screen.getByLabelText("Complemento (bloco e apto)*"), "Bloco B, apto 302");
-  await u.click(screen.getByRole("radio", { name: "18h às 19h" }));
+  await u.click(screen.getByRole("radio", { name: /18h às 19h/ }));
   await u.click(screen.getByRole("radio", { name: "Pix" }));
 }
 

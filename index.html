@@ -6,6 +6,10 @@
     <title>Cuscuz de Casa · Cuscuz é sempre uma boa ideia!</title>
     <meta name="description" content="Cuscuz recheado, quentinho e preparado com cuidado. Peça pelo cardápio digital e receba em casa, em Maceió." />
     <meta name="theme-color" content="#FFF3DC" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Cuscuz de Casa" />
+    <link rel="manifest" href="/manifest.webmanifest" />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="pt_BR" />
     <meta property="og:site_name" content="Cuscuz de Casa" />
@@ -30,6 +34,10 @@
     </script>
   </head>
   <body>
+    <div id="startup-loader" class="startup-loader" role="status" aria-label="Carregando o aplicativo">
+      <span class="sr-only">Carregando o aplicativo</span>
+      <div class="startup-loader__track" aria-hidden="true"><div class="startup-loader__bar"></div></div>
+    </div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

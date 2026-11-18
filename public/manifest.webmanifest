@@ -1,0 +1,26 @@
+{
+  "id": "/",
+  "name": "Cuscuz de Casa",
+  "short_name": "Cuscuz de Casa",
+  "description": "Peça cuscuz recheado e receba em casa, em Maceió.",
+  "lang": "pt-BR",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#FFF3DC",
+  "theme_color": "#FFF3DC",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "64x64",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

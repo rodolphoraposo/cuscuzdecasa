@@ -12,8 +12,8 @@ describe("Home", () => {
   it("a frase de chamada explica o funcionamento logo no topo, junto dos horários", () => {
     render(<MemoryRouter><CartProvider><App /></CartProvider></MemoryRouter>);
     const hero = screen.getByRole("heading", { level: 1 }).closest(".hero__texto") as HTMLElement;
-    expect(hero.textContent).toContain("Faça seu pedido de dia e receba à noite!");
-    expect(hero.textContent).toContain("Segunda a sexta · Pedidos até as 16h · entrega das 17h às 21h");
+    expect(hero.textContent).toContain("Escolha a faixa de entrega que funciona para você!");
+    expect(hero.textContent).toContain("Segunda a sexta · manhã 8h às 10h · noite 17h às 21h");
     expect(hero.textContent).toContain("Delivery ou retirada na casa.");
     expect(within(hero).getByRole("link", { name: "Peça agora!" }).getAttribute("href")).toBe("/#cardapio");
   });

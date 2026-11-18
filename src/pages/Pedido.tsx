@@ -14,7 +14,6 @@ import { buscarCep } from "../lib/cep";
 import { linkWhatsAppContato } from "../lib/whatsapp";
 import { calcularCobertura, calcularCoberturaPorLocalizacao } from "../lib/geocep";
 import { enderecoDoCardapio } from "../lib/navegacao";
-import { janelasEntrega } from "../lib/entrega";
 import { useEntrega } from "../hooks/useEntrega";
 import {
   carregarRascunho, mascararCep, mascararTelefone, salvarRascunho, validarPedido,
@@ -52,8 +51,8 @@ export default function Pedido() {
   useNoIndex();
   const navigate = useNavigate();
   const { linhas, totalPreco, alterar, adicionar } = useCart();
-  const { dia } = useEntrega();
-  const fechado = dia === null; // pedidos de hoje encerrados
+  const { agora, feriados, janelas, calendarioCarregando, erroCalendario } = useEntrega();
+  const fechado = calendarioCarregando || erroCalendario || janelas.length === 0;
 
   const [r, setR] = useState<Rascunho>(carregarRascunho);
   const retirada = r.tipo === "retirada";
@@ -109,7 +108,7 @@ export default function Pedido() {
     : r.entregaStatus === "indisponivel" ? { tipo: "indisponivel" }
     : null;
 
-  const erros = useMemo(() => validarPedido(r, total), [r, total]);
+  const erros = useMemo(() => validarPedido(r, total, agora, feriados), [r, total, agora, feriados]);
   const erro = (c: Campo) => (tentou || tocados[c] ? erros[c] : undefined);
   const mudar = (c: keyof Rascunho, v: string | boolean) => setR((a) => ({ ...a, [c]: v }));
   const focar = (nome: string) => formRef.current?.querySelector<HTMLElement>(`[name="${nome}"]`)?.focus();
@@ -370,16 +369,16 @@ export default function Pedido() {
             <fieldset className="pedido__secao" aria-describedby={erro("horario") ? "erro-horario" : undefined}>
               <legend className="t-subtitulo">{retirada ? "Horário de retirada" : "Horário de entrega"}</legend>
               <p className="aviso-privacidade">
-                Escolha a faixa em que prefere {retirada ? "retirar" : "receber"} ({dia ?? "hoje"}). Atendemos de {contato.diasFuncionamento}, com pedidos até as {contato.horarioPedidos} e {retirada ? "retirada" : "entrega"} das {contato.horarioEntrega}.
+                A manhã (8h às 10h) pode ser agendada das 10h às 21h do dia anterior. A noite (17h às 21h) pode ser agendada das 22h do dia anterior até as 16h do próprio dia. Não há entregas em fins de semana e feriados.
               </p>
               <div className={`pagto-lista pagto-lista--grade${erro("horario") ? " pagto-lista--erro" : ""}`}>
-                {janelasEntrega.map((j) => (
+                {janelas.map((j) => (
                   <label className="pagto" key={j.id}>
                     <input
-                      type="radio" name="horario" value={j.id} checked={r.horario === j.id}
+                      type="radio" name="horario" value={j.id} checked={r.horario === j.id} aria-label={`${j.rotulo}, ${j.dia}`}
                       onChange={() => { mudar("horario", j.id); setTocados((t) => ({ ...t, horario: true })); }}
                     />
-                    <span className="pagto__nome">{j.rotulo}</span>
+                    <span className="pagto__nome">{j.rotulo}<small>{j.dia}</small></span>
                     <span className="pagto__bolinha" aria-hidden="true" />
                   </label>
                 ))}

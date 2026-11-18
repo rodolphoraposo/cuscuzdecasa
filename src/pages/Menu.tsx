@@ -6,7 +6,7 @@ import { AvisoEncerrado } from "../components/AvisoEncerrado";
 import { CartBar } from "../components/CartBar";
 import { Banner, ButtonLink } from "../components/ui";
 import { ProductCard, ProductRow } from "../components/ProductItem";
-import { abas, produtos, secoes, type AbaId, type SecaoId } from "../data/menu";
+import { abas, produtosDaSecao, secoes, type AbaId, type SecaoId } from "../data/menu";
 
 type Vista = "lista" | "grade";
 
@@ -17,7 +17,7 @@ export default function Menu() {
   // ("?categoria=bebidas" é o formato antigo do link e continua levando às bebidas).
   const secao = (params.get("categoria") === "bebidas" ? "bebidas" : (secoes.find((s) => s.id === params.get("prato"))?.id ?? "cuscuz")) as SecaoId;
   const aba = (abas.find((x) => x.id === params.get("categoria"))?.id ?? "todos") as AbaId;
-  const comAbas = secao !== "bebidas";
+  const comAbas = secao === "cuscuz" || secao === "macaxeira";
   const vista: Vista = params.get("vista") === "grade" ? "grade" : "lista";
   // Depois de adicionar um prato, o Detalhe leva às bebidas com este aviso (some ao trocar de seção).
   const sugerirBebida = (useLocation().state as { sugerirBebida?: boolean } | null)?.sugerirBebida === true && secao === "bebidas";
@@ -35,9 +35,7 @@ export default function Menu() {
   };
 
   // Bebidas: todas, sem abas. Cuscuz e Macaxeira: filtram pelo prato e pela aba (Todos = salgados e doces).
-  const itens = secao === "bebidas"
-    ? produtos.filter((p) => p.categoria === "bebidas")
-    : produtos.filter((p) => p.prato === secao && (aba === "todos" || p.categoria === aba));
+  const itens = produtosDaSecao(secao, aba);
 
   const atualizar = (chave: string, valor: string) => {
     const next = new URLSearchParams(params);
@@ -104,7 +102,7 @@ export default function Menu() {
           </div>
         </div>
 
-        <div role={comAbas ? "tabpanel" : "region"} id="painel-cardapio" aria-labelledby={comAbas ? `aba-${aba}` : undefined} aria-label={comAbas ? undefined : "Bebidas"} style={{ minHeight: "40vh" }}>
+        <div role={comAbas ? "tabpanel" : "region"} id="painel-cardapio" aria-labelledby={comAbas ? `aba-${aba}` : undefined} aria-label={comAbas ? undefined : secoes.find((s) => s.id === secao)?.nome} style={{ minHeight: "40vh" }}>
           {vista === "lista" ? (
             <ul className="lista">
               {itens.map((p) => <ProductRow key={p.id} produto={p} />)}

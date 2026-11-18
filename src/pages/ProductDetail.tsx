@@ -47,11 +47,11 @@ function Detalhe({ produto }: { produto: Produto }) {
   const opcoes = aceitaAdicionais(produto) ? adicionais : [];
   const unitario = produto.preco + extras.reduce((t, e) => t + (() => { const a = adicionais.find((x) => x.id === e); return a ? valorDoAdicional(a) : 0; })(), 0);
   // "Leve junto": bebidas escolhidas na própria tela (1 de cada), para o cliente não precisar de mais uma etapa.
-  const bebidas = produto.categoria === "bebidas" ? [] : produtos.filter((p) => p.categoria === "bebidas");
+  const bebidas = produto.categoria === "bebidas" || produto.categoria === "combos" ? [] : produtos.filter((p) => p.categoria === "bebidas");
   const [bebidasSel, setBebidasSel] = useState<string[]>([]);
   const centavosBebidas = bebidasSel.reduce((t, id) => t + Math.round((produtos.find((p) => p.id === id)?.preco ?? 0) * 100), 0);
   const total = (Math.round(unitario * 100) * qtd + centavosBebidas) / 100;
-  const padrao = enderecoDoCardapio(produto.prato ? `?prato=${produto.prato}&categoria=${produto.categoria}` : "?prato=bebidas");
+  const padrao = enderecoDoCardapio(produto.prato ? `?prato=${produto.prato}&categoria=${produto.categoria}` : `?prato=${produto.categoria === "combos" ? "combos" : "bebidas"}`);
   const voltar = origem ?? padrao; // volta para onde o cliente estava (Início, lista ou grade)
   const aposAdicionar = origem?.endsWith("#cardapio") ? origem : padrao; // depois de adicionar, mostra o cardápio com a barra do pedido
 
@@ -70,7 +70,7 @@ function Detalhe({ produto }: { produto: Produto }) {
     adicionar(produto.id, extras, qtd, acomp);
     for (const id of bebidasSel) adicionar(id, [], 1, null);
     // Sequência do pedido: prato → capriche → bebida → dados. Se o cliente já escolheu bebida aqui, não sugere de novo.
-    if (produto.categoria !== "bebidas" && bebidasSel.length === 0) navigate(enderecoDoCardapio("?prato=bebidas"), { state: { sugerirBebida: true } });
+    if ((produto.categoria === "salgados" || produto.categoria === "doces") && bebidasSel.length === 0) navigate(enderecoDoCardapio("?prato=bebidas"), { state: { sugerirBebida: true } });
     else navigate(aposAdicionar);
   };
 

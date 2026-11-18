@@ -136,10 +136,14 @@
 .footer__marca { display: grid; gap: var(--esp-12); justify-items: start; margin-bottom: var(--esp-32); }
 .footer__slogan { font: 700 20px / 1.3 var(--fonte-titulo); color: var(--slogan); }
 .footer__horario { opacity: 0.85; font-size: 14px; }
-.footer__colunas { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: var(--esp-24) var(--esp-16); }
+.footer__colunas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--esp-24) var(--esp-16); }
+.footer__colunas > div { min-width: 0; }
+.footer__colunas > div:last-child { justify-self: end; text-align: right; }
 .footer__titulo { margin-bottom: var(--esp-12); font: 800 15px / 1.2 var(--fonte-titulo); text-transform: uppercase; letter-spacing: 0.06em; opacity: 0.7; }
 .footer__colunas ul { display: grid; gap: var(--esp-12); padding: 0; margin: 0; list-style: none; }
-.footer__colunas a { display: inline-flex; align-items: center; gap: var(--esp-8); min-height: 28px; font-size: 15px; }
+.footer__colunas > div:last-child ul { justify-items: end; }
+.footer__colunas a { display: inline-flex; align-items: center; justify-content: flex-end; gap: var(--esp-8); max-width: 100%; min-width: 0; min-height: 28px; font-size: 15px; overflow-wrap: anywhere; }
+.footer__colunas a svg { flex: 0 0 auto; }
 .footer a { text-decoration: none; }
 .footer a:hover { text-decoration: underline; }
 .footer__copy { margin-top: var(--esp-32); text-align: center; color: inherit; opacity: 0.8; }
@@ -289,11 +293,11 @@
 .previa__linha { white-space: pre-wrap; }
 
 /* ---------- Escolher o prato, horário de entrega e foto provisória ---------- */
-.pratos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: var(--esp-24); }
+.pratos { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-bottom: var(--esp-24); }
 .prato-btn { position: relative; isolation: isolate; aspect-ratio: 4 / 5; min-width: 0; padding: 0; border: 0; border-radius: 22px; overflow: hidden; background: var(--neutro-950); color: var(--neutro-0); text-align: left; cursor: pointer; box-shadow: var(--sombra-foto); transition: transform 0.18s, outline-offset 0.18s; }
 .prato-btn img { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
 .prato-btn::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(to top, rgb(28 17 10 / 0.88) 0%, rgb(28 17 10 / 0.1) 55%, transparent 100%); }
-.prato-btn span { position: absolute; left: 12px; right: 8px; bottom: 10px; font: 800 17px / 1.1 var(--fonte-titulo); }
+.prato-btn span { position: absolute; left: 12px; right: 8px; bottom: 10px; font: 800 17px / 1.1 var(--fonte-titulo); overflow-wrap: anywhere; }
 .prato-btn:hover img { transform: scale(1.06); }
 .prato-btn:not([aria-pressed="true"]) { filter: saturate(0.8); }
 .prato-btn[aria-pressed="true"] { outline: 3px solid var(--milho-500); outline-offset: 3px; transform: translateY(-2px); }
@@ -338,6 +342,7 @@
 .footer__contato { display: grid; gap: var(--esp-8); justify-items: start; }
 .footer__contato a { display: inline-flex; align-items: center; gap: var(--esp-8); min-height: 32px; }
 @media (min-width: 900px) { .pratos { max-width: 560px; } }
+@media (max-width: 480px) { .pratos { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
 /* ---------- Encomenda ---------- */
 .encomenda-item { display: grid; grid-template-columns: 1fr auto; gap: var(--esp-12); align-items: end; padding: var(--esp-12); background: var(--fundo-superficie); border-radius: var(--raio-18); box-shadow: var(--sombra-sm); }

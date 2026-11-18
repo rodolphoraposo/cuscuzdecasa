@@ -21,6 +21,7 @@ describe("Contato oficial no rodapé", () => {
     expect(rodape.getByRole("link", { name: /@cuscuzdecasaoficial/ }).querySelector("svg")).toBeTruthy(); // ícone do Instagram
     expect(rodape.getAllByRole("heading", { level: 2 }).map((h) => h.textContent)).toEqual(["Navegue", "Fale com a gente"]); // duas colunas
     expect(rodape.getByText("Funcionamos de segunda a sexta")).toBeTruthy();
+    expect(rodape.getByRole("link", { name: "Combos" }).getAttribute("href")).toBe("/?prato=combos#cardapio");
   });
 });
 

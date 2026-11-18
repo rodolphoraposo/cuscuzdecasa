@@ -87,3 +87,19 @@ ul, ol {
   position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
   overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
 }
+
+.startup-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  background: var(--fundo-pagina);
+}
+.startup-loader__track { width: min(180px, 50vw); height: 4px; overflow: hidden; border-radius: var(--raio-total); background: var(--borda-sutil); }
+.startup-loader__bar { width: 38%; height: 100%; border-radius: inherit; background: var(--acao-primaria); animation: startup-loader-progresso 1.1s ease-in-out infinite; }
+@keyframes startup-loader-progresso {
+  from { transform: translateX(-110%); }
+  to { transform: translateX(280%); }
+}
+@media (prefers-reduced-motion: reduce) { .startup-loader__bar { animation: none; width: 100%; } }

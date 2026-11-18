@@ -7,8 +7,8 @@ const PASTA = new URL("../assets/produtos/", import.meta.url);
 const LIMITE_KB = 300; // fotos pesadas deixam o cardápio lento no celular
 
 describe("fotos dos produtos", () => {
-  it("todo prato e bebida tem foto (.webp com o nome combinado em arquivoDaFoto)", () => {
-    const sem = produtos.filter((p) => !p.imagem).map((p) => `${p.nome} → ${arquivoDaFoto[p.id]}.webp`);
+  it("todo prato e bebida tem foto (.webp com o nome combinado em arquivoDaFoto); combos aguardam as fotos próprias", () => {
+    const sem = produtos.filter((p) => p.categoria !== "combos" && !p.imagem).map((p) => `${p.nome} → ${arquivoDaFoto[p.id]}.webp`);
     expect(sem, `Faltam fotos em src/assets/produtos: ${sem.join(", ")}`).toEqual([]);
   });
 

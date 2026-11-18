@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { mascararCep, mascararTelefone, paraDadosPedido, rascunhoVazio, sanearRascunho, validarPedido, valorEmReais, type Rascunho } from "./formulario";
+import { mascararCep, mascararTelefone, paraDadosPedido, rascunhoVazio, sanearRascunho, validarPedido as validarPedidoNaData, valorEmReais, type Rascunho } from "./formulario";
+
+const validarPedido = (rascunho: Rascunho, total: number) => validarPedidoNaData(rascunho, total, new Date("2026-11-03T18:00:00Z"));
 
 const valido: Rascunho = {
   tipo: "entrega",
@@ -46,6 +48,12 @@ describe("validarPedido", () => {
   it("horário de entrega precisa ser uma das faixas", () => {
     expect(validarPedido({ ...valido, horario: "" }, 20).horario).toBeDefined();
     expect(validarPedido({ ...valido, horario: "03-04" }, 20).horario).toBeDefined();
+  });
+  it("só aceita as faixas da manhã depois das 10h locais", () => {
+    const cedo = new Date("2026-11-03T12:59:59Z");
+    const depoisDasDez = new Date("2026-11-03T13:00:00Z");
+    expect(validarPedidoNaData({ ...valido, horario: "8-9" }, 20, cedo).horario).toBeDefined();
+    expect(validarPedidoNaData({ ...valido, horario: "8-9" }, 20, depoisDasDez).horario).toBeUndefined();
   });
   it("UF precisa existir", () => expect(validarPedido({ ...valido, uf: "XX" }, 20).uf).toBeDefined());
   it("troco: menor que o total, vazio, e dispensado", () => {

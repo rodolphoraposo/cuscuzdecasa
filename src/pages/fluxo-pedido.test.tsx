@@ -16,6 +16,7 @@ let distanciaDoCliente: number | null = 0.8; // km ao norte da origem; null = Br
 let viaCepFalha = false;
 const servicos = vi.fn(async (url: RequestInfo | URL) => {
   const u = String(url);
+  if (u.includes("/api/feriados")) return { ok: true, json: async () => ({ feriados: [] }) };
   if (u.includes("supabase.co")) return { ok: true, status: 201, json: async () => null }; // Operatta: número provisório, sem ruído
   if (u.includes("viacep.com.br")) {
     if (viaCepFalha) throw new Error("rede");
@@ -29,6 +30,7 @@ const servicos = vi.fn(async (url: RequestInfo | URL) => {
   }
   throw new Error(`endereço inesperado nos testes: ${u}`);
 });
+const servicosPadrao = servicos.getMockImplementation();
 const chamadasA = (parte: string) => servicos.mock.calls.filter((c) => String(c[0]).includes(parte)).length;
 
 function abrir() {
@@ -58,7 +60,12 @@ beforeEach(() => {
   distanciaDoCliente = 0.8; viaCepFalha = false;
   vi.stubGlobal("fetch", servicos); servicos.mockClear();
 });
-afterEach(() => { cleanup(); vi.unstubAllGlobals(); vi.setSystemTime(new Date("2026-11-03T18:00:00Z")); });
+afterEach(() => {
+  cleanup();
+  vi.unstubAllGlobals();
+  if (servicosPadrao) servicos.mockImplementation(servicosPadrao);
+  vi.setSystemTime(new Date("2026-11-03T18:00:00Z"));
+});
 
 describe("fluxo Seu pedido → Falta só um passo", () => {
   it("conclui um pedido em dinheiro com troco e monta a comanda", async () => {
@@ -82,7 +89,7 @@ describe("fluxo Seu pedido → Falta só um passo", () => {
 
     await u.type(screen.getByLabelText("Número*"), "120");
     await u.type(screen.getByLabelText("Complemento (bloco e apto)*"), "Bloco B, apto 302");
-    await u.click(screen.getByRole("radio", { name: "18h às 19h" }));
+    await u.click(screen.getByRole("radio", { name: /18h às 19h/ }));
     await u.click(screen.getByRole("radio", { name: "Dinheiro" }));
     await u.type(screen.getByLabelText("Troco para quanto?"), "50");
     await u.click(screen.getByRole("button", { name: /Finalizar pedido/ }));
@@ -142,18 +149,57 @@ describe("fluxo Seu pedido → Falta só um passo", () => {
     expect(document.activeElement).toBe(screen.getByLabelText("Nome*"));
   });
 
-  it("depois das 16h os pedidos de hoje estão encerrados: aviso e botão desativado", () => {
+  it("às 17h, o bloco noturno está oculto e a manhã do próximo dia continua disponível", async () => {
     vi.setSystemTime(new Date("2026-11-03T20:00:00Z")); // 17:00 em Maceió
     abrir();
-    expect(screen.getByText(/Os pedidos de hoje encerraram às 16h/)).toBeTruthy();
+    expect(screen.queryByText(/Nenhum horário está disponível agora/)).toBeNull();
+    expect(await screen.findByRole("radio", { name: "8h às 9h, amanhã" })).toBeTruthy();
+    expect((screen.getByRole("button", { name: /Finalizar pedido/ }) as HTMLButtonElement).disabled).toBe(false);
+  });
+
+  it("no fim de semana após as 10h permite agendar a manhã do próximo dia útil", async () => {
+    vi.setSystemTime(new Date("2026-11-07T15:00:00Z")); // sábado, 12:00 em Maceió
+    abrir();
+    expect(await screen.findByText(/Hoje não há entregas no fim de semana\. Voltamos na segunda-feira/)).toBeTruthy();
+    expect(await screen.findByRole("radio", { name: "8h às 9h, segunda-feira" })).toBeTruthy();
+    expect((screen.getByRole("button", { name: /Finalizar pedido/ }) as HTMLButtonElement).disabled).toBe(false);
+  });
+
+  it("fim de semana antes das 10h não libera as faixas agendadas", async () => {
+    vi.setSystemTime(new Date("2026-11-07T10:00:00Z")); // sábado, 07:00 em Maceió
+    abrir();
+    expect(await screen.findByText(/Hoje não há entregas no fim de semana\. Voltamos na segunda-feira/)).toBeTruthy();
+    expect(screen.queryByRole("radio", { name: /8h às 9h/ })).toBeNull();
     expect((screen.getByRole("button", { name: /Finalizar pedido/ }) as HTMLButtonElement).disabled).toBe(true);
   });
 
-  it("fim de semana: a casa não funciona, com aviso claro e botão desativado", () => {
-    vi.setSystemTime(new Date("2026-11-07T15:00:00Z")); // sábado, 12:00 em Maceió
+  it("não libera o pedido se não conseguir consultar o calendário de feriados", async () => {
+    const fetchOriginal = servicos.getMockImplementation();
+    servicos.mockImplementation(async (url) => {
+      if (String(url).includes("/api/feriados")) throw new Error("offline");
+      if (!fetchOriginal) throw new Error("mock de serviço indisponível");
+      return fetchOriginal(url);
+    });
+    vi.setSystemTime(new Date("2097-11-03T18:00:00Z"));
     abrir();
-    expect(screen.getByText(/Hoje a casa não funciona\. Atendemos de segunda a sexta/)).toBeTruthy();
+
+    expect(await screen.findByText(/Não foi possível consultar os feriados/)).toBeTruthy();
+    expect(screen.queryByRole("radio", { name: /8h às 9h/ })).toBeNull();
     expect((screen.getByRole("button", { name: /Finalizar pedido/ }) as HTMLButtonElement).disabled).toBe(true);
+  });
+
+  it("a comanda registra a data do horário da manhã escolhido", async () => {
+    const u = userEvent.setup();
+    abrir();
+    await u.click(screen.getByRole("radio", { name: /Retirada na casa/ }));
+    await u.type(screen.getByLabelText("Nome*"), "Rodolpho");
+    await u.type(screen.getByLabelText("Telefone / WhatsApp*"), "82991520132");
+    await u.click(screen.getByRole("radio", { name: "8h às 9h, amanhã" }));
+    await u.click(screen.getByRole("radio", { name: "Pix" }));
+    await u.click(screen.getByRole("button", { name: /Finalizar pedido/ }));
+
+    expect(await screen.findByRole("heading", { name: "Falta só um passo" })).toBeTruthy();
+    expect(screen.getByRole("group", { name: "Resumo" }).textContent).toContain("Horário: amanhã, 8h às 9h");
   });
 
   it("Delivery vem primeiro e já marcado; Retirada na casa dispensa o endereço e segue na comanda", async () => {
@@ -171,7 +217,7 @@ describe("fluxo Seu pedido → Falta só um passo", () => {
 
     await u.type(screen.getByLabelText("Nome*"), "Rodolpho");
     await u.type(screen.getByLabelText("Telefone / WhatsApp*"), "82991520132");
-    await u.click(screen.getByRole("radio", { name: "18h às 19h" }));
+    await u.click(screen.getByRole("radio", { name: /18h às 19h/ }));
     await u.click(screen.getByRole("radio", { name: "Pix" }));
     await u.click(screen.getByRole("button", { name: /Finalizar pedido/ }));
 

@@ -28,7 +28,7 @@ export default function Termos() {
 
       <h2>3. Horários e área de entrega</h2>
       <p>
-        Funcionamos de {contato.diasFuncionamento}. Recebemos pedidos até as {contato.horarioPedidos} e entregamos das {contato.horarioEntrega}.
+        Funcionamos de {contato.diasFuncionamento}. As entregas acontecem pela manhã ({contato.horarioManha}) e à noite ({contato.horarioEntrega}), exceto em fins de semana e feriados. A manhã é agendada das 10h às 21h do dia anterior; a noite, das 22h do dia anterior às 16h do próprio dia.
         Entregamos num raio de até {RAIO_MAXIMO_KM.toLocaleString("pt-BR")} km do nosso ponto de partida, e a taxa de entrega depende da distância (em linha reta),
         calculada pelo CEP:
       </p>

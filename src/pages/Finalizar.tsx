@@ -2,17 +2,18 @@ import { Check } from "@phosphor-icons/react";
 import { useEffect, useMemo, useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { PreviaComanda } from "../components/PreviaComanda";
-import { ButtonLink } from "../components/ui";
+import { Banner, ButtonLink } from "../components/ui";
 import { useCart } from "../context/CartContext";
 import { adicionais, contato } from "../data/menu";
 import { MOEDA, itensDoCarrinho, registrarEvento } from "../lib/analytics";
 import { linkWhatsApp, montarComanda } from "../lib/comanda";
-import { descricaoEntrega, diaDaEntrega } from "../lib/entrega";
+import { descricaoEntrega, diaDaJanela } from "../lib/entrega";
 import { carregarRascunho, paraDadosPedido, validarPedido } from "../lib/formulario";
 import { proximoNumeroPedido, salvarPedidoOperatta } from "../lib/operatta";
 import { salvarUltimoPedido } from "../lib/ultimoPedido";
 import { usePageTitle } from "../hooks/usePageTitle";
 import { useNoIndex } from "../hooks/useNoIndex";
+import { useEntrega } from "../hooks/useEntrega";
 
 export default function Finalizar() {
   usePageTitle("Finalizar pedido");
@@ -24,13 +25,13 @@ export default function Finalizar() {
   const aConfirmar = !retirada && rascunho.entregaStatus === "indisponivel";
   const taxa = retirada || rascunho.entregaStatus !== "dentro" ? 0 : (rascunho.taxaEntrega ?? 0);
   const total = Math.round((totalPreco + taxa) * 100) / 100;
-  const agora = useMemo(() => new Date(), []);
-  const dia = diaDaEntrega(agora);
+  const { agora, feriados, calendarioCarregando, erroCalendario } = useEntrega();
+  const dia = diaDaJanela(rascunho.horario, agora, feriados);
   const entregaDesc = dia ? descricaoEntrega(rascunho.horario, dia) : "";
 
   // Dados do pedido (tudo, menos o número) são montados uma vez, ao abrir esta tela.
   const base = useMemo(() => {
-    if (linhas.length === 0 || !entregaDesc || Object.keys(validarPedido(rascunho, total)).length > 0) return null;
+    if (linhas.length === 0 || !entregaDesc || Object.keys(validarPedido(rascunho, total, agora, feriados)).length > 0) return null;
     try {
       const dadosPedido = { ...paraDadosPedido(rascunho), entrega: entregaDesc };
       const itens = linhas.map((l) => ({
@@ -44,8 +45,7 @@ export default function Finalizar() {
     } catch {
       return null;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [agora, feriados, linhas, rascunho, total]);
 
   // Número sequencial real, pedido ao Operatta uma única vez ao abrir a tela.
   // Se não responder a tempo (ou falhar), fica null — e a comanda cai sozinha
@@ -85,6 +85,20 @@ export default function Finalizar() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [numeroResolvido, codigoReal]);
+
+  if (calendarioCarregando) {
+    return <div className="container"><p className="pedido__secao" role="status">Consultando o calendário de feriados...</p></div>;
+  }
+  if (erroCalendario) {
+    return (
+      <div className="container">
+        <div className="pedido">
+          <Banner tipo="aviso">Não foi possível consultar os feriados. Volte ao pedido e tente novamente mais tarde.</Banner>
+          <ButtonLink to="/pedido" variante="outline" bloco>Voltar ao pedido</ButtonLink>
+        </div>
+      </div>
+    );
+  }
 
   // Sem itens ou com dados incompletos (ex.: abriu o endereço direto): volta ao carrinho.
   if (!base) return <Navigate to="/pedido" replace />;

@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/api/feriados",
+      "destination": "https://calendariobrasil.org/api/feriados"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }

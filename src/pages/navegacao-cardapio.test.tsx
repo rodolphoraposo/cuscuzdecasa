@@ -56,6 +56,24 @@ describe("navegação do cardápio (seção #cardapio da Home)", () => {
     expect(document.querySelector(".cards")).toBeNull();
   });
 
+  it("mostra os quatro combos por R$ 24,99 e adiciona o escolhido ao pedido", async () => {
+    const u = userEvent.setup();
+    abrir("/");
+    await u.click(screen.getByRole("button", { name: "Combos" }));
+
+    expect(screen.getByRole("heading", { level: 3, name: "4 Opções" })).toBeTruthy();
+    expect(screen.getByRole("link", { name: "Combo Asa Branca + Guaraná" })).toBeTruthy();
+    expect(screen.getByRole("link", { name: "Combo Asa Branca + Coca-Cola" })).toBeTruthy();
+    expect(screen.getByRole("link", { name: "Combo Arretado + Guaraná" })).toBeTruthy();
+    expect(screen.getByRole("link", { name: "Combo Arretado + Coca-Cola" })).toBeTruthy();
+    expect(screen.getAllByText(/R\$\s24,99/)).toHaveLength(4);
+
+    await u.click(screen.getByRole("button", { name: "Pedir Combo Asa Branca + Guaraná" }));
+    await u.click(screen.getByRole("link", { name: /Pedido: 1 item/ }));
+    expect(screen.getByText("Combo Asa Branca + Guaraná")).toBeTruthy();
+    expect(screen.getAllByText(/R\$\s24,99/).length).toBeGreaterThan(0);
+  });
+
   it("trocar de aba mantém a âncora e não rola a página para o topo", async () => {
     const u = userEvent.setup();
     abrir("/#cardapio");

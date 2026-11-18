@@ -1,12 +1,12 @@
 
-export type CategoriaId = "salgados" | "doces" | "bebidas";
+export type CategoriaId = "salgados" | "doces" | "bebidas" | "combos";
 
 export interface Categoria {
   id: CategoriaId;
   nome: string;
 }
 
-import { ENTREGA_FIM_H, ENTREGA_INICIO_H, LIMITE_PEDIDO_H, TEXTO_DIAS } from "../lib/entrega";
+import { ENTREGA_FIM_H, ENTREGA_INICIO_H, TEXTO_DIAS } from "../lib/entrega";
 
 export type PratoId = "cuscuz" | "macaxeira";
 export const pratos: { id: PratoId; nome: string }[] = [
@@ -15,8 +15,8 @@ export const pratos: { id: PratoId; nome: string }[] = [
 ];
 
 /** Botões do topo do Cardápio: dois pratos e as bebidas. */
-export type SecaoId = PratoId | "bebidas";
-export const secoes: { id: SecaoId; nome: string }[] = [...pratos, { id: "bebidas", nome: "Bebidas" }];
+export type SecaoId = PratoId | "bebidas" | "combos";
+export const secoes: { id: SecaoId; nome: string }[] = [...pratos, { id: "combos", nome: "Combos" }, { id: "bebidas", nome: "Bebidas" }];
 
 /** Abas de Cuscuz e Macaxeira (Bebidas não tem abas). */
 export type AbaId = "todos" | "salgados" | "doces";
@@ -131,6 +131,12 @@ const catalogo: Produto[] = [
   { id: "guarana-antartica", categoria: "bebidas", nome: "Guaraná Antarctica", descricao: "Refrigerante em lata · 350 ml", preco: 5.99 },
   { id: "fanta-laranja", categoria: "bebidas", nome: "Fanta Laranja", descricao: "Refrigerante em lata · 350 ml", preco: 5.99 },
   { id: "agua-mineral", categoria: "bebidas", nome: "Água mineral sem gás", descricao: "Garrafa PET · 500 ml", preco: 2.99 },
+
+  // ---------- Combos ----------
+  { id: "combo-frango-guarana", categoria: "combos", nome: "Combo Asa Branca + Guaraná", descricao: "Cuscuz de frango desfiado com Guaraná Antarctica 350 ml", preco: 24.99 },
+  { id: "combo-frango-coca", categoria: "combos", nome: "Combo Asa Branca + Coca-Cola", descricao: "Cuscuz de frango desfiado com Coca-Cola 350 ml", preco: 24.99 },
+  { id: "combo-calabresa-guarana", categoria: "combos", nome: "Combo Arretado + Guaraná", descricao: "Cuscuz de calabresa com Guaraná Antarctica 350 ml", preco: 24.99 },
+  { id: "combo-calabresa-coca", categoria: "combos", nome: "Combo Arretado + Coca-Cola", descricao: "Cuscuz de calabresa com Coca-Cola 350 ml", preco: 24.99 },
 ];
 
 /** Fotos de src/assets/produtos (sempre .webp), achadas pelo nome do arquivo. Sem arquivo, a tela mostra "Foto em breve". */
@@ -162,6 +168,12 @@ export const arquivoDaFoto: Record<string, string> = {
 
 export const produtos: Produto[] = catalogo.map((p) => ({ ...p, imagem: foto(arquivoDaFoto[p.id]) }));
 
+/** Produtos exibidos na seção escolhida do cardápio. */
+export function produtosDaSecao(secao: SecaoId, aba: AbaId = "todos"): Produto[] {
+  if (secao === "bebidas" || secao === "combos") return produtos.filter((p) => p.categoria === secao);
+  return produtos.filter((p) => p.prato === secao && (aba === "todos" || p.categoria === aba));
+}
+
 /** Produtos que aparecem na prévia da Home */
 export const destaquesHome = ["carne-de-sol", "macaxeira-frango", "macaxeira-carne-suina", "salsicha-ao-molho"];
 
@@ -173,7 +185,7 @@ export const contato = {
   instagram: "cuscuzdecasaoficial",
   /** Dias de funcionamento, por extenso (vem de entrega.ts) */
   diasFuncionamento: TEXTO_DIAS,
-  horarioPedidos: `${LIMITE_PEDIDO_H}h`,
+  horarioManha: "8h às 10h",
   horarioEntrega: `${ENTREGA_INICIO_H}h às ${ENTREGA_FIM_H}h`,
 };
 

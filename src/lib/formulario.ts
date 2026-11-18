@@ -1,5 +1,5 @@
 import { RAIO_MAXIMO_KM, TAXAS_VALIDAS } from "./area";
-import { janelasEntrega } from "./entrega";
+import { diaDaJanela, janelasEntrega } from "./entrega";
 import { brl, limpar, type DadosPedido, type FormaPagamento, type TipoPedido } from "./comanda";
 
 export interface Rascunho {
@@ -69,7 +69,7 @@ export function valorEmReais(texto: string): number | null {
   return Number.isFinite(n) && n > 0 ? Math.round(n * 100) / 100 : null;
 }
 
-export function validarPedido(r: Rascunho, total: number): Erros {
+export function validarPedido(r: Rascunho, total: number, agora: Date = new Date(), feriados: readonly string[] = []): Erros {
   const e: Erros = {};
   if (limpar(r.nome, 80).length < 2) e.nome = "Informe seu nome.";
 
@@ -90,7 +90,9 @@ export function validarPedido(r: Rascunho, total: number): Erros {
     else if (!r.entregaStatus) e.cep = "Aguarde o cálculo da taxa de entrega.";
   }
   }
-  if (!janelasEntrega.some((j) => j.id === r.horario)) e.horario = r.tipo === "retirada" ? "Escolha o horário de retirada." : "Escolha o horário de entrega.";
+  if (!janelasEntrega.some((j) => j.id === r.horario) || diaDaJanela(r.horario, agora, feriados) === null) {
+    e.horario = r.tipo === "retirada" ? "Escolha o horário de retirada." : "Escolha o horário de entrega.";
+  }
   if (!r.pagamento) e.pagamento = "Escolha a forma de pagamento.";
 
   if (r.pagamento === "dinheiro" && !r.semTroco) {

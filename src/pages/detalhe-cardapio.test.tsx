@@ -125,11 +125,11 @@ describe("sequência do pedido: prato → capriche → bebida", () => {
     expect(JSON.parse(localStorage.getItem("cuscuz-pedido-v3") ?? "[]")[0]).toMatchObject({ id: "macaxeira-frango", acomp: "vinagrete" });
   });
 
-  it("três botões no topo; Cuscuz e Macaxeira têm as abas Todos, Salgados e Doces", async () => {
+  it("quatro seções no topo; Cuscuz e Macaxeira têm as abas Todos, Salgados e Doces", async () => {
     const u = userEvent.setup();
     abrir("/");
     const botoes = screen.getByRole("group", { name: "Escolha o que pedir" });
-    expect(within(botoes).getAllByRole("button").map((b) => b.textContent)).toEqual(["Cuscuz", "Macaxeira", "Bebidas"]);
+    expect(within(botoes).getAllByRole("button").map((b) => b.textContent)).toEqual(["Cuscuz", "Macaxeira", "Combos", "Bebidas"]);
     expect(within(botoes).getByRole("button", { name: "Cuscuz" }).getAttribute("aria-pressed")).toBe("true");
     expect(screen.getAllByRole("tab").map((a) => a.textContent)).toEqual(["Todos", "Salgados", "Doces"]);
     expect(screen.getByRole("tab", { name: "Todos", selected: true })).toBeTruthy(); // abre em "Todos"

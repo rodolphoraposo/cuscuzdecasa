@@ -26,6 +26,14 @@ const preCarregarFontes = (): Plugin => ({
 
 export default defineConfig({
   plugins: [react(), preCarregarFontes()],
+  server: {
+    proxy: {
+      "/api/feriados": {
+        target: "https://calendariobrasil.org",
+        changeOrigin: true,
+      },
+    },
+  },
   test: {
     setupFiles: ["./src/test/setup.ts"],
     // Os testes de tela simulam digitação e cliques de verdade; em computadores mais lentos 5 s (padrão) não bastam.
